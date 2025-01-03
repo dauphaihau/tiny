@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-nw-test",
-    "slug": "expo-nw-test",
+    "name": "tiny",
+    "slug": "tiny",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
