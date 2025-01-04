@@ -4,46 +4,61 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
 import { FormGroup } from '@/components/ui/FormGroup';
-import { Link } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
-import { useLogin } from '@/services/auth';
+import { useRegister } from '@/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoginDto, loginSchema } from '@/schemas/request/auth';
+import { Link } from 'expo-router';
+import { registerSchema, RegisterDto } from '@/schemas/request/auth';
 
-export default function LoginPage() {
-  const { mutate: login, isPending, isError } = useLogin();
+export default function RegisterPage() {
+  const { mutateAsync: register, isPending } = useRegister();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginDto>({
-    resolver: zodResolver(loginSchema),
+    setError,
+  } = useForm<RegisterDto>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: '',
       email: '',
       password: '',
     },
   });
 
-  const onSubmit = (data: LoginDto) => {
-    login(data);
+  const onSubmit = async (data: RegisterDto) => {
+    const authError = await register(data);
+    if (authError.code === 'user_already_exists') {
+      setError('email', {
+        message: 'Email exist!',
+      });
+    }
   };
 
   return (
-    <WrapperAuthScreen title="Login">
-      {
-        isError &&
-        <View className="bg-[#F8DDE0] justify-center py-4 px-4 rounded-md">
-          <Text className="text-[#823030] font-medium">Incorrect email or password</Text>
-        </View>
-      }
+    <WrapperAuthScreen title="Register">
       <View className="gap-4">
+        <Controller
+          name="name"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <FormGroup label="Name" error={errors.name?.message}>
+              <Input
+                editable={!isPending}
+                value={value}
+                onChangeText={onChange}
+              />
+            </FormGroup>
+          )}
+        />
         <Controller
           name="email"
           control={control}
           render={({ field: { onChange, value } }) => (
             <FormGroup label="Email" error={errors.email?.message}>
               <Input
+                editable={!isPending}
                 value={value}
                 onChangeText={onChange}
               />
@@ -64,17 +79,18 @@ export default function LoginPage() {
             </FormGroup>
           )}
         />
-        <Button size='sm' variant="link" className="w-1/2 -ml-7">
-          <Text>Forgot password?</Text>
-        </Button>
-        <Button onPress={handleSubmit(onSubmit)}>
-          <Text>Login</Text>
+        <Button
+          disabled={isPending}
+          onPress={handleSubmit(onSubmit)}
+          className="mt-4"
+        >
+          <Text>Register</Text>
         </Button>
         <View className="flex-row items-center justify-center">
-          <Text className="text-zinc-500 font-medium">Don&#39;t have account?</Text>
-          <Link href="/registerr" asChild>
+          <Text className="text-zinc-500 font-medium">Already have account?</Text>
+          <Link href="/login" asChild>
             <Button variant="link" className="-ml-4">
-              <Text>Register</Text>
+              <Text>Login</Text>
             </Button>
           </Link>
         </View>
