@@ -1,32 +1,63 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link } from 'expo-router';
+import { router, SplashScreen } from 'expo-router';
 import { Text } from '@/components/ui/Text';
 import { Button } from '@/components/ui/Button';
-import { View, Text as RNText } from 'react-native';
-import { Input } from '@/components/ui/Input';
+import { View } from 'react-native';
+import { useEffect } from 'react';
+import { supabase } from '@/lib/superbase';
+
+const HOME_HREF = '/(app)/home';
 
 export default function WelcomeScreen() {
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'INITIAL_SESSION') {
+        if (session) {
+          router.replace(HOME_HREF);
+          setTimeout(() => {
+            SplashScreen.hideAsync();
+          }, 1000);
+        }
+        else {
+          SplashScreen.hideAsync();
+        }
+      }
+      else if (event === 'SIGNED_IN') {
+        router.replace(HOME_HREF);
+      }
+      else if (event === 'SIGNED_OUT') {
+        router.replace('/');
+      }
+      else if (event === 'PASSWORD_RECOVERY') {
+        // handle password recovery event
+      }
+      else if (event === 'TOKEN_REFRESHED') {
+        // handle token refreshed event
+      }
+      else if (event === 'USER_UPDATED') {
+        // handle user updated event
+      }
+    });
+  }, []);
+
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-white">
+      <View className="px-6">
+        <View className="h-[80%] justify-center items-center">
+          <Text className="text-5xl font-semibold">Tiny</Text>
+          <Text className="text-zinc-500">What&#39;s up?</Text>
+        </View>
 
-      <View className="flex-row gap-20 bg-red-300">
-        <Text>Text 2</Text>
-        {/*<Text>Text 2</Text>*/}
+        <View className="gap-4">
+          <Button onPress={() => router.push('/(auth)/register')}>
+            <Text>Create account</Text>
+          </Button>
+          <Button variant="secondary" onPress={() => router.push('/(auth)/login')}>
+            <Text>Login</Text>
+          </Button>
+        </View>
       </View>
-
-      <Text className="text-secondary">Text primary</Text>
-      <Text className="text-5xl text-zinc-400">Text 2</Text>
-      <RNText className="text-5xl text-red-300">Text 2</RNText>
-
-      <Button className="my-4 mx-12">
-        <Text>Click me</Text>
-      </Button>
-
-      <Input autoFocus/>
-
-      <Link href="/(auth)/login">login</Link>
-      <Link href="/loginn">login</Link>
-      {/*<Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />*/}
     </SafeAreaView>
   );
 }

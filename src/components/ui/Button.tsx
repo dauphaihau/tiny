@@ -11,8 +11,7 @@ const buttonVariants = cva(
       variant: {
         default: 'bg-primary web:hover:opacity-90 active:opacity-90',
         destructive: 'bg-destructive web:hover:opacity-90 active:opacity-90',
-        outline:
-          'border border-input bg-background web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent',
+        outline: 'border border-input bg-background web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent',
         secondary: 'bg-secondary web:hover:opacity-80 active:opacity-80',
         ghost: 'web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent',
         link: 'web:underline-offset-4 web:hover:underline web:focus:underline',
@@ -28,7 +27,7 @@ const buttonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  },
+  }
 );
 
 const buttonTextVariants = cva(
@@ -54,14 +53,16 @@ const buttonTextVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  },
+  }
 );
 
 type ButtonProps = React.ComponentPropsWithoutRef<typeof Pressable> &
   VariantProps<typeof buttonVariants>;
 
 const Button = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => {
+  ({
+    className, variant, size, ...props 
+  }, ref) => {
     return (
       <TextClassContext.Provider
         value={buttonTextVariants({ variant, size, className: 'web:pointer-events-none' })}
@@ -69,7 +70,7 @@ const Button = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>
         <Pressable
           className={cn(
             props.disabled && 'opacity-50 web:pointer-events-none',
-            buttonVariants({ variant, size, className }),
+            buttonVariants({ variant, size, className })
           )}
           ref={ref}
           role="button"
@@ -77,7 +78,7 @@ const Button = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>
         />
       </TextClassContext.Provider>
     );
-  },
+  }
 );
 Button.displayName = 'Button';
 
