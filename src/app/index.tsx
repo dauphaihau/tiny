@@ -3,31 +3,44 @@ import { router, SplashScreen } from 'expo-router';
 import { Text } from '@/components/ui/Text';
 import { Button } from '@/components/ui/Button';
 import { View } from 'react-native';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { supabase } from '@/lib/superbase';
+import * as Linking from 'expo-linking';
+import { useURL } from 'expo-linking';
 
-const HOME_HREF = '/(app)/home';
+const parseSupabaseUrl = (url: string) => {
+  let parsedUrl = url;
+  if (url.includes('#')) {
+    parsedUrl = url.replace('#', '?');
+  }
+
+  return parsedUrl;
+};
 
 export default function WelcomeScreen() {
+  const url = useURL();
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'INITIAL_SESSION') {
         if (session) {
-          router.replace(HOME_HREF);
+          router.replace('/(app)/home');
           setTimeout(() => {
             SplashScreen.hideAsync();
-          }, 1000);
+          }, 1500);
         }
         else {
           SplashScreen.hideAsync();
         }
       }
       else if (event === 'SIGNED_IN') {
-        router.replace(HOME_HREF);
+        // router.replace(HOME_HREF);
       }
       else if (event === 'SIGNED_OUT') {
-        router.replace('/');
+        if (router.canDismiss()) {
+          router.dismissAll();
+        }
+        else router.replace('/');
       }
       else if (event === 'PASSWORD_RECOVERY') {
         // handle password recovery event
@@ -40,6 +53,31 @@ export default function WelcomeScreen() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (url) {
+      const transformedUrl = parseSupabaseUrl(url);
+
+      const parsedUrl = Linking.parse(transformedUrl);
+
+      const access_token = parsedUrl.queryParams?.access_token;
+      const refresh_token = parsedUrl.queryParams?.refresh_token;
+
+      if (typeof access_token === 'string' && typeof refresh_token === 'string') {
+        (async () => {
+          const { data: { user } } = await supabase.auth.getUser(access_token);
+          if (user) {
+            await supabase.auth.setSession({
+              access_token,
+              refresh_token,
+            });
+            await supabase.auth.refreshSession();
+            router.replace('/(auth)/reset-password');
+          }
+        })();
+      }
+    }
+  }, [url]);
 
   return (
     <SafeAreaView className="bg-white">

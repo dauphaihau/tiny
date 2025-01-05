@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/superbase';
-import { LoginDto, RegisterDto } from '@/schemas/request/auth';
+import {
+  ForgotPasswordDto, LoginDto, RegisterDto, ResetPasswordDto 
+} from '@/schemas/request/auth';
+import * as Linking from 'expo-linking';
 
 export function useRegister() {
   const queryClient = useQueryClient();
@@ -21,6 +24,7 @@ export function useRegister() {
         return error;
       }
       queryClient.setQueryData(['current-user'], data?.user?.user_metadata);
+      return undefined;
     },
   });
 }
@@ -33,9 +37,41 @@ export function useLogin() {
     mutationFn: async (body: LoginDto) => {
       const { data, error } = await supabase.auth.signInWithPassword(body);
       if (error) {
-        throw error;
+        return error;
       }
       queryClient.setQueryData(['current-user'], data?.user?.user_metadata);
+      return undefined;
+    },
+  });
+}
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationKey: ['forgot-password'],
+    mutationFn: async (body: ForgotPasswordDto) => {
+      const currentURL = Linking.createURL('/forgot-password');
+      const { error } = await supabase.auth.resetPasswordForEmail(body.email, {
+        redirectTo: currentURL,
+      });
+      if (error) {
+        return error;
+      }
+      return undefined;
+    },
+  });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationKey: ['reset-password'],
+    mutationFn: async (body: ResetPasswordDto) => {
+      const { error } = await supabase.auth.updateUser({
+        password: body.password,
+      });
+      if (error) {
+        return error;
+      }
+      return undefined;
     },
   });
 }

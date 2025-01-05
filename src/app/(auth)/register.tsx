@@ -7,7 +7,7 @@ import { FormGroup } from '@/components/ui/FormGroup';
 import { Controller, useForm } from 'react-hook-form';
 import { useRegister } from '@/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { registerSchema, RegisterDto } from '@/schemas/request/auth';
 
 export default function RegisterPage() {
@@ -29,7 +29,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegisterDto) => {
     const authError = await register(data);
-    if (authError.code === 'user_already_exists') {
+    if (authError && authError.code === 'user_already_exists') {
       setError('email', {
         message: 'Email exist!',
       });
@@ -37,7 +37,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <WrapperAuthScreen title="Register">
+    <WrapperAuthScreen
+      title="Register"
+      onBack={() => router.dismissAll()}
+    >
       <View className="gap-4">
         <Controller
           name="name"

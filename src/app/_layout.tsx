@@ -46,12 +46,6 @@ export default function RootLayout() {
     hasMounted.current = true;
   }, []);
 
-  // useEffect(() => {
-  //   if (loaded) {
-  //     SplashScreen.hideAsync();
-  //   }
-  // }, [loaded]);
-
   if (!loaded || !isColorSchemeLoaded) {
     return null;
   }
@@ -65,6 +59,8 @@ export default function RootLayout() {
           <Stack.Screen name="(app)/home" options={{ title: 'Home' }}/>
           <Stack.Screen name="(auth)/login" options={{ headerShown: false }}/>
           <Stack.Screen name="(auth)/register" options={{ headerShown: false }}/>
+          <Stack.Screen name="(auth)/forgot-password" options={{ headerShown: false }}/>
+          <Stack.Screen name="(auth)/reset-password" options={{ headerShown: false }}/>
           <Stack.Screen name="+not-found"/>
         </Stack>
       </ThemeProvider>
