@@ -4,14 +4,14 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
 import { FormGroup } from '@/components/ui/FormGroup';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
 import { useLogin } from '@/services/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginDto, loginSchema } from '@/schemas/request/auth';
 
 export default function LoginPage() {
-  const { mutate: login, isPending, isError } = useLogin();
+  const { mutateAsync: login, isPending, isError } = useLogin();
 
   const {
     control,
@@ -25,12 +25,18 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (data: LoginDto) => {
-    login(data);
+  const onSubmit = async (data: LoginDto) => {
+    const authError = await login(data);
+    if (!authError) {
+      router.replace('/(app)/home');
+    }
   };
 
   return (
-    <WrapperAuthScreen title="Login">
+    <WrapperAuthScreen
+      title="Login"
+      onBack={() => router.dismissAll()}
+    >
       {
         isError &&
         <View className="bg-[#F8DDE0] justify-center py-4 px-4 rounded-md">
@@ -64,15 +70,17 @@ export default function LoginPage() {
             </FormGroup>
           )}
         />
-        <Button size='sm' variant="link" className="w-1/2 -ml-7">
-          <Text>Forgot password?</Text>
-        </Button>
+        <Link href="/forgot-password" asChild>
+          <Button size="sm" variant="link" className="w-1/2 -ml-7">
+            <Text>Forgot password?</Text>
+          </Button>
+        </Link>
         <Button onPress={handleSubmit(onSubmit)}>
           <Text>Login</Text>
         </Button>
         <View className="flex-row items-center justify-center">
           <Text className="text-zinc-500 font-medium">Don&#39;t have account?</Text>
-          <Link href="/registerr" asChild>
+          <Link href="/register" asChild>
             <Button variant="link" className="-ml-4">
               <Text>Register</Text>
             </Button>
