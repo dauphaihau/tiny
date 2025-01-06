@@ -28,7 +28,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginDto) => {
     const authError = await login(data);
     if (!authError) {
-      router.replace('/(app)/home');
+      router.replace('/(app)/(tabs)/feed');
     }
   };
 

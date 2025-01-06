@@ -42,7 +42,7 @@ export default function ResetPasswordPage() {
         successView ?
           <View className='gap-3'>
             <Text className='font-medium text-zinc-500 text-lg'>Your password has been reset successfully!</Text>
-            <Button onPress={() => router.replace('/(app)/home')}>
+            <Button onPress={() => router.replace('/(app)/(tabs)/feed')}>
               <Text>Go to home</Text>
             </Button>
           </View> :

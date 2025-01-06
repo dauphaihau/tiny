@@ -56,11 +56,13 @@ export default function RootLayout() {
         <StatusBar style={isDarkColorScheme ? 'light' : 'dark'}/>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }}/>
-          <Stack.Screen name="(app)/home" options={{ title: 'Home' }}/>
+          <Stack.Screen name="(app)" options={{ headerShown: false }}/>
           <Stack.Screen name="(auth)/login" options={{ headerShown: false }}/>
           <Stack.Screen name="(auth)/register" options={{ headerShown: false }}/>
           <Stack.Screen name="(auth)/forgot-password" options={{ headerShown: false }}/>
           <Stack.Screen name="(auth)/reset-password" options={{ headerShown: false }}/>
+          <Stack.Screen name="modals/new-post" options={{ headerTitle: 'New post', presentation: 'modal' }}/>
+          <Stack.Screen name="modals/settings" options={{ headerTitle: 'Settings', presentation: 'modal' }}/>
           <Stack.Screen name="+not-found"/>
         </Stack>
       </ThemeProvider>

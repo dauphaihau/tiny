@@ -91,6 +91,7 @@ module.exports = {
 
     // react-native
     'react-native/no-raw-text': 0,
+    'react-native/no-inline-styles': 0,
   },
   ignorePatterns: ['/dist/*'],
 };
