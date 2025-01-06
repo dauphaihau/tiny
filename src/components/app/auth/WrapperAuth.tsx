@@ -1,5 +1,4 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Href, router } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
 import { View } from 'react-native';
