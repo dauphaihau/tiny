@@ -6,25 +6,16 @@ import { View } from 'react-native';
 import React, { useEffect } from 'react';
 import { supabase } from '@/lib/superbase';
 import * as Linking from 'expo-linking';
-import { useURL } from 'expo-linking';
-
-const parseSupabaseUrl = (url: string) => {
-  let parsedUrl = url;
-  if (url.includes('#')) {
-    parsedUrl = url.replace('#', '?');
-  }
-
-  return parsedUrl;
-};
+import { parseSupabaseUrl } from '@/lib/utils';
 
 export default function WelcomeScreen() {
-  const url = useURL();
+  const url = Linking.useURL();
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'INITIAL_SESSION') {
         if (session) {
-          router.replace('/(app)/home');
+          router.replace('/(app)/(tabs)/feed');
           setTimeout(() => {
             SplashScreen.hideAsync();
           }, 1500);
@@ -33,23 +24,11 @@ export default function WelcomeScreen() {
           SplashScreen.hideAsync();
         }
       }
-      else if (event === 'SIGNED_IN') {
-        // router.replace(HOME_HREF);
-      }
       else if (event === 'SIGNED_OUT') {
         if (router.canDismiss()) {
-          router.dismissAll();
+          router.dismissTo('/');
         }
         else router.replace('/');
-      }
-      else if (event === 'PASSWORD_RECOVERY') {
-        // handle password recovery event
-      }
-      else if (event === 'TOKEN_REFRESHED') {
-        // handle token refreshed event
-      }
-      else if (event === 'USER_UPDATED') {
-        // handle user updated event
       }
     });
   }, []);
@@ -57,14 +36,13 @@ export default function WelcomeScreen() {
   useEffect(() => {
     if (url) {
       const transformedUrl = parseSupabaseUrl(url);
-
       const parsedUrl = Linking.parse(transformedUrl);
-
       const access_token = parsedUrl.queryParams?.access_token;
       const refresh_token = parsedUrl.queryParams?.refresh_token;
 
       if (typeof access_token === 'string' && typeof refresh_token === 'string') {
         (async () => {
+          // if verifying the token failed, it automatically emits event SIGNED_OUT
           const { data: { user } } = await supabase.auth.getUser(access_token);
           if (user) {
             await supabase.auth.setSession({

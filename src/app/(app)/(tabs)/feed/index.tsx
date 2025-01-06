@@ -5,7 +5,7 @@ import { supabase } from '@/lib/superbase';
 import { Button } from '@/components/ui/Button';
 import { useGetCurrentUser } from '@/services/auth';
 
-export default function HomePage() {
+export default function FeedPage() {
   const { data: dataUser } = useGetCurrentUser();
 
   const logout = () => {
