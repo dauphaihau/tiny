@@ -10,7 +10,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-export const WrapperAuthScreen: React.FC<Props> = ({
+export const AuthScreenWrapper: React.FC<Props> = ({
   title,
   onBack,
   children,

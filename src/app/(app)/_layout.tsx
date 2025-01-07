@@ -3,7 +3,7 @@ import { Drawer } from 'expo-router/drawer';
 import { useGetCurrentUser } from '@/services/auth';
 import { DrawerContentComponentProps, DrawerContentScrollView } from '@react-navigation/drawer';
 import {
-  Dimensions, FlatList, Image, Pressable, View,
+  Dimensions, FlatList, Image, Pressable, View
 } from 'react-native';
 import { Text } from '@/components/ui/Text';
 import { supabase } from '@/lib/superbase';
@@ -11,6 +11,7 @@ import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import { getUsernameFromEmail } from '@/lib/utils';
+import { AuthWrapper } from '@/components/common/AuthWrapper';
 
 interface ILink {
   name: string;
@@ -93,15 +94,17 @@ const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
 export default function AppLayout() {
   return (
     <GestureHandlerRootView className="flex-1">
-      <Drawer
-        drawerContent={(props) => CustomDrawerContent(props)}
-        screenOptions={{
-          headerShown: false,
-          drawerStyle: {
-            width: Dimensions.get('window').width * 0.78,
-          },
-        }}
-      />
+      <AuthWrapper>
+        <Drawer
+          drawerContent={(props) => CustomDrawerContent(props)}
+          screenOptions={{
+            headerShown: false,
+            drawerStyle: {
+              width: Dimensions.get('window').width * 0.78,
+            },
+          }}
+        />
+      </AuthWrapper>
     </GestureHandlerRootView>
   );
 }
