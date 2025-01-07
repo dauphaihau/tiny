@@ -15,7 +15,7 @@ export default function WelcomeScreen() {
     supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'INITIAL_SESSION') {
         if (session) {
-          router.replace('/(app)/(tabs)/feed');
+          router.replace('/(app)/(tabs)/feeds');
           setTimeout(() => {
             SplashScreen.hideAsync();
           }, 1500);

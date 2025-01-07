@@ -33,7 +33,7 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="feed"
+        name="feeds"
         options={{
           title: 'Feed',
           tabBarIcon: ({ color }) => <Foundation size={sizeIcon} name="home" color={color}/>,

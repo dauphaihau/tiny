@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/superbase';
 import {
-  ForgotPasswordDto, LoginDto, RegisterDto, ResetPasswordDto 
+  ForgotPasswordDto, LoginDto, RegisterDto, ResetPasswordDto
 } from '@/schemas/request/auth';
 import * as Linking from 'expo-linking';
 
@@ -81,7 +81,7 @@ export function useGetCurrentUser() {
     queryKey: ['current-user'],
     queryFn: async () => {
       const response = await supabase.auth.getSession();
-      return response?.data?.session?.user?.user_metadata;
+      return response?.data?.session?.user?.user_metadata ?? null;
     },
   });
 }

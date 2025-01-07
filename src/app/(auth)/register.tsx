@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { WrapperAuthScreen } from '@/components/app/auth/WrapperAuth';
+import { AuthScreenWrapper } from '@/components/app/auth/AuthScreenWrapper';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
@@ -37,7 +37,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <WrapperAuthScreen
+    <AuthScreenWrapper
       title="Register"
       onBack={() => router.dismissAll()}
     >
@@ -98,6 +98,6 @@ export default function RegisterPage() {
           </Link>
         </View>
       </View>
-    </WrapperAuthScreen>
+    </AuthScreenWrapper>
   );
 };

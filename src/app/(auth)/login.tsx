@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { WrapperAuthScreen } from '@/components/app/auth/WrapperAuth';
+import { AuthScreenWrapper } from '@/components/app/auth/AuthScreenWrapper';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
@@ -28,12 +28,12 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginDto) => {
     const authError = await login(data);
     if (!authError) {
-      router.replace('/(app)/(tabs)/feed');
+      router.replace('/(app)/(tabs)/feeds');
     }
   };
 
   return (
-    <WrapperAuthScreen
+    <AuthScreenWrapper
       title="Login"
       onBack={() => router.dismissAll()}
     >
@@ -87,6 +87,6 @@ export default function LoginPage() {
           </Link>
         </View>
       </View>
-    </WrapperAuthScreen>
+    </AuthScreenWrapper>
   );
 };

@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { WrapperAuthScreen } from '@/components/app/auth/WrapperAuth';
+import { AuthScreenWrapper } from '@/components/app/auth/AuthScreenWrapper';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <WrapperAuthScreen
+    <AuthScreenWrapper
       title="Forgot Password"
       onBack={() => router.back()}
     >
@@ -65,6 +65,6 @@ export default function ForgotPasswordPage() {
             </Button>
           </View>
       }
-    </WrapperAuthScreen>
+    </AuthScreenWrapper>
   );
 };
