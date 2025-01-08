@@ -1,46 +1,36 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/superbase';
 import {
   ForgotPasswordDto, LoginDto, RegisterDto, ResetPasswordDto
 } from '@/schemas/request/auth';
 import * as Linking from 'expo-linking';
+import { getUsernameFromEmail } from '@/lib/utils';
 
 export function useRegister() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationKey: ['register'],
     mutationFn: async (body: RegisterDto) => {
-      const { data, error } = await supabase.auth.signUp({
+      const response = await supabase.auth.signUp({
         email: body.email,
         password: body.password,
         options: {
           data: {
             first_name: body.name,
+            username: getUsernameFromEmail(body.email),
           },
         },
       });
-      if (error) {
-        return error;
-      }
-      queryClient.setQueryData(['current-user'], data?.user?.user_metadata);
-      return undefined;
+      return response.error;
     },
   });
 }
 
 export function useLogin() {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationKey: ['login'],
     mutationFn: async (body: LoginDto) => {
-      const { data, error } = await supabase.auth.signInWithPassword(body);
-      if (error) {
-        return error;
-      }
-      queryClient.setQueryData(['current-user'], data?.user?.user_metadata);
-      return undefined;
+      const response = await supabase.auth.signInWithPassword(body);
+      return response.error;
     },
   });
 }
@@ -76,12 +66,12 @@ export function useResetPassword() {
   });
 }
 
-export function useGetCurrentUser() {
+export function useGetAuthSession() {
   return useQuery({
-    queryKey: ['current-user'],
+    queryKey: ['auth-session'],
     queryFn: async () => {
       const response = await supabase.auth.getSession();
-      return response?.data?.session?.user?.user_metadata ?? null;
+      return response?.data?.session ?? null;
     },
   });
 }

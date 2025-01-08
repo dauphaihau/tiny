@@ -6,7 +6,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getUsernameFromEmail(email: string) {
+  if (!email) return '';   
   return email?.split('@')[0];
+}
+
+export function usernameWithPrefix(username?: string, prefix = '@') {
+  if (!username) return username;
+  return `${prefix}${username}`;
 }
 
 export const parseSupabaseUrl = (url: string) => {

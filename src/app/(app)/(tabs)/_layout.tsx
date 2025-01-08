@@ -1,11 +1,13 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Image, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
 import Foundation from '@expo/vector-icons/Foundation';
 import { Feather } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { Avatar } from '@/components/common/Avatar';
+import { useGetCurrentUser } from '@/services/user.service';
 
 const sizeIcon = 22;
 
@@ -14,7 +16,9 @@ export const unstable_settings = {
 };
 
 export default function TabsLayout() {
+  const { data: dataUser } = useGetCurrentUser();
   const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
+
   return (
     <Tabs
       screenOptions={{
@@ -23,10 +27,7 @@ export default function TabsLayout() {
         },
         headerLeft: () =>
           <Pressable onPress={() => navigation.toggleDrawer()}>
-            <Image
-              source={require('assets/images/avatar-default.jpg')}
-              className="size-8 rounded-full ml-4"
-            />
+            <Avatar path={dataUser?.avatar} className='ml-4'/>
           </Pressable>,
         tabBarShowLabel: false,
         headerShadowVisible: false,
