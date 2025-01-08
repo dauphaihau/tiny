@@ -6,12 +6,15 @@ import { Text } from '@/components/ui/Text';
 import { FormGroup } from '@/components/ui/FormGroup';
 import { Link, router } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
-import { useLogin } from '@/services/auth';
+import { useLogin } from '@/services/auth.service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginDto, loginSchema } from '@/schemas/request/auth';
+import { useState } from 'react';
+import { ErrorCallout } from '@/components/app/auth/ErrorCallout';
 
 export default function LoginPage() {
-  const { mutateAsync: login, isPending, isError } = useLogin();
+  const { mutateAsync: login, isPending } = useLogin();
+  const [serverErrorServerMessage, setServerErrorMessage] = useState<string>();
 
   const {
     control,
@@ -30,6 +33,12 @@ export default function LoginPage() {
     if (!authError) {
       router.replace('/(app)/(tabs)/feeds');
     }
+    else if (authError.code === 'invalid_credentials') {
+      setServerErrorMessage('Incorrect email or password');
+    }
+    else {
+      setServerErrorMessage('Unknown error');
+    }
   };
 
   return (
@@ -37,12 +46,7 @@ export default function LoginPage() {
       title="Login"
       onBack={() => router.dismissAll()}
     >
-      {
-        isError &&
-        <View className="bg-[#F8DDE0] justify-center py-4 px-4 rounded-md">
-          <Text className="text-[#823030] font-medium">Incorrect email or password</Text>
-        </View>
-      }
+      <ErrorCallout message={serverErrorServerMessage}/>
       <View className="gap-4">
         <Controller
           name="email"
