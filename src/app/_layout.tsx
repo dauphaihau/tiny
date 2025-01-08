@@ -63,6 +63,7 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)/reset-password" options={{ headerShown: false }}/>
           <Stack.Screen name="modals/new-post" options={{ headerTitle: 'New post', presentation: 'modal' }}/>
           <Stack.Screen name="modals/settings" options={{ headerTitle: 'Settings', presentation: 'modal' }}/>
+          <Stack.Screen name="modals/edit-profile" options={{ headerTitle: 'Edit profile', presentation: 'modal' }}/>
           <Stack.Screen name="+not-found"/>
         </Stack>
       </ThemeProvider>

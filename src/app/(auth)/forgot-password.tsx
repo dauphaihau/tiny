@@ -8,7 +8,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ForgotPasswordDto, forgotPasswordSchema } from '@/schemas/request/auth';
 import { router } from 'expo-router';
-import { useForgotPassword } from '@/services/auth';
+import { useForgotPassword } from '@/services/auth.service';
 import React from 'react';
 
 export default function ForgotPasswordPage() {

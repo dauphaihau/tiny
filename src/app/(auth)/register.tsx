@@ -5,13 +5,16 @@ import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
 import { FormGroup } from '@/components/ui/FormGroup';
 import { Controller, useForm } from 'react-hook-form';
-import { useRegister } from '@/services/auth';
+import { useRegister } from '@/services/auth.service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, router } from 'expo-router';
 import { registerSchema, RegisterDto } from '@/schemas/request/auth';
+import { useState } from 'react';
+import { ErrorCallout } from '@/components/app/auth/ErrorCallout';
 
 export default function RegisterPage() {
   const { mutateAsync: register, isPending } = useRegister();
+  const [serverErrorMessage, setServerErrorMessage] = useState<string>();
 
   const {
     control,
@@ -29,10 +32,16 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegisterDto) => {
     const authError = await register(data);
-    if (authError && authError.code === 'user_already_exists') {
+    if (!authError) {
+      router.replace('/(app)/(tabs)/feeds');
+    }
+    else if (authError.code === 'user_already_exists') {
       setError('email', {
         message: 'Email exist!',
       });
+    }
+    else {
+      setServerErrorMessage('Unknown error');
     }
   };
 
@@ -41,6 +50,7 @@ export default function RegisterPage() {
       title="Register"
       onBack={() => router.dismissAll()}
     >
+      <ErrorCallout message={serverErrorMessage}/>
       <View className="gap-4">
         <Controller
           name="name"

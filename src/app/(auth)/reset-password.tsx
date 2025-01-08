@@ -12,7 +12,7 @@ import {
 } from '@/schemas/request/auth';
 import React from 'react';
 import { router } from 'expo-router';
-import { useResetPassword } from '@/services/auth';
+import { useResetPassword } from '@/services/auth.service';
 
 export default function ResetPasswordPage() {
   const [successView, setSuccessView] = React.useState(false);
