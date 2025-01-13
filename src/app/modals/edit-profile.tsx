@@ -1,15 +1,15 @@
 import {
-  Image, ImageURISource, Pressable, View
+  Image, ImageURISource, Pressable, View,
 } from 'react-native';
 import { Link, router, Stack } from 'expo-router';
 import React from 'react';
 import { AuthWrapper } from '@/components/common/AuthWrapper';
 import { Text } from '@/components/ui/Text';
 import { Controller, useForm } from 'react-hook-form';
-import { useGetCurrentUser, useUpdateUser } from '@/services/user.service';
+import { useGetCurrentProfile, useUpdateProfile } from '@/services/profile.service';
 import { FormGroup } from '@/components/ui/FormGroup';
 import { Input } from '@/components/ui/Input';
-import { UpdateUserDto, updateUserSchema } from '@/schemas/request/user';
+import { UpdateUserDto, updateProfileSchema } from '@/schemas/request/profile';
 import * as ImagePicker from 'expo-image-picker';
 import { getAvatarImage, uploadImage } from '@/services/image.service';
 import { Textarea } from '@/components/ui/Textarea';
@@ -17,10 +17,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/Button';
 
 export default function EditProfileScreen() {
-  const { data: dataUser } = useGetCurrentUser();
-  const { mutateAsync: updateUser, isPending } = useUpdateUser();
-  const currentSourceImage = getAvatarImage(dataUser?.avatar);
-  const [sourceImage, setSourceImage] = React.useState<ImageURISource>(getAvatarImage(dataUser?.avatar));
+  const { data: profile } = useGetCurrentProfile();
+  const { mutateAsync: updateUser, isPending } = useUpdateProfile();
+  const currentSourceImage = getAvatarImage(profile?.avatar);
+  const [sourceImage, setSourceImage] = React.useState<ImageURISource>(getAvatarImage(profile?.avatar));
   const [disabledSubmit, setDisabledSubmit] = React.useState(true);
 
   const {
@@ -29,10 +29,10 @@ export default function EditProfileScreen() {
     formState: { errors },
     watch,
   } = useForm<UpdateUserDto>({
-    resolver: zodResolver(updateUserSchema),
+    resolver: zodResolver(updateProfileSchema),
     defaultValues: {
-      name: dataUser?.first_name,
-      bio: dataUser?.bio ?? '',
+      name: profile?.first_name,
+      bio: profile?.bio ?? '',
     },
   });
 
@@ -71,8 +71,8 @@ export default function EditProfileScreen() {
     ) {
       data.avatar = await uploadImage('profiles', sourceImage.uri);
     }
-    const authError = await updateUser(data);
-    if (!authError) {
+    const error = await updateUser(data);
+    if (!error) {
       router.back();
     }
   };

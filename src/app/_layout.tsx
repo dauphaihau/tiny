@@ -12,6 +12,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { NAV_THEME } from '@/constants/theme';
 import { Platform } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from '@/constants/toast';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -35,7 +37,7 @@ export default function RootLayout() {
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
 
   const [loaded] = useFonts({
-    SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require('assets/fonts/SpaceMono-Regular.ttf'),
   });
 
   useIsomorphicLayoutEffect(() => {
@@ -66,6 +68,7 @@ export default function RootLayout() {
           <Stack.Screen name="modals/edit-profile" options={{ headerTitle: 'Edit profile', presentation: 'modal' }}/>
           <Stack.Screen name="+not-found"/>
         </Stack>
+        <Toast config={toastConfig} topOffset={60}/>
       </ThemeProvider>
     </QueryClientProvider>
   );
