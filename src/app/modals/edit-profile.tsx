@@ -1,5 +1,5 @@
 import {
-  Image, ImageURISource, Pressable, View,
+  Image, ImageURISource, Pressable, View
 } from 'react-native';
 import { Link, router, Stack } from 'expo-router';
 import React from 'react';
@@ -37,8 +37,7 @@ export default function EditProfileScreen() {
   });
 
   React.useEffect(() => {
-    const { unsubscribe } = watch((value) => {
-      console.log('value', value);
+    const { unsubscribe } = watch(() => {
       if (disabledSubmit) {
         setDisabledSubmit(false);
       }
