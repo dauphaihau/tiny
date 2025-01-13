@@ -1,42 +1,33 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Pressable } from 'react-native';
 import Foundation from '@expo/vector-icons/Foundation';
 import { Feather } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { ParamListBase, useNavigation } from '@react-navigation/native';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { Avatar } from '@/components/common/Avatar';
-import { useGetCurrentUser } from '@/services/user.service';
+import { ProfileToggle } from '@/components/common/ProfileToggle';
 
 const sizeIcon = 22;
 
 export const unstable_settings = {
-  initialRouteName: 'feed',
+  initialRouteName: 'feeds',
 };
 
 export default function TabsLayout() {
-  const { data: dataUser } = useGetCurrentUser();
-  const navigation = useNavigation<DrawerNavigationProp<ParamListBase>>();
-
   return (
     <Tabs
       screenOptions={{
         tabBarStyle: {
           height: 65,
         },
-        headerLeft: () =>
-          <Pressable onPress={() => navigation.toggleDrawer()}>
-            <Avatar path={dataUser?.avatar} className='ml-4'/>
-          </Pressable>,
         tabBarShowLabel: false,
+        headerLeft: () => <ProfileToggle className='ml-4'/>,
         headerShadowVisible: false,
       }}
     >
       <Tabs.Screen
         name="feeds"
         options={{
-          title: 'Feed',
+          title: 'Feeds',
+          headerShown: false,
           tabBarIcon: ({ color }) => <Foundation size={sizeIcon} name="home" color={color}/>,
         }}
       />
@@ -75,7 +66,7 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="profiles/[id]"
         options={{ href: null, headerShown: false }}
       />
     </Tabs>

@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { authSchema } from '@/schemas/models/auth';
-import { userSchema } from '@/schemas/models/user';
+import { profileSchema } from '@/schemas/models/profile';
 
 export const registerSchema = z.object({
-  name: userSchema.shape.first_name,
+  name: profileSchema.shape.first_name,
   email: authSchema.shape.email,
   password: authSchema.shape.password,
 });
