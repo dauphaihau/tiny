@@ -8,7 +8,7 @@ import { supabase } from '@/lib/superbase';
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
 import { usernameWithPrefix } from '@/lib/utils';
-import { useGetCurrentUser } from '@/services/user.service';
+import { useGetCurrentProfile } from '@/services/profile.service';
 import { Avatar } from '@/components/common/Avatar';
 
 interface ILink {
@@ -17,25 +17,25 @@ interface ILink {
   icon: keyof typeof Feather.glyphMap;
 }
 
-const links: ILink[] = [
-  { name: 'Profile', icon: 'user', href: '/profile' },
-  { name: 'Bookmarks', icon: 'bookmark', href: null },
-  { name: 'Archive', icon: 'archive', href: null },
-];
-
 export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
-  const { data: dataUser } = useGetCurrentUser();
+  const { data: profile } = useGetCurrentProfile();
+
+  const links: ILink[] = [
+    { name: 'Profile', icon: 'user', href: `/profiles/${profile?.id}` },
+    { name: 'Bookmarks', icon: 'bookmark', href: null },
+    { name: 'Archive', icon: 'archive', href: null },
+  ];
 
   return (
     <DrawerContentScrollView {...props}>
       <View className="px-4">
         <View className="gap-1">
-          <Pressable onPress={() => router.push('/profile')}>
-            <Avatar path={dataUser?.avatar} className="size-12"/>
+          <Pressable onPress={() => router.push(`/profiles/${profile?.id}`)}>
+            <Avatar path={profile?.avatar} className="size-12"/>
           </Pressable>
           <View className="mt-2">
-            <Text className="font-bold">{dataUser?.first_name}</Text>
-            <Text className="text-zinc-500">{usernameWithPrefix(dataUser?.username)}</Text>
+            <Text className="font-bold">{profile?.first_name}</Text>
+            <Text className="text-zinc-500">{usernameWithPrefix(profile?.username)}</Text>
           </View>
           <View className="flex-row gap-2">
             <View className="flex-row gap-1">
