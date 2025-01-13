@@ -25,12 +25,16 @@ interface CustomToastConfig extends ToastConfig {
 function BaseToast(props: BaseToastProps) {
   return (
     <View
-      style={{ backgroundColor: 'black' }}
-      className="h-16 w-[90%] rounded-md"
+      className="h-16 w-[90%] rounded-md bg-primary"
     >
       <View className="flex-row gap-2 p-4">
         {props.renderLeading && props.renderLeading()}
-        <Text className="font-medium" style={{ flexGrow: 1, color: 'white' }}>{props?.message}</Text>
+        <Text
+          className="font-medium text-primary-foreground grow"
+          style={{ flexGrow: 1 }}
+        >
+          {props?.message}
+        </Text>
         {props.renderTrailing && props.renderTrailing()}
       </View>
     </View>
@@ -41,13 +45,21 @@ export const toastConfig: CustomToastConfig = {
   error: ({ props }) => (
     <BaseToast
       {...props}
-      renderLeading={() => (<MaterialIcons name="error-outline" size={sizeIcon} color="white"/>)}
+      renderLeading={() => (
+        <Text className="text-primary-foreground">
+          <MaterialIcons name="error-outline" size={sizeIcon}/>
+        </Text>
+      )}
     />
   ),
   createdPost: ({ props }) => (
     <BaseToast
       {...props}
-      renderLeading={() => (<Feather name="check" size={sizeIcon} color="white"/>)}
+      renderLeading={() => (
+        <Text className="text-primary-foreground">
+          <Feather name="check" size={sizeIcon}/>
+        </Text>
+      )}
       renderTrailing={() => (
         <View>
           {
@@ -57,7 +69,7 @@ export const toastConfig: CustomToastConfig = {
               push
               onPress={() => Toast.hide()}
             >
-              <Text className="font-semibold" style={{ color: 'white' }}>View</Text>
+              <Text className="font-semibold text-primary-foreground">View</Text>
             </Link>
           }
         </View>
