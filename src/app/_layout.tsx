@@ -14,6 +14,8 @@ import { Platform } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@/constants/toast';
+import { SheetProvider } from 'react-native-actions-sheet';
+import '@/components/sheet/sheets.ts';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -56,18 +58,23 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
         <StatusBar style={isDarkColorScheme ? 'light' : 'dark'}/>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }}/>
-          <Stack.Screen name="(app)" options={{ headerShown: false }}/>
-          <Stack.Screen name="(auth)/login" options={{ headerShown: false }}/>
-          <Stack.Screen name="(auth)/register" options={{ headerShown: false }}/>
-          <Stack.Screen name="(auth)/forgot-password" options={{ headerShown: false }}/>
-          <Stack.Screen name="(auth)/reset-password" options={{ headerShown: false }}/>
-          <Stack.Screen name="modals/new-post" options={{ headerTitle: 'New post', presentation: 'modal' }}/>
-          <Stack.Screen name="modals/settings" options={{ headerTitle: 'Settings', presentation: 'modal' }}/>
-          <Stack.Screen name="modals/edit-profile" options={{ headerTitle: 'Edit profile', presentation: 'modal' }}/>
-          <Stack.Screen name="+not-found"/>
-        </Stack>
+        <SheetProvider context="global">
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }}/>
+            <Stack.Screen name="(app)" options={{ headerShown: false }}/>
+            <Stack.Screen name="(auth)/login" options={{ headerShown: false }}/>
+            <Stack.Screen name="(auth)/register" options={{ headerShown: false }}/>
+            <Stack.Screen name="(auth)/forgot-password" options={{ headerShown: false }}/>
+            <Stack.Screen name="(auth)/reset-password" options={{ headerShown: false }}/>
+            <Stack.Screen name="modals/new-post" options={{ headerTitle: 'New post', presentation: 'modal' }}/>
+            <Stack.Screen name="modals/settings" options={{ headerTitle: 'Settings', presentation: 'modal' }}/>
+            <Stack.Screen
+              name="modals/edit-profile"
+              options={{ headerTitle: 'Edit profile', presentation: 'modal' }}
+            />
+            <Stack.Screen name="+not-found"/>
+          </Stack>
+        </SheetProvider>
         <Toast config={toastConfig} topOffset={60}/>
       </ThemeProvider>
     </QueryClientProvider>
