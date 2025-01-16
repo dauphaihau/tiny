@@ -6,6 +6,12 @@ export const createPostSchema = z.object({
   content: postSchema.shape.content,
 });
 
+export const createReplyPostSchema = z.object({
+  profile_id: postSchema.shape.profile_id,
+  parent_id: postSchema.shape.parent_id,
+  content: postSchema.shape.content,
+});
+
 export const createPostImagesSchema = z.array(
   z.object({
     post_id: postSchema.shape.id,
@@ -15,3 +21,4 @@ export const createPostImagesSchema = z.array(
 
 export type CreatePostDto = z.infer<typeof createPostSchema>;
 export type CreatePostImagesDto = z.infer<typeof createPostImagesSchema>;
+export type CreateReplyPostDto = z.infer<typeof createReplyPostSchema>;

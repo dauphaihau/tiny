@@ -66,7 +66,7 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="profiles/[id]"
+        name="profiles"
         options={{ href: null, headerShown: false }}
       />
     </Tabs>

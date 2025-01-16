@@ -10,9 +10,9 @@ import { Avatar } from '@/components/common/Avatar';
 import { PageLoading } from '@/components/ui/PageLoading';
 import { PROFILE } from '@/constants/profile';
 
-export default function ProfileScreen() {
-  const { id } = useLocalSearchParams();
-  const { data: profile, isPending } = useGetProfileById(id as string);
+export default function DetailProfileScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { data: profile, isPending } = useGetProfileById(id);
   const { data: currentProfile } = useGetCurrentProfile();
 
   if (isPending) {
@@ -23,6 +23,7 @@ export default function ProfileScreen() {
       <View>
         <View className="h-[36%] bg-zinc-100">
           <Pressable
+            // onPress={() => router.back()}
             onPress={router.back}
             className="absolute top-16 left-5 p-2 bg-black/50 rounded-full"
           >
@@ -73,5 +74,4 @@ export default function ProfileScreen() {
       </View>
     );
   }
-
 }

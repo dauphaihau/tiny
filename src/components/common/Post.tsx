@@ -6,21 +6,43 @@ import { getImage } from '@/services/image.service';
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
-import { GetPostResponse } from '@/services/post.service';
+import { GetPostsResponse } from '@/services/post.service';
 import { router } from 'expo-router';
 import { parseCreatedAt } from '@/lib/day';
+import { SheetManager } from 'react-native-actions-sheet';
+import { useGetCurrentProfile } from '@/services/profile.service';
 
 const sizeIcon = 18;
 const colorIcon = 'gray';
 
 interface PostProps {
-  data: GetPostResponse[0];
+  data: GetPostsResponse[0];
 }
 
 export const Post = ({ data }: PostProps) => {
+  const { data: currentProfile } = useGetCurrentProfile();
+
   function navigateToProfile() {
-    router.replace(`/profiles/${data.profile.id}`);
+    router.push(`/profiles/${data.profile.id}`);
   }
+
+  const showActions = async () => {
+    if (currentProfile?.id === data.profile.id) {
+      await SheetManager.show('current-profile-post-actions', {
+        payload: {
+          postId: data.id,
+        },
+      });
+    }
+    else {
+      const result = await SheetManager.show('post-actions', {
+        payload: {
+          postId: data.id,
+        },
+      });
+      console.log('result', result);
+    }
+  };
 
   return (
     <View className="relative">
@@ -36,7 +58,7 @@ export const Post = ({ data }: PostProps) => {
               <View>
                 <View className="flex-row gap-3">
                   <Text onPress={navigateToProfile} className="font-semibold">{data?.profile?.username}</Text>
-                  <Text className="font-medium text-zinc-400">{parseCreatedAt(data.created_at)}</Text>
+                  <Text className="font-medium text-zinc-400">{parseCreatedAt(data?.created_at)}</Text>
                 </View>
                 <Text>{data?.content}</Text>
               </View>
@@ -60,7 +82,6 @@ export const Post = ({ data }: PostProps) => {
                       ))
                     }
                   </ScrollView>
-
                 </View>
               )
             }
@@ -75,7 +96,7 @@ export const Post = ({ data }: PostProps) => {
       </Pressable>
 
       <View className="absolute top-4 right-4">
-        <Entypo name="dots-three-horizontal" size={16} color="gray"/>
+        <Entypo onPress={showActions} name="dots-three-horizontal" size={16} color="gray"/>
       </View>
     </View>
   );

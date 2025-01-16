@@ -1,7 +1,11 @@
 import React from 'react';
-import { router, Stack } from 'expo-router';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Stack } from 'expo-router';
 import { ProfileToggle } from '@/components/common/ProfileToggle';
+import { View } from 'react-native';
+import Feather from '@expo/vector-icons/Feather';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
+const sizeIcon = 21;
 
 export default function FeedsLayout() {
   return (
@@ -17,9 +21,16 @@ export default function FeedsLayout() {
       />
       <Stack.Screen
         name="[id]"
+        getId={({ params }) => params?.id}
         options={{
           headerTitle: 'Post',
-          headerLeft: () => <Ionicons name="arrow-back-outline" size={24} onPress={() => router.back()}/>,
+          headerRight: () => (
+            <View className="flex-row gap-3">
+              <Feather name="bell" size={sizeIcon}/>
+              <MaterialCommunityIcons name="dots-horizontal-circle-outline" size={sizeIcon} color="black"/>
+            </View>
+          ),
+          headerShadowVisible: false,
         }}
       />
     </Stack>
