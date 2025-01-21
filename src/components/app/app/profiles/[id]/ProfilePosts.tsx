@@ -1,21 +1,21 @@
 import { Text } from '@/components/ui/Text';
 import {
-  ActivityIndicator,
-  FlatList, RefreshControl, View
+  ActivityIndicator, FlatList, RefreshControl, View 
 } from 'react-native';
-import { useGetPosts } from '@/services/post.service';
-import { PageLoading } from '@/components/ui/PageLoading';
+import { useLocalSearchParams } from 'expo-router';
+import { GetPostsParams, useGetPosts } from '@/services/post.service';
 import React from 'react';
+import { PageLoading } from '@/components/ui/PageLoading';
 import { Post } from '@/components/common/Post';
-import { supabase } from '@/lib/supabase';
-import { PostTabs } from '@/components/app/app/feeds/PostTabs';
+import { NonUndefined } from 'react-hook-form';
 
-const params = {
-  limit: 10,
-  page: 1,
+type SearchParams = {
+  id: string
+  type: NonUndefined<GetPostsParams['type']>
 };
 
-export default function FeedsPage() {
+export function ProfilePosts() {
+  const { id: profileId, type = 'posts' } = useLocalSearchParams<SearchParams>();
   const {
     data,
     isPending,
@@ -23,31 +23,15 @@ export default function FeedsPage() {
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = useGetPosts(params);
+  } = useGetPosts({
+    limit: 10,
+    page: 1,
+    profile_id: profileId,
+    type,
+  });
 
   const [refreshing, setRefreshing] = React.useState(false);
-
-  React.useEffect(() => {
-    const postChannel = supabase
-      .channel('posts')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'posts',
-        },
-        () => {
-          refetch();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(postChannel);
-    };
-  }, []);
-
+  
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     await refetch();
@@ -60,7 +44,6 @@ export default function FeedsPage() {
   else if (data) {
     return (
       <View>
-        <PostTabs/>
         <FlatList
           data={data.pages.flatMap((page) => page.data)}
           renderItem={({ item }) => <Post data={item}/>}
@@ -84,4 +67,4 @@ export default function FeedsPage() {
       </View>
     );
   }
-};
+}

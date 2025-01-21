@@ -4,7 +4,7 @@ import { Text } from '@/components/ui/Text';
 import { Button } from '@/components/ui/Button';
 import { View } from 'react-native';
 import React, { useEffect } from 'react';
-import { supabase } from '@/lib/superbase';
+import { supabase } from '@/lib/supabase';
 import * as Linking from 'expo-linking';
 import { parseSupabaseUrl } from '@/lib/utils';
 

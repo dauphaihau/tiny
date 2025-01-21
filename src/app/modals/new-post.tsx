@@ -16,13 +16,11 @@ import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { uploadImage } from '@/services/image.service';
-import { useQueryClient } from '@tanstack/react-query';
 
 const sizeIcon = 18;
 const colorIcon = 'gray';
 
 export default function NewPostScreen() {
-  const queryClient = useQueryClient();
   const [content, setContent] = useState('');
   const inputRef = useRef<TextInput>(null);
   const { data: dataUser } = useGetCurrentProfile();
@@ -70,9 +68,6 @@ export default function NewPostScreen() {
         const response = await createPostImages(postImagesBody);
         if (response.error) throw new Error(response.error.message);
       }
-
-      await queryClient.invalidateQueries({ queryKey: ['get-posts'] });
-
       router.back();
       Toast.show({
         type: 'createdPost',
