@@ -9,6 +9,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Avatar } from '@/components/common/Avatar';
 import { PageLoading } from '@/components/ui/PageLoading';
 import { PROFILE } from '@/constants/profile';
+import { ProfilePosts } from '@/components/app/app/profiles/[id]/ProfilePosts';
+import { ProfilePostTabs } from '@/components/app/app/profiles/[id]/ProfilePostTabs';
 
 export default function DetailProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -21,9 +23,8 @@ export default function DetailProfileScreen() {
   else if (profile) {
     return (
       <View>
-        <View className="h-[36%] bg-zinc-100">
+        <View className="h-[16%] bg-zinc-100">
           <Pressable
-            // onPress={() => router.back()}
             onPress={router.back}
             className="absolute top-16 left-5 p-2 bg-black/50 rounded-full"
           >
@@ -63,6 +64,14 @@ export default function DetailProfileScreen() {
               </Button>
             }
           </View>
+        </View>
+
+        <View className='mt-4'>
+          <ProfilePostTabs/>
+        </View>
+        <View className="border-[0.4px] border-zinc-300 w-full -mt-1.5"/>
+        <View className="">
+          <ProfilePosts/>
         </View>
       </View>
     );

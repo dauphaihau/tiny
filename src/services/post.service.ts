@@ -1,5 +1,5 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { supabase } from '@/lib/superbase';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
 import { CreatePostDto, CreatePostImagesDto, CreateReplyPostDto } from '@/schemas/request/post';
 import { Post } from '@/schemas/models/post';
 
@@ -29,13 +29,17 @@ export function useCreatePost() {
   });
 }
 
-const getPosts = async () => {
-  const { data, error } = await supabase
+const getPosts = async (params: GetPostsParams) => {
+  const from = params.limit * (params.page - 1);
+  const to = from + params.limit - 1;
+
+  let query = supabase
     .from('posts')
     .select(`
           id,
           content,
           created_at,
+          parent_id,
           profile:profile_id (
             id, avatar, username
           ),
@@ -43,22 +47,49 @@ const getPosts = async () => {
             id, image_path
           )
         `)
-    .is('parent_id', null)
-    .limit(10)
+    .range(from, to)
     .order('created_at', { ascending: false });
+
+  if (params.profile_id) {
+    query = query.eq('profile_id', params.profile_id);
+  }
+
+  switch (params.type) {
+    case 'replies': {
+      query = query.not('parent_id', 'is', null);
+      break;
+    }
+    default:
+      query = query.is('parent_id', null);
+  }
+
+  const { data, error } = await query;
+
   if (error) {
     console.log('error', error);
     throw new Error();
   }
-  return data;
+  return {
+    data,
+    nextPage: data?.length ? params.page + 1 : undefined,
+  };
 };
 
 export type GetPostsResponse = Awaited<ReturnType<typeof getPosts>>;
 
-export function useGetPosts() {
-  return useQuery({
-    queryKey: ['get-posts'],
-    queryFn: getPosts,
+export interface GetPostsParams {
+  limit: number;
+  page: number;
+  profile_id?: Post['profile_id']
+  type?: 'posts' | 'replies' | 'media'
+}
+
+export function useGetPosts(params: GetPostsParams) {
+  return useInfiniteQuery({
+    queryKey: ['get-posts', params],
+    queryFn: ({ pageParam = 1 }) => getPosts({ ...params, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
   });
 }
 

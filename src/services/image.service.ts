@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/superbase';
+import { supabase } from '@/lib/supabase';
 import * as FileSystem from 'expo-file-system';
 import { decode } from 'base64-arraybuffer';
 import { ImageURISource } from 'react-native';

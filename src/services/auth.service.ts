@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { supabase } from '@/lib/superbase';
+import { supabase } from '@/lib/supabase';
 import {
   ForgotPasswordDto, LoginDto, RegisterDto, ResetPasswordDto
 } from '@/schemas/request/auth';

@@ -16,7 +16,7 @@ const sizeIcon = 18;
 const colorIcon = 'gray';
 
 interface PostProps {
-  data: GetPostsResponse[0];
+  data: GetPostsResponse['data'][0];
 }
 
 export const Post = ({ data }: PostProps) => {

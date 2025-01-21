@@ -3,13 +3,11 @@ import { useDeletePost } from '@/services/post.service';
 import { SheetManager, useSheetPayload } from 'react-native-actions-sheet';
 import Toast from 'react-native-toast-message';
 import { ButtonSheet } from '@/components/sheet/ButtonSheet';
-import { useQueryClient } from '@tanstack/react-query';
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
 
 export function DeleteButton() {
   const payload = useSheetPayload('current-profile-post-actions');
-  const queryClient = useQueryClient();
   const { mutateAsync: deletePost } = useDeletePost(payload.postId);
 
   const onPressDelete = () => {
@@ -26,7 +24,6 @@ export function DeleteButton() {
             SheetManager.hide('current-profile-post-actions', {
               payload: true,
             });
-            queryClient.invalidateQueries({ queryKey: ['get-posts'] });
             Toast.show({
               type: 'success',
               props: {

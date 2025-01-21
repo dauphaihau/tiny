@@ -4,7 +4,7 @@ import {
   FlatList, Pressable, View
 } from 'react-native';
 import { Text } from '@/components/ui/Text';
-import { supabase } from '@/lib/superbase';
+import { supabase } from '@/lib/supabase';
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
 import { usernameWithPrefix } from '@/lib/utils';
