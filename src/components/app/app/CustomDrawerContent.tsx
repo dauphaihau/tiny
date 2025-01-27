@@ -34,8 +34,8 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
             <Avatar path={profile?.avatar} className="size-12"/>
           </Pressable>
           <View className="mt-2">
-            <Text className="font-bold">{profile?.first_name}</Text>
-            <Text className="text-zinc-500">{usernameWithPrefix(profile?.username)}</Text>
+            <Text className="font-bold text-lg">{profile?.first_name}</Text>
+            <Text className="text-zinc-500 text-base">{usernameWithPrefix(profile?.username)}</Text>
           </View>
           <View className="flex-row gap-2">
             <View className="flex-row gap-1">

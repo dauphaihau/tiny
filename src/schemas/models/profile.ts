@@ -1,9 +1,7 @@
 import { z } from 'zod';
-import { Database } from '@/types/database.types';
 import { toZod } from 'tozod';
 import { PROFILE } from '@/constants/profile';
-
-export type Profile = Database['public']['Tables']['profiles']['Row'];
+import { Profile } from '@/types/models/profile';
 
 export const profileSchema: toZod<Profile> = z.object({
   id: z.string(),

@@ -10,8 +10,8 @@ import { Feather } from '@expo/vector-icons';
 import Entypo from '@expo/vector-icons/Entypo';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useGetDetailPost } from '@/services/post.service';
-import { Profile } from '@/schemas/models/profile';
-import { Post } from '@/schemas/models/post';
+import { Post } from '@/types/models/post';
+import { Profile } from '@/types/models/profile';
 
 const sizeIcon = 18;
 const colorIcon = 'gray';

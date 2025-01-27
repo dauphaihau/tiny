@@ -6,13 +6,17 @@ import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
 import { useGetCurrentProfile } from '@/services/profile.service';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { cn } from '@/lib/utils';
+
+type SearchParams = Record<'id' | 'autoFocus', string>;
 
 export function ReplyInput() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, autoFocus } = useLocalSearchParams<SearchParams>();
   const { data: post, refetch: reGetDetailPost } = useGetDetailPost(Number(id));
   const { data: profile } = useGetCurrentProfile();
   const [content, setContent] = useState<string>();
   const { isPending, mutateAsync: reply } = useCreateReply();
+  const [isAutoFocus, setIsAutoFocus] = useState(!!autoFocus);
 
   const onSubmit = async () => {
     if(!post || !profile || !content) {
@@ -31,14 +35,20 @@ export function ReplyInput() {
   };
 
   return (
-    <View className="absolute bottom-3 left-0 px-4">
+    <View className={cn(
+      'absolute bottom-2 px-4 transition-all duration-200',
+      isAutoFocus ? 'translate-y-[-270px]' : 'translate-y-0'
+    )}>
       <View className="flex-row gap-4 items-center">
         <TextInput
           value={content}
           multiline
+          autoFocus={isAutoFocus}
+          onFocus={() => setIsAutoFocus(true)}
+          onBlur={() => setIsAutoFocus(false)}
           numberOfLines={4}
           placeholder={post?.profile?.username === profile?.username ? 'Add to post...' : `Reply to ${post?.profile?.username}...`}
-          className="max-h-20 rounded-2xl border border-input bg-zinc-100 px-3 py-3 text-base native:leading-[1.25] text-foreground placeholder:text-muted-foreground w-[85%]"
+          className="max-h-20 rounded-2xl border border-input bg-zinc-100 px-3 py-3 text-base native:leading-[1.25] text-foreground placeholder:text-muted-foreground w-[87%]"
           editable={!isPending}
           onChangeText={(val) => setContent(val)}
         />

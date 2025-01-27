@@ -16,7 +16,7 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         tabBarStyle: {
-          height: 65,
+          height: 70,
         },
         tabBarShowLabel: false,
         headerLeft: () => <ProfileToggle className='ml-4'/>,

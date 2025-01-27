@@ -49,7 +49,7 @@ export default function DetailPostScreen() {
       {
         errorGetDetailPost && (
           <View className="flex-1 items-center justify-center">
-            <Text>Unknown error</Text>;
+            <Text>Unknown error</Text>
           </View>
         )
       }

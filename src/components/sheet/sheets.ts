@@ -1,7 +1,7 @@
 import { registerSheet, SheetDefinition } from 'react-native-actions-sheet';
 import CurrentProfilePostActions from '@/components/sheet/current-profile-post-actions/CurrentProfilePostActions';
-import { Post } from '@/schemas/models/post';
 import PostActions from '@/components/sheet/post-actions/PostActions';
+import { Post } from '@/types/models/post';
 
 registerSheet('current-profile-post-actions', CurrentProfilePostActions);
 registerSheet('post-actions', PostActions);

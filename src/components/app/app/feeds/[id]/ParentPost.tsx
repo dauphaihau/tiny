@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { getImage } from '@/services/image.service';
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import { GetDetailPostResponse } from '@/services/post.service';
+import { GetDetailPostResponse } from '@/types/request/posts';
 
 const sizeIcon = 18;
 const colorIcon = 'gray';
@@ -38,7 +38,7 @@ export function ParentPost({ data }: ParentPostProps) {
 
         {
           data?.images && data.images.length > 0 && (
-            <View className="pl-16 mt-2">
+            <View className="pl-4 mt-4">
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -57,7 +57,7 @@ export function ParentPost({ data }: ParentPostProps) {
             </View>
           )
         }
-        <View className="pl-4 flex-row gap-5 mt-3">
+        <View className="pl-4 flex-row gap-5 mt-4">
           <Feather name="heart" size={sizeIcon} color={colorIcon}/>
           <Feather name="message-circle" size={sizeIcon} color={colorIcon}/>
         </View>

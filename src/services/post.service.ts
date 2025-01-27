@@ -1,69 +1,19 @@
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { CreatePostDto, CreatePostImagesDto, CreateReplyPostDto } from '@/schemas/request/post';
-import { Post } from '@/schemas/models/post';
-
-export function useCreatePostImages() {
-  return useMutation({
-    mutationKey: ['create-post-images'],
-    mutationFn: async (body: CreatePostImagesDto) => {
-      return supabase
-        .from('post_images')
-        .insert(body)
-      ;
-    },
-  });
-}
-
-export function useCreatePost() {
-  return useMutation({
-    mutationKey: ['create-post'],
-    mutationFn: async (body: CreatePostDto) => {
-      return supabase
-        .from('posts')
-        .insert(body)
-        .select('id')
-        .single<Pick<Post, 'id'>>()
-      ;
-    },
-  });
-}
+import { useGetCurrentProfile } from '@/services/profile.service';
+import { GetPostsByProfileParams, GetPostsParams } from '@/types/request/posts';
+import { Post } from '@/types/models/post';
 
 const getPosts = async (params: GetPostsParams) => {
   const from = params.limit * (params.page - 1);
   const to = from + params.limit - 1;
 
-  let query = supabase
-    .from('posts')
-    .select(`
-          id,
-          content,
-          created_at,
-          parent_id,
-          profile:profile_id (
-            id, avatar, username
-          ),
-          images:post_images (
-            id, image_path
-          )
-        `)
-    .range(from, to)
-    .order('created_at', { ascending: false });
-
-  if (params.profile_id) {
-    query = query.eq('profile_id', params.profile_id);
-  }
-
-  switch (params.type) {
-    case 'replies': {
-      query = query.not('parent_id', 'is', null);
-      break;
-    }
-    default:
-      query = query.is('parent_id', null);
-  }
-
-  const { data, error } = await query;
+  const { data, error } = await supabase.rpc('get_posts', {
+    current_profile_id: params.current_profile_id,
+    from_offset: from,
+    to_offset: to,
+  });
 
   if (error) {
     console.log('error', error);
@@ -75,25 +25,30 @@ const getPosts = async (params: GetPostsParams) => {
   };
 };
 
-export type GetPostsResponse = Awaited<ReturnType<typeof getPosts>>;
+const getPostsByProfile = async (params: GetPostsByProfileParams) => {
+  const from = params.limit * (params.page - 1);
+  const to = from + params.limit - 1;
+  const type = params?.type ?? 'posts';
 
-export interface GetPostsParams {
-  limit: number;
-  page: number;
-  profile_id?: Post['profile_id']
-  type?: 'posts' | 'replies' | 'media'
-}
-
-export function useGetPosts(params: GetPostsParams) {
-  return useInfiniteQuery({
-    queryKey: ['get-posts', params],
-    queryFn: ({ pageParam = 1 }) => getPosts({ ...params, page: pageParam }),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => lastPage.nextPage,
+  const { data, error } = await supabase.rpc('get_posts_by_profile', {
+    pr_id: params.pr_id,
+    current_profile_id: params.current_profile_id,
+    from_offset: from,
+    to_offset: to,
+    type,
   });
-}
 
-const getDetailPost = async (postId: Post['id']) => {
+  if (error) {
+    console.log('error', error);
+    throw new Error();
+  }
+  return {
+    data,
+    nextPage: data?.length ? params.page + 1 : undefined,
+  };
+};
+
+export const getDetailPost = async (postId: Post['id']) => {
   const { data, error } = await supabase
     .from('posts')
     .select(`
@@ -130,7 +85,63 @@ const getDetailPost = async (postId: Post['id']) => {
   return data;
 };
 
-export type GetDetailPostResponse = Awaited<ReturnType<typeof getDetailPost>>;
+// hooks
+
+export function useCreatePostImages() {
+  return useMutation({
+    mutationKey: ['create-post-images'],
+    mutationFn: async (body: CreatePostImagesDto) => {
+      return supabase
+        .from('post_images')
+        .insert(body)
+      ;
+    },
+  });
+}
+
+export function useCreatePost() {
+  return useMutation({
+    mutationKey: ['create-post'],
+    mutationFn: async (body: CreatePostDto) => {
+      return supabase
+        .from('posts')
+        .insert(body)
+        .select('id')
+        .single<Pick<Post, 'id'>>()
+      ;
+    },
+  });
+}
+
+export function useGetPosts(params: Omit<GetPostsParams, 'current_profile_id'>) {
+  const { data: currentProfile } = useGetCurrentProfile();
+  return useInfiniteQuery({
+    enabled: !!currentProfile?.id,
+    queryKey: ['get-posts', params],
+    queryFn: ({ pageParam = 1 }) => getPosts({
+      ...params,
+      current_profile_id: currentProfile!.id,
+      page: pageParam,
+    }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+  });
+}
+
+export function useGetPostsByProfile(params: Omit<GetPostsByProfileParams, 'current_profile_id'>) {
+  const { data: currentProfile } = useGetCurrentProfile();
+  return useInfiniteQuery({
+    enabled: !!currentProfile?.id,
+    queryKey: ['get-posts-by-profile', params],
+    queryFn: ({ pageParam = 1 }) => getPostsByProfile({
+      ...params,
+      current_profile_id: currentProfile!.id,
+      page: pageParam,
+    }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+  });
+}
 
 export function useGetDetailPost(postId: Post['id']) {
   return useQuery({
@@ -163,6 +174,24 @@ export function useDeletePost(postId: Post['id']) {
         .from('posts')
         .delete()
         .eq('id', postId);
+    },
+  });
+}
+
+export function useToggleLike() {
+  const { data: currentProfile } = useGetCurrentProfile();
+  return useMutation({
+    mutationKey: ['toggle-like'],
+    mutationFn: async (postId: Post['id']) => {
+      const res = await supabase
+        .from('likes')
+        .insert({
+          profile_id: currentProfile?.id,
+          post_id: postId,
+        })
+      ;
+      console.log('res-error', res.error);
+      return res;
     },
   });
 }
