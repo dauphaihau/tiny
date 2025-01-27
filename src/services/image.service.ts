@@ -2,7 +2,8 @@ import { supabase } from '@/lib/supabase';
 import * as FileSystem from 'expo-file-system';
 import { decode } from 'base64-arraybuffer';
 import { ImageURISource } from 'react-native';
-import { Profile } from '@/schemas/models/profile';
+import { Profile } from '@/types/models/profile';
+import { PostImages } from '@/types/models/post';
 
 export const uploadImage = async (folderName: string, fileUri: ImageURISource['uri']) => {
   try {
@@ -38,7 +39,7 @@ const generateFileName = (folderName: string) => {
   return `${folderName}/${new Date().getTime()}.png`;
 };
 
-export const getImage = (path?: string): ImageURISource => {
+export const getImage = (path: PostImages['image_path'] | null): ImageURISource => {
   if (path) {
     return {
       uri: `${process.env.EXPO_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${path}`,

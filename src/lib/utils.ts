@@ -1,6 +1,5 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Profile } from '@/schemas/models/profile';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -11,7 +10,7 @@ export function getUsernameFromEmail(email: string) {
   return email?.split('@')[0];
 }
 
-export function usernameWithPrefix(username?: Profile['username'], prefix = '@') {
+export function usernameWithPrefix(username?: string | null, prefix = '@') {
   if (!username) return username;
   return `${prefix}${username}`;
 }

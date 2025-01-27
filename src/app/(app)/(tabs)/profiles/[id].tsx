@@ -1,4 +1,6 @@
-import { View, Pressable } from 'react-native';
+import {
+  View, Pressable, ScrollView, RefreshControl, ActivityIndicator
+} from 'react-native';
 import React from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
 import { truncate, usernameWithPrefix } from '@/lib/utils';
@@ -11,11 +13,36 @@ import { PageLoading } from '@/components/ui/PageLoading';
 import { PROFILE } from '@/constants/profile';
 import { ProfilePosts } from '@/components/app/app/profiles/[id]/ProfilePosts';
 import { ProfilePostTabs } from '@/components/app/app/profiles/[id]/ProfilePostTabs';
+import { useGetPostsByProfile } from '@/services/post.service';
+import { NonUndefined } from 'react-hook-form';
+import { GetPostsByProfileParams } from '@/types/request/posts';
+
+type SearchParams = {
+  id: string
+  type: NonUndefined<GetPostsByProfileParams['type']>
+};
 
 export default function DetailProfileScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const { data: profile, isPending } = useGetProfileById(id);
+  const { id: profileId, type = 'posts' } = useLocalSearchParams<SearchParams>();
+  const { data: profile, isPending } = useGetProfileById(profileId);
   const { data: currentProfile } = useGetCurrentProfile();
+
+  const {
+    refetch,
+  } = useGetPostsByProfile({
+    limit: 10,
+    page: 1,
+    pr_id: profileId,
+    type,
+  });
+
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
 
   if (isPending) {
     return <PageLoading/>;
@@ -23,63 +50,79 @@ export default function DetailProfileScreen() {
   else if (profile) {
     return (
       <View>
-        <View className="h-[16%] bg-zinc-100">
-          <Pressable
-            onPress={router.back}
-            className="absolute top-16 left-5 p-2 bg-black/50 rounded-full"
-          >
-            <Ionicons name="chevron-back" size={15} color="white"/>
-          </Pressable>
-        </View>
-
-        <View className="px-3">
-          <View className="flex-row justify-between">
-            <View className="gap-3 -mt-6">
-              <Avatar path={profile?.avatar} className="size-16"/>
-              <View>
-                <Text className="font-bold text-xl">{truncate(profile?.first_name, PROFILE.MAX_USERNAME)}</Text>
-                <Text className="text-zinc-500 text-lg">{usernameWithPrefix(profile?.username)}</Text>
-              </View>
-              {profile?.bio && <Text>{profile?.bio}</Text>}
-              <View className="flex-row gap-2">
-                <View className="flex-row gap-1">
-                  <Text className="font-semibold">0</Text>
-                  <Text className="text-zinc-500">Following</Text>
-                </View>
-                <View className="flex-row gap-1">
-                  <Text className="font-semibold">0</Text>
-                  <Text className="text-zinc-500">Followers</Text>
-                </View>
-              </View>
-            </View>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+        >
+          <View className="h-[150px] bg-zinc-100">
+            <Pressable
+              onPress={router.back}
+              className="absolute top-16 left-5 p-2 bg-black/50 rounded-full"
+            >
+              <Ionicons name="chevron-back" size={15} color="white"/>
+            </Pressable>
             {
-              currentProfile?.id === profile.id &&
-              <Button
-                onPress={() => router.push('/modals/edit-profile')}
-                size="sm"
-                variant="secondary"
-                className="rounded-full mt-3"
-              >
-                <Text>Edit profile</Text>
-              </Button>
+              refreshing &&
+              <View className='absolute top-16 left-1/2 -translate-x-1/2'>
+                <ActivityIndicator />
+              </View>
             }
           </View>
-        </View>
 
-        <View className='mt-4'>
-          <ProfilePostTabs/>
-        </View>
-        <View className="border-[0.4px] border-zinc-300 w-full -mt-1.5"/>
-        <View className="">
-          <ProfilePosts/>
-        </View>
+          <View className="px-3">
+            <View className="flex-row justify-between">
+              <View className="gap-3 -mt-6">
+                <Avatar path={profile?.avatar} className="size-16"/>
+                <View>
+                  <Text className="font-bold text-xl">{truncate(profile?.first_name, PROFILE.MAX_USERNAME)}</Text>
+                  <Text className="text-zinc-500 text-lg">{usernameWithPrefix(profile?.username)}</Text>
+                </View>
+                {profile?.bio && <Text>{profile?.bio}</Text>}
+                <View className="flex-row gap-2">
+                  <View className="flex-row gap-1">
+                    <Text className="font-semibold">0</Text>
+                    <Text className="text-zinc-500">Following</Text>
+                  </View>
+                  <View className="flex-row gap-1">
+                    <Text className="font-semibold">0</Text>
+                    <Text className="text-zinc-500">Followers</Text>
+                  </View>
+                </View>
+              </View>
+              {
+                currentProfile?.id === profile.id &&
+                <Button
+                  onPress={() => router.push('/modals/edit-profile')}
+                  size="sm"
+                  variant="secondary"
+                  className="rounded-full mt-3"
+                >
+                  <Text>Edit profile</Text>
+                </Button>
+              }
+            </View>
+          </View>
+
+          <View className="mt-4">
+            <ProfilePostTabs/>
+          </View>
+          <View className="border-[0.4px] border-zinc-300 w-full -mt-1.5"/>
+          <View className="">
+            <ProfilePosts/>
+          </View>
+
+        </ScrollView>
       </View>
     );
   }
   else {
     return (
       <View className="flex-1 items-center justify-center">
-        <Text>Profile not found</Text>;
+        <Text>Profile not found</Text>
       </View>
     );
   }

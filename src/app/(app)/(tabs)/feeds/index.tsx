@@ -6,7 +6,7 @@ import {
 import { useGetPosts } from '@/services/post.service';
 import { PageLoading } from '@/components/ui/PageLoading';
 import React from 'react';
-import { Post } from '@/components/common/Post';
+import { Post } from '@/components/common/post/Post';
 import { supabase } from '@/lib/supabase';
 import { PostTabs } from '@/components/app/app/feeds/PostTabs';
 
@@ -71,7 +71,10 @@ export default function FeedsPage() {
           }}
           ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size='small' className='my-8' /> : null}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
           }
         />
       </View>
@@ -80,7 +83,7 @@ export default function FeedsPage() {
   else {
     return (
       <View className="flex-1 items-center justify-center">
-        <Text>Empty</Text>;
+        <Text>Empty</Text>
       </View>
     );
   }

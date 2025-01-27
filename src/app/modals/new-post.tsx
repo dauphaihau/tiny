@@ -148,7 +148,7 @@ export default function NewPostScreen() {
               </View>
             </View>
 
-            <View className="absolute bottom-[25%]  w-full">
+            <View className="absolute bottom-[25%] w-full">
               <View className="flex-row items-center justify-between">
 
                 <Text className="text-md text-zinc-400">
