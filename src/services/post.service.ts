@@ -2,7 +2,7 @@ import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { CreatePostDto, CreatePostImagesDto, CreateReplyPostDto } from '@/schemas/request/post';
 import { useGetCurrentProfile } from '@/services/profile.service';
-import { GetPostsByProfileParams, GetPostsParams } from '@/types/request/posts';
+import { GetPostsByProfileParams, GetPostsParams } from '@/types/request/post';
 import { Post } from '@/types/models/post';
 
 const getPosts = async (params: GetPostsParams) => {

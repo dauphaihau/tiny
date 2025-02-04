@@ -5,3 +5,4 @@ android
 .vscode
 package.json
 .eslintignore
+src/types/database.types.ts
