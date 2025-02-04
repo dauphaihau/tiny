@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { getImage } from '@/services/image.service';
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import { GetDetailPostResponse } from '@/types/request/posts';
+import { GetDetailPostResponse } from '@/types/request/post';
 
 const sizeIcon = 18;
 const colorIcon = 'gray';

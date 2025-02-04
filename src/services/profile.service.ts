@@ -50,17 +50,17 @@ export function useGetCurrentProfile() {
 }
 
 export function useGetProfileById(id: Profile['id']) {
+  const { data: currentProfile } = useGetCurrentProfile();
   return useQuery({
+    enabled: !!currentProfile?.id,
     queryKey: ['profile', id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', id)
-        .limit(1)
-        .single();
+      const { data, error } = await supabase.rpc('get_profile_by_id', {
+        current_profile_id: currentProfile!.id,
+        profile_id: id,
+      });
       if (error) throw error;
-      return data;
+      return data[0];
     },
   });
 }

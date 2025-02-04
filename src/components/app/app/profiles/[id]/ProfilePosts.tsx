@@ -6,7 +6,7 @@ import React from 'react';
 import { PageLoading } from '@/components/ui/PageLoading';
 import { Post } from '@/components/common/post/Post';
 import { NonUndefined } from 'react-hook-form';
-import { GetPostsByProfileParams } from '@/types/request/posts';
+import { GetPostsByProfileParams } from '@/types/request/post';
 
 type SearchParams = {
   id: string

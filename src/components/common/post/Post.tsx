@@ -11,7 +11,7 @@ import { SheetManager } from 'react-native-actions-sheet';
 import { useGetCurrentProfile } from '@/services/profile.service';
 import { LikeButton } from '@/components/common/post/LikeButton';
 import { ReplyButton } from '@/components/common/post/ReplyButton';
-import { PostResponse } from '@/types/request/posts';
+import { PostResponse } from '@/types/request/post';
 
 interface PostProps {
   data: PostResponse;

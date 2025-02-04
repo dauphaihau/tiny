@@ -15,7 +15,8 @@ import { ProfilePosts } from '@/components/app/app/profiles/[id]/ProfilePosts';
 import { ProfilePostTabs } from '@/components/app/app/profiles/[id]/ProfilePostTabs';
 import { useGetPostsByProfile } from '@/services/post.service';
 import { NonUndefined } from 'react-hook-form';
-import { GetPostsByProfileParams } from '@/types/request/posts';
+import { GetPostsByProfileParams } from '@/types/request/post';
+import { FollowButton } from '@/components/app/app/profiles/[id]/FollowButton';
 
 type SearchParams = {
   id: string
@@ -84,25 +85,26 @@ export default function DetailProfileScreen() {
                 {profile?.bio && <Text>{profile?.bio}</Text>}
                 <View className="flex-row gap-2">
                   <View className="flex-row gap-1">
-                    <Text className="font-semibold">0</Text>
+                    <Text className="font-semibold">{profile?.following_count ?? 0}</Text>
                     <Text className="text-zinc-500">Following</Text>
                   </View>
                   <View className="flex-row gap-1">
-                    <Text className="font-semibold">0</Text>
+                    <Text className="font-semibold">{profile?.followers_count ?? 0}</Text>
                     <Text className="text-zinc-500">Followers</Text>
                   </View>
                 </View>
               </View>
               {
-                currentProfile?.id === profile.id &&
-                <Button
-                  onPress={() => router.push('/modals/edit-profile')}
-                  size="sm"
-                  variant="secondary"
-                  className="rounded-full mt-3"
-                >
-                  <Text>Edit profile</Text>
-                </Button>
+                currentProfile?.id === profile.id ?
+                  <Button
+                    onPress={() => router.push('/modals/edit-profile')}
+                    size="sm"
+                    variant="secondary"
+                    className="rounded-full mt-3"
+                  >
+                    <Text>Edit profile</Text>
+                  </Button> :
+                  <FollowButton data={profile}/>
               }
             </View>
           </View>
