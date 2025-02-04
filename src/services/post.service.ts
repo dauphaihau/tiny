@@ -13,6 +13,7 @@ const getPosts = async (params: GetPostsParams) => {
     current_profile_id: params.current_profile_id,
     from_offset: from,
     to_offset: to,
+    type: params.type,
   });
 
   if (error) {

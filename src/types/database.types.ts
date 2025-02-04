@@ -186,6 +186,7 @@ export type Database = {
           from_offset: number
           to_offset: number
           current_profile_id: string
+          type?: Database["public"]["Enums"]["post_filter_type"]
         }
         Returns: {
           id: number
@@ -236,7 +237,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      post_filter_type: "following"
     }
     CompositeTypes: {
       image_type: {

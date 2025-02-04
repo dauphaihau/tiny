@@ -9,13 +9,16 @@ import React from 'react';
 import { Post } from '@/components/common/post/Post';
 import { supabase } from '@/lib/supabase';
 import { PostTabs } from '@/components/app/app/feeds/PostTabs';
+import { useLocalSearchParams } from 'expo-router';
+import { GetPostsParams } from '@/types/request/post';
+import { NonUndefined } from 'react-hook-form';
 
-const params = {
-  limit: 10,
-  page: 1,
+type SearchParams = {
+  type: NonUndefined<GetPostsParams['type']> | 'default'
 };
 
 export default function FeedsPage() {
+  const { type } = useLocalSearchParams<SearchParams>();
   const {
     data,
     isPending,
@@ -23,7 +26,11 @@ export default function FeedsPage() {
     isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = useGetPosts(params);
+  } = useGetPosts({
+    limit: 10,
+    page: 1,
+    type: type === 'default' ? undefined : type,
+  });
 
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -54,37 +61,43 @@ export default function FeedsPage() {
     setRefreshing(false);
   }, [refetch]);
 
-  if (isPending) {
-    return <PageLoading/>;
-  }
-  else if (data) {
-    return (
-      <View>
-        <PostTabs/>
-        <FlatList
-          data={data.pages.flatMap((page) => page.data)}
-          renderItem={({ item }) => <Post data={item}/>}
-          keyExtractor={(item) => item.id.toString()}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => {
-            if (hasNextPage) fetchNextPage();
-          }}
-          ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size='small' className='my-8' /> : null}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
-          }
-        />
-      </View>
-    );
-  }
-  else {
-    return (
-      <View className="flex-1 items-center justify-center">
-        <Text>Empty</Text>
-      </View>
-    );
-  }
+  return (
+    <View>
+      <PostTabs/>
+      {
+        isPending ?
+          <PageLoading/> :
+          data ?
+            (
+              <View>
+                <FlatList
+                  data={data.pages.flatMap((page) => page.data)}
+                  renderItem={({ item }) => <Post data={item}/>}
+                  keyExtractor={(item) => item.id.toString()}
+                  onEndReachedThreshold={0.5}
+                  onEndReached={() => {
+                    if (hasNextPage) fetchNextPage();
+                  }}
+                  ListFooterComponent={
+                    isFetchingNextPage ?
+                      <ActivityIndicator size='small' className='my-8' /> :
+                      null
+                  }
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={onRefresh}
+                    />
+                  }
+                />
+              </View>
+            ) :
+            (
+              <View className="flex-1 items-center justify-center">
+                <Text>Empty</Text>
+              </View>
+            )
+      }
+    </View>
+  );
 };
