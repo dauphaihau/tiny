@@ -1,38 +1,30 @@
 import React from 'react';
 import { router, Stack } from 'expo-router';
 import { ProfileToggle } from '@/components/common/ProfileToggle';
-import { TouchableOpacity, View } from 'react-native';
-import Feather from '@expo/vector-icons/Feather';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const sizeIcon = 21;
 
-export default function FeedsLayout() {
+export default function MessagesLayout() {
   return (
     <Stack>
       <Stack.Screen
         name="index"
         options={{
-          title: 'Feeds',
+          title: 'Messages',
           headerShown: true,
           headerLeft: () => <ProfileToggle/>,
           headerShadowVisible: false,
         }}
       />
       <Stack.Screen
-        name="[id]"
-        getId={({ params }) => params?.id}
+        name="[receiver_id]"
+        getId={({ params }) => params?.receiver_id}
         options={{
-          headerTitle: 'Post',
-          headerRight: () => (
-            <View className="flex-row gap-3">
-              <Feather name="bell" size={sizeIcon}/>
-              <MaterialCommunityIcons name="dots-horizontal-circle-outline" size={sizeIcon} color="black"/>
-            </View>
-          ),
+          headerTitle: 'Chat',
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity onPress={router.back}>
               <Ionicons name="arrow-back-outline" size={sizeIcon}/>
             </TouchableOpacity>
           ),

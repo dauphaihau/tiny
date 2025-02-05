@@ -12,7 +12,7 @@ import { LoginDto, loginSchema } from '@/schemas/request/auth';
 import { useState } from 'react';
 import { ErrorCallout } from '@/components/app/auth/ErrorCallout';
 
-export default function LoginPage() {
+export default function LoginScreen() {
   const { mutateAsync: login, isPending } = useLogin();
   const [serverErrorServerMessage, setServerErrorMessage] = useState<string>();
 

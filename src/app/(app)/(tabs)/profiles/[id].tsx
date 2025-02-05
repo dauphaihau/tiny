@@ -94,18 +94,27 @@ export default function DetailProfileScreen() {
                   </View>
                 </View>
               </View>
-              {
-                currentProfile?.id === profile.id ?
-                  <Button
-                    onPress={() => router.push('/modals/edit-profile')}
-                    size="sm"
-                    variant="secondary"
-                    className="rounded-full mt-3"
-                  >
-                    <Text>Edit profile</Text>
-                  </Button> :
-                  <FollowButton data={profile}/>
-              }
+
+              <View className='h-12 flex-row items-center gap-3'>
+                <Pressable
+                  onPress={() => router.push(`/messages/${profile?.id}`)}
+                  className="p-2 rounded-full border border-zinc-200"
+                >
+                  <Ionicons name="mail-outline" size={15} color="black"/>
+                </Pressable>
+                {
+                  currentProfile?.id === profile.id ?
+                    <Button
+                      onPress={() => router.push('/modals/edit-profile')}
+                      size="sm"
+                      variant="secondary"
+                      className="rounded-full"
+                    >
+                      <Text>Edit profile</Text>
+                    </Button> :
+                    <FollowButton data={profile}/>
+                }
+              </View>
             </View>
           </View>
 

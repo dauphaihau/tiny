@@ -1,14 +1,13 @@
 import {
-  router, Stack, useLocalSearchParams, useNavigation 
+  Stack, useLocalSearchParams, useNavigation
 } from 'expo-router';
 import { useGetDetailPost } from '@/services/post.service';
 import React from 'react';
-import { RefreshControl, TouchableOpacity, View } from 'react-native';
+import { RefreshControl, View } from 'react-native';
 import { ReplyInput } from '@/components/app/app/feeds/[id]/ReplyInput';
 import { SubPosts } from '@/components/app/app/feeds/[id]/SubPosts';
 import { Text } from '@/components/ui/Text';
 import { PageLoading } from '@/components/ui/PageLoading';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { ScrollView } from 'react-native-gesture-handler';
 import { ParentPost } from '@/components/app/app/feeds/[id]/ParentPost';
 
@@ -37,11 +36,6 @@ export default function DetailPostScreen() {
       <Stack.Screen
         options={{
           headerTitle: navigationState && navigationState?.routes?.length > 2 ? 'Reply' : 'Post',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="arrow-back-outline" size={21}/>
-            </TouchableOpacity>
-          ),
         }}
       />
 

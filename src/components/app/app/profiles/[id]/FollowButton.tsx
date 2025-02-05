@@ -35,7 +35,7 @@ export function FollowButton({ data }: FollowButtonProps) {
               onPress={handleClick}
               variant="outline"
               size="sm"
-              className="rounded-full mt-3"
+              className="rounded-full"
             >
               <Text>Unfollow</Text>
             </Button>
@@ -44,7 +44,7 @@ export function FollowButton({ data }: FollowButtonProps) {
             <Button
               onPress={handleClick}
               size="sm"
-              className="rounded-full mt-3"
+              className="rounded-full"
             >
               <Text>Follow</Text>
             </Button>

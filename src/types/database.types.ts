@@ -81,6 +81,45 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: number
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: number
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: number
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_images: {
         Row: {
           created_at: string
@@ -181,6 +220,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_last_messages: {
+        Args: {
+          current_profile_id: string
+          p_limit?: number
+          p_offset?: number
+        }
+        Returns: {
+          id: number
+          sender_id: string
+          receiver_id: string
+          content: string
+          created_at: string
+          receiver: Database["public"]["CompositeTypes"]["profile_type"]
+        }[]
+      }
       get_posts: {
         Args: {
           from_offset: number

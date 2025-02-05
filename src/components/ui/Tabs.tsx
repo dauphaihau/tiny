@@ -32,9 +32,9 @@ const TabsTrigger = React.forwardRef<TabsPrimitive.TriggerRef, TabsPrimitive.Tri
         <TabsPrimitive.Trigger
           ref={ref}
           className={cn(
-            'inline-flex items-center justify-center shadow-none rounded-sm px-3 py-1.5 text-sm font-medium',
+            'inline-flex items-center justify-center shadow-none rounded-sm px-3 py-1.5 text-sm font-medium border-b-[1.5px]',
             props.disabled && 'opacity-50',
-            props.value === value ? 'border-b' : 'border-b-white',
+            props.value === value ? 'border-b-black' : 'border-b-white',
             className
           )}
           {...props}

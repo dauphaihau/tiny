@@ -86,6 +86,7 @@ export const getDetailPost = async (postId: Post['id']) => {
   return data;
 };
 
+
 // hooks
 
 export function useCreatePostImages() {

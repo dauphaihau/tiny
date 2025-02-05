@@ -1,11 +1,14 @@
 import React from 'react';
 import { useToggleLike } from '@/services/post.service';
-import { PostContext } from '@/components/common/post/Post';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LayoutActionButton } from '@/components/common/post/LayoutActionButton';
+import { PostResponse } from '@/types/request/post';
 
-export function LikeButton() {
-  const postData = React.useContext(PostContext);
+interface LikeButtonProps {
+  postData: PostResponse;
+}
+
+export function LikeButton({ postData }: LikeButtonProps) {
   const [isLiked, setIsLiked] = React.useState(postData?.is_liked);
   const [likeCount, setLikeCount] = React.useState(postData?.like_count ?? 0);
   const { mutateAsync: like } = useToggleLike();
