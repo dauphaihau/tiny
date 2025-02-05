@@ -12,7 +12,7 @@ import { registerSchema, RegisterDto } from '@/schemas/request/auth';
 import { useState } from 'react';
 import { ErrorCallout } from '@/components/app/auth/ErrorCallout';
 
-export default function RegisterPage() {
+export default function RegisterScreen() {
   const { mutateAsync: register, isPending } = useRegister();
   const [serverErrorMessage, setServerErrorMessage] = useState<string>();
 

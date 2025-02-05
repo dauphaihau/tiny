@@ -11,7 +11,7 @@ import { router } from 'expo-router';
 import { useForgotPassword } from '@/services/auth.service';
 import React from 'react';
 
-export default function ForgotPasswordPage() {
+export default function ForgotPasswordScreen() {
   const [successView, setSuccessView] = React.useState(false);
   const { mutateAsync: forgotPassword, isPending } = useForgotPassword();
 

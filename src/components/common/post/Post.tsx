@@ -17,8 +17,6 @@ interface PostProps {
   data: PostResponse;
 }
 
-export const PostContext = React.createContext<PostProps['data'] | undefined>(undefined);
-
 export const Post = ({ data }: PostProps) => {
   const { data: currentProfile } = useGetCurrentProfile();
 
@@ -45,61 +43,59 @@ export const Post = ({ data }: PostProps) => {
   };
 
   return (
-    <PostContext.Provider value={data}>
-      <View className="relative">
-        <Pressable onPress={() => router.push(`/feeds/${data.id}`)}>
-          <View>
-            <View className="py-5">
+    <View className="relative">
+      <Pressable onPress={() => router.push(`/feeds/${data.id}`)}>
+        <View>
+          <View className="py-5">
 
-              <View className="flex-row gap-4 px-4">
-                <Pressable onPress={navigateToProfile}>
-                  <Avatar path={data?.profile?.avatar}/>
-                </Pressable>
+            <View className="flex-row gap-4 px-4">
+              <Pressable onPress={navigateToProfile}>
+                <Avatar path={data?.profile?.avatar}/>
+              </Pressable>
 
-                <View>
-                  <View className="flex-row gap-3">
-                    <Text onPress={navigateToProfile} className="font-semibold">{data?.profile?.username}</Text>
-                    <Text className="font-medium text-zinc-400">{parseCreatedAt(data?.created_at)}</Text>
-                  </View>
-                  <Text>{data?.content}</Text>
+              <View>
+                <View className="flex-row gap-3">
+                  <Text onPress={navigateToProfile} className="font-semibold">{data?.profile?.username}</Text>
+                  <Text className="font-medium text-zinc-400">{parseCreatedAt(data?.created_at)}</Text>
                 </View>
-              </View>
-
-              {
-                data.images?.length > 0 && (
-                  <View className="pl-16 mt-2">
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={{ gap: 16 }}
-                    >
-                      {
-                        data.images.map(item => (
-                          <Image
-                            key={item.image_path}
-                            source={getImage(item.image_path)}
-                            className="size-52 rounded-md"
-                          />
-                        ))
-                      }
-                    </ScrollView>
-                  </View>
-                )
-              }
-              <View className="pl-16 flex-row gap-5 mt-3">
-                <LikeButton/>
-                <ReplyButton/>
+                <Text>{data?.content}</Text>
               </View>
             </View>
 
-            <View className="border-[0.4px] border-zinc-300 w-full"/>
+            {
+              data.images?.length > 0 && (
+                <View className="pl-16 mt-2">
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{ gap: 16 }}
+                  >
+                    {
+                      data.images.map(item => (
+                        <Image
+                          key={item.image_path}
+                          source={getImage(item.image_path)}
+                          className="size-52 rounded-md"
+                        />
+                      ))
+                    }
+                  </ScrollView>
+                </View>
+              )
+            }
+            <View className="pl-16 flex-row gap-5 mt-3">
+              <LikeButton postData={data}/>
+              <ReplyButton postData={data}/>
+            </View>
           </View>
-        </Pressable>
 
-        <Pressable onPress={showActions} className="absolute top-2 right-2 p-2">
-          <Entypo name="dots-three-horizontal" size={16} color="gray"/>
-        </Pressable>
-      </View>
-    </PostContext.Provider>
+          <View className="border-[0.4px] border-zinc-300 w-full"/>
+        </View>
+      </Pressable>
+
+      <Pressable onPress={showActions} className="absolute top-2 right-2 p-2">
+        <Entypo name="dots-three-horizontal" size={16} color="gray"/>
+      </Pressable>
+    </View>
   );
 };

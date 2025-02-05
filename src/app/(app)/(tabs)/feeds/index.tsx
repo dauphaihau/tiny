@@ -64,6 +64,7 @@ export default function FeedsPage() {
   return (
     <View>
       <PostTabs/>
+      <View className="border-[0.4px] border-zinc-300 w-full -mt-1.5"/>
       {
         isPending ?
           <PageLoading/> :
@@ -93,8 +94,8 @@ export default function FeedsPage() {
               </View>
             ) :
             (
-              <View className="flex-1 items-center justify-center">
-                <Text>Empty</Text>
+              <View className="h-full items-center justify-center">
+                <Text>No results</Text>
               </View>
             )
       }

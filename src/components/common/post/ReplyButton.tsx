@@ -1,12 +1,14 @@
 import React from 'react';
-import { PostContext } from '@/components/common/post/Post';
 import { LayoutActionButton } from '@/components/common/post/LayoutActionButton';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { PostResponse } from '@/types/request/post';
 
-export function ReplyButton() {
-  const postData = React.useContext(PostContext);
+interface ReplyButtonProps {
+  postData: PostResponse;
+}
 
+export function ReplyButton({ postData }: ReplyButtonProps) {
   function navigateDetailPost() {
     if(!postData?.id) return;
     router.push({

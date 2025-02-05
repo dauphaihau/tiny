@@ -62,6 +62,7 @@ export default function TabsLayout() {
         name="messages"
         options={{
           title: 'Messages',
+          headerShown: false,
           tabBarIcon: ({ color }) => <Feather name="mail" size={sizeIcon} color={color}/>,
         }}
       />
