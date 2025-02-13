@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import Toast, { ToastConfig, ToastConfigParams } from 'react-native-toast-message';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Link } from 'expo-router';
+import { Href, Link } from 'expo-router';
 
 const sizeIcon = 20;
 
@@ -15,7 +15,7 @@ interface BaseToastProps {
 }
 
 interface PostProps extends BaseToastProps {
-  postId: string;
+  detailPostHref: Href,
 }
 
 interface CustomToastConfig extends ToastConfig {
@@ -73,10 +73,10 @@ export const toastConfig: CustomToastConfig = {
       renderTrailing={() => (
         <View>
           {
-            props?.postId &&
+            props?.detailPostHref &&
             <Link
-              href={`/feeds/${props.postId}`}
               push
+              href={props.detailPostHref}
               onPress={() => Toast.hide()}
             >
               <Text className="font-semibold text-primary-foreground">View</Text>

@@ -6,9 +6,11 @@ import { AuthWrapper } from '@/components/common/AuthWrapper';
 import { CustomDrawerContent } from '@/components/app/app/CustomDrawerContent';
 import { useSegments } from 'expo-router';
 
-const disableSwipeList = [
-  '(app)/(tabs)/feeds/[id]',
-  '(app)/(tabs)/profiles/[id]',
+const allowSwipeList = [
+  '(app)/(tabs)/home',
+  '(app)/(tabs)/messages/',
+  '(app)/(tabs)/notifications',
+  '(app)/(tabs)/search',
 ];
 
 export default function AppLayout() {
@@ -30,7 +32,7 @@ export default function AppLayout() {
           <Drawer.Screen
             name='(tabs)'
             options={{
-              swipeEnabled: !disableSwipeList.includes(segmentsAsString),
+              swipeEnabled: allowSwipeList.includes(segmentsAsString),
             }}
           />
         </Drawer>

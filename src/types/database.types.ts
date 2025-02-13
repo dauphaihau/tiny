@@ -220,6 +220,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_detail_post: {
+        Args: {
+          post_id: number
+          current_profile_id: string
+        }
+        Returns: {
+          id: number
+          content: string
+          created_at: string
+          profile: Json
+          images: Json
+          likes_count: number
+          is_liked: boolean
+        }[]
+      }
       get_last_messages: {
         Args: {
           current_profile_id: string
@@ -232,7 +247,10 @@ export type Database = {
           receiver_id: string
           content: string
           created_at: string
-          receiver: Database["public"]["CompositeTypes"]["profile_type"]
+          other_profile_id: string
+          other_profile_avatar: string
+          other_profile_username: string
+          other_profile_first_name: string
         }[]
       }
       get_posts: {
@@ -247,9 +265,9 @@ export type Database = {
           content: string
           created_at: string
           parent_id: number
-          profile: Database["public"]["CompositeTypes"]["profile_type"]
-          images: Database["public"]["CompositeTypes"]["image_type"][]
-          like_count: number
+          profile: Json
+          images: Json
+          likes_count: number
           is_liked: boolean
         }[]
       }
@@ -266,9 +284,9 @@ export type Database = {
           content: string
           created_at: string
           parent_id: number
-          profile: Database["public"]["CompositeTypes"]["profile_type"]
-          images: Database["public"]["CompositeTypes"]["image_type"][]
-          like_count: number
+          profile: Json
+          images: Json
+          likes_count: number
           is_liked: boolean
         }[]
       }
@@ -287,6 +305,22 @@ export type Database = {
           followers_count: number
           following_count: number
           is_following: boolean
+        }[]
+      }
+      get_replies_post: {
+        Args: {
+          parent_id: number
+          current_profile_id: string
+          p_limit?: number
+          p_offset?: number
+        }
+        Returns: {
+          id: number
+          created_at: string
+          content: string
+          profile: Json
+          is_liked: boolean
+          likes_count: number
         }[]
       }
     }

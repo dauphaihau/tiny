@@ -1,12 +1,12 @@
 import { useGetAuthSession } from '@/services/auth.service';
-import { PageLoading } from '@/components/ui/PageLoading';
+import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { Redirect } from 'expo-router';
 import React from 'react';
 
 export function AuthWrapper({ children }: { children: React.ReactNode }) {
   const { data, isPending } = useGetAuthSession();
   if (isPending) {
-    return <PageLoading/>;
+    return <LoadingScreen/>;
   }
   if (data) {
     return <>{children}</>;

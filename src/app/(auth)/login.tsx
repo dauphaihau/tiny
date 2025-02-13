@@ -31,7 +31,7 @@ export default function LoginScreen() {
   const onSubmit = async (data: LoginDto) => {
     const authError = await login(data);
     if (!authError) {
-      router.replace('/(app)/(tabs)/feeds');
+      router.replace('/(app)/(tabs)/home');
     }
     else if (authError.code === 'invalid_credentials') {
       setServerErrorMessage('Incorrect email or password');

@@ -12,10 +12,10 @@ export default function WelcomeScreen() {
   const url = Linking.useURL();
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'INITIAL_SESSION') {
         if (session) {
-          router.replace('/(app)/(tabs)/feeds');
+          router.replace('/(app)/(tabs)/home');
           setTimeout(() => {
             SplashScreen.hideAsync();
           }, 1500);
@@ -31,6 +31,10 @@ export default function WelcomeScreen() {
         else router.replace('/');
       }
     });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {

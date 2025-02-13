@@ -1,9 +1,11 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import updateLocale from 'dayjs/plugin/updateLocale';
+import utc from 'dayjs/plugin/utc';
 
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
+dayjs.extend(utc);
 
 dayjs.updateLocale('en', {
   relativeTime: {
@@ -24,9 +26,14 @@ dayjs.updateLocale('en', {
   },
 });
 
-export function parseCreatedAt(created_at: string) {
-  if (dayjs(created_at).isValid()) {
-    return dayjs(created_at).fromNow();
+export function parsePostCreatedAt(createdAt: string) {
+  if (dayjs(createdAt).isValid()) {
+
+    const oneWeekAgo = dayjs.utc().subtract(7, 'day');
+
+    return dayjs.utc(createdAt).isBefore(oneWeekAgo) ?
+      dayjs.utc(createdAt).format('D/MM/YYYY') :
+      dayjs.utc(createdAt).fromNow();
   }
   return '';
 }
