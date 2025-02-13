@@ -8,7 +8,6 @@ import { PostImages } from '@/types/models/post';
 export const uploadImage = async (folderName: string, fileUri: ImageURISource['uri']) => {
   try {
     const fileName = generateFileName(folderName);
-    console.log('file-name', fileName);
 
     if (!fileUri) throw new Error('fireUri be undefined');
     const fileBase64 = await FileSystem.readAsStringAsync(fileUri, {

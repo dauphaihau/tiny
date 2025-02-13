@@ -39,12 +39,24 @@ export function useGetCurrentProfile() {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select(`
+          id,
+          first_name,
+          avatar,
+          bio,
+          username,
+          followers_count: follows!followed_id(count),
+          following_count: follows!follower_id(count)
+        `)
         .eq('id', userId)
         .limit(1)
         .single();
       if (error) throw error;
-      return data;
+      return {
+        ...data,
+        followers_count: data.followers_count[0].count ?? 0,
+        following_count: data.following_count[0].count ?? 0,
+      };
     },
   });
 }

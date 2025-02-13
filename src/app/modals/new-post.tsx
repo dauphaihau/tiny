@@ -1,7 +1,9 @@
 import {
   View, TextInput, KeyboardAvoidingView, Platform, Pressable, ImageURISource, Image
 } from 'react-native';
-import { Link, router, Stack } from 'expo-router';
+import {
+  Link, router, Stack, useLocalSearchParams 
+} from 'expo-router';
 import React, { useRef, useState } from 'react';
 import { AuthWrapper } from '@/components/common/AuthWrapper';
 import { Feather } from '@expo/vector-icons';
@@ -24,6 +26,7 @@ export default function NewPostScreen() {
   const [content, setContent] = useState('');
   const inputRef = useRef<TextInput>(null);
   const { data: dataUser } = useGetCurrentProfile();
+  const { rootNameTab } = useLocalSearchParams();
   const { mutateAsync: createPost, isPending } = useCreatePost();
   const { mutateAsync: createPostImages } = useCreatePostImages();
   const [sourceImages, setSourceImages] = useState<ImageURISource[]>();
@@ -72,8 +75,8 @@ export default function NewPostScreen() {
       Toast.show({
         type: 'createdPost',
         props: {
-          postId: responseCreatePost.data.id,
           message: 'Posted',
+          detailPostHref: `/${rootNameTab}/posts/${responseCreatePost.data.id}`,
         },
       });
     }

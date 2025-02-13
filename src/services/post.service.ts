@@ -2,8 +2,13 @@ import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { CreatePostDto, CreatePostImagesDto, CreateReplyPostDto } from '@/schemas/request/post';
 import { useGetCurrentProfile } from '@/services/profile.service';
-import { GetPostsByProfileParams, GetPostsParams } from '@/types/request/post';
+import {
+  GetDetailPostResponse,
+  GetDetailPostsParams, GetPostsByProfileParams, GetPostsParams, GetRepliesPostsParams
+} from '@/types/request/post';
 import { Post } from '@/types/models/post';
+import React from 'react';
+import { IPost } from '@/types/components/common/post';
 
 const getPosts = async (params: GetPostsParams) => {
   const from = params.limit * (params.page - 1);
@@ -14,6 +19,26 @@ const getPosts = async (params: GetPostsParams) => {
     from_offset: from,
     to_offset: to,
     type: params.type,
+  });
+
+  if (error) {
+    console.log('error', error);
+    throw new Error();
+  }
+  return {
+    data,
+    nextPage: data?.length ? params.page + 1 : undefined,
+  };
+};
+
+const getRepliesPost = async (params: GetRepliesPostsParams) => {
+  const pOffset = params.limit * (params.page - 1);
+
+  const { data, error } = await supabase.rpc('get_replies_post', {
+    parent_id: params.parent_id,
+    current_profile_id: params.current_profile_id,
+    p_limit: params.limit,
+    p_offset: pOffset,
   });
 
   if (error) {
@@ -49,41 +74,16 @@ const getPostsByProfile = async (params: GetPostsByProfileParams) => {
   };
 };
 
-export const getDetailPost = async (postId: Post['id']) => {
-  const { data, error } = await supabase
-    .from('posts')
-    .select(`
-          id,
-          content,
-          created_at,
-          profile:profile_id (
-            id, avatar, username
-          ),
-          images:post_images (
-            id, image_path
-          ),
-          sub_posts:posts (
-            parent_id, 
-            id,
-            content,
-            created_at,
-            profile:profile_id (
-              id, avatar, username
-            ),
-            images:post_images (
-              id, image_path
-            )
-          )
-        `)
-    .order('created_at', { referencedTable: 'sub_posts', ascending: false })
-    .eq('id', postId)
-    .limit(1)
-    .single();
+export const getDetailPost = async (params: GetDetailPostsParams) => {
+  const { data, error } = await supabase.rpc('get_detail_post', {
+    post_id: params.postId,
+    current_profile_id: params.current_profile_id,
+  });
   if (error) {
     console.log('error', error);
     throw new Error();
   }
-  return data;
+  return data[0];
 };
 
 
@@ -115,49 +115,137 @@ export function useCreatePost() {
   });
 }
 
-export function useGetPosts(params: Omit<GetPostsParams, 'current_profile_id'>) {
+export function useGetPosts(params: Pick<GetPostsParams, 'type'>) {
+  const LIMIT = 10;
   const { data: currentProfile } = useGetCurrentProfile();
-  return useInfiniteQuery({
+  const [posts, setPosts] = React.useState<IPost[]>([]);
+
+  const query = useInfiniteQuery({
     enabled: !!currentProfile?.id,
     queryKey: ['get-posts', params],
     queryFn: ({ pageParam = 1 }) => getPosts({
       ...params,
       current_profile_id: currentProfile!.id,
       page: pageParam,
+      limit: LIMIT,
     }),
     initialPageParam: 1,
-    getNextPageParam: (lastPage) => lastPage.nextPage,
+    getNextPageParam: (lastPage) => lastPage.data.length < LIMIT ? undefined : lastPage.nextPage,
   });
+
+  React.useEffect(() => {
+    if (query.data) {
+      setPosts(query.data.pages.flatMap((page) => page.data as IPost[]));
+    }
+  }, [query.data]);
+
+  React.useEffect(() => {
+    const postChannel = supabase
+      .channel('posts')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'posts',
+        },
+        () => {
+          query.refetch();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(postChannel);
+    };
+  }, []);
+
+  return {
+    ...query,
+    posts,
+  };
 }
 
-export function useGetPostsByProfile(params: Omit<GetPostsByProfileParams, 'current_profile_id'>) {
+export function useGetPostsByProfile(params: Pick<GetPostsByProfileParams, 'pr_id' | 'type'>) {
+  const LIMIT = 10;
   const { data: currentProfile } = useGetCurrentProfile();
-  return useInfiniteQuery({
+  const [posts, setPosts] = React.useState<IPost[]>([]);
+
+  const query = useInfiniteQuery({
     enabled: !!currentProfile?.id,
     queryKey: ['get-posts-by-profile', params],
     queryFn: ({ pageParam = 1 }) => getPostsByProfile({
       ...params,
       current_profile_id: currentProfile!.id,
       page: pageParam,
+      limit: LIMIT,
     }),
     initialPageParam: 1,
-    getNextPageParam: (lastPage) => lastPage.nextPage,
+    getNextPageParam: (lastPage) => lastPage.data.length < LIMIT ? undefined : lastPage.nextPage,
   });
+
+  React.useEffect(() => {
+    if (query.data) {
+      setPosts(query.data.pages.flatMap((page) => page.data as IPost[]));
+    }
+  }, [query.data]);
+
+  return {
+    ...query,
+    posts,
+  };
+}
+
+export function useGetRepliesPost(parentId: Post['id']) {
+  const LIMIT = 10;
+  const { data: currentProfile } = useGetCurrentProfile();
+  const [posts, setPosts] = React.useState<IPost[]>([]);
+
+  const query = useInfiniteQuery({
+    enabled: !!currentProfile?.id || !!parentId,
+    queryKey: ['get-replies-post', parentId],
+    queryFn: ({ pageParam = 1 }) => getRepliesPost({
+      parent_id: parentId,
+      current_profile_id: currentProfile!.id,
+      page: pageParam,
+      limit: LIMIT,
+    }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.data.length < LIMIT ? undefined : lastPage.nextPage,
+  });
+
+  React.useEffect(() => {
+    if (query.data) {
+      setPosts(query.data.pages.flatMap((page) => page.data as IPost[]));
+    }
+  }, [query.data]);
+
+  return {
+    ...query,
+    posts,
+  };
 }
 
 export function useGetDetailPost(postId: Post['id']) {
-  return useQuery({
+  const { data: currentProfile } = useGetCurrentProfile();
+  const query = useQuery({
     enabled: !!postId,
     queryKey: ['detail-post', postId],
-    queryFn: () => getDetailPost(postId),
+    queryFn: () => getDetailPost({
+      postId,
+      current_profile_id: currentProfile!.id,
+    }),
   });
+  return {
+    ...query,
+    post: query.data as GetDetailPostResponse | undefined,
+  };
 }
 
 export function useCreateReply() {
   return useMutation({
     mutationKey: ['create-reply'],
     mutationFn: async (body: CreateReplyPostDto) => {
-      console.log('body', body);
       return supabase
         .from('posts')
         .insert(body)
@@ -192,7 +280,6 @@ export function useToggleLike() {
           post_id: postId,
         })
       ;
-      console.log('res-error', res.error);
       return res;
     },
   });

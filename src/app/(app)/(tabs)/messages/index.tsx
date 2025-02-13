@@ -1,85 +1,49 @@
 import {
-  FlatList, Pressable, Text, View
+  FlatList, View
 } from 'react-native';
 import { useGetLastMessages } from '@/services/message.service';
-import { PageLoading } from '@/components/ui/PageLoading';
-import { Avatar } from '@/components/common/Avatar';
+import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import React from 'react';
-import { parseCreatedAt } from '@/lib/day';
-import { router } from 'expo-router';
-import { useGetCurrentProfile } from '@/services/profile.service';
-import { Database } from '@/types/database.types';
 import { InfiniteData } from '@tanstack/react-query';
-
-type MessageItemProps = {
-  item: Database['public']['Functions']['get_last_messages']['Returns'][0];
-};
+import { ILastMessage } from '@/types/request/message';
+import { NoResults } from '@/components/common/NoResults';
+import { ErrorScreen } from '@/components/common/ErrorScreen';
+import { LastMessage } from '@/components/app/app/messages/LastMessage';
 
 type MessageListProps = {
   data: InfiniteData<{
-    data: MessageItemProps['item'][]
+    data: ILastMessage[]
     nextPage: number | undefined
   }, unknown> | undefined
 };
 
-const MessageList = ({ data }: MessageListProps) => (
+const LastMessageList = ({ data }: MessageListProps) => (
   <View className="px-4 mt-8">
     <FlatList
       data={data?.pages.flatMap((page) => page.data)}
-      renderItem={({ item }) => (
-        <MessageItem item={item}/>
-      )}
+      renderItem={({ item }) => <LastMessage item={item}/>}
       keyExtractor={(item) => item?.id?.toString()}
     />
   </View>
 );
 
-const MessageItem = ({ item }: MessageItemProps) => {
-  const { data: currentProfile } = useGetCurrentProfile();
-  return (
-    <Pressable onPress={() => router.push(`/messages/${item?.receiver_id}`)}>
-      <View className="flex-row items-center gap-3 mb-5">
-        <Avatar className="size-12" path={item?.receiver?.avatar}/>
-        <View>
-          <View className="flex-row justify-between w-[90%]">
-            <Text>{item?.receiver?.username}</Text>
-            <Text className="font-medium text-zinc-400">
-              {parseCreatedAt(item?.created_at)}
-            </Text>
-          </View>
-          <View className="flex-row">
-            {item?.sender_id === currentProfile?.id && (
-              <Text className="text-zinc-500">You: </Text>
-            )}
-            <Text className="text-zinc-500">{item.content}</Text>
-          </View>
-        </View>
-      </View>
-    </Pressable>
-  );
-};
-
-const NoResults = () => (
-  <View className="h-full items-center justify-center">
-    <Text>No results</Text>
-  </View>
-);
-
 export default function RecentMessagesScreen() {
-  const {
-    data,
-    isPending,
-  } = useGetLastMessages();
+  const { data, isPending, isError } = useGetLastMessages();
 
-  return (
-    <View className="flex-1">
-      {
-        isPending ?
-          (<PageLoading/>) :
-          data ?
-            (<MessageList data={data}/>) :
-            (<NoResults/>)
-      }
-    </View>
-  );
+  const hasData = !!data?.pages?.some(page => page.data.length > 0);
+
+  if (isPending) {
+    return <LoadingScreen/>;
+  }
+  if (isError) {
+    return <ErrorScreen/>;
+  }
+  else if (hasData) {
+    return (
+      <View className="flex-1">
+        <LastMessageList data={data}/>
+      </View>
+    );
+  }
+  return <NoResults/>;
 }

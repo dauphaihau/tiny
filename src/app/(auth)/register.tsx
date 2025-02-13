@@ -33,7 +33,7 @@ export default function RegisterScreen() {
   const onSubmit = async (data: RegisterDto) => {
     const authError = await register(data);
     if (!authError) {
-      router.replace('/(app)/(tabs)/feeds');
+      router.replace('/(app)/(tabs)/home');
     }
     else if (authError.code === 'user_already_exists') {
       setError('email', {
