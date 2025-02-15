@@ -27,7 +27,7 @@ export function DeleteButton() {
             Toast.show({
               type: 'success',
               props: {
-                message: 'Index deleted',
+                message: 'Post deleted',
               },
             });
           }

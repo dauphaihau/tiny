@@ -38,7 +38,7 @@ export default function HomeScreen() {
   }, [refetch]);
 
   return (
-    <View className='pb-24'>
+    <View className='flex-1'>
       <PostTabs/>
       <View className="border-[0.4px] border-zinc-300 w-full -mt-1.5"/>
       {
@@ -58,7 +58,7 @@ export default function HomeScreen() {
                   ListFooterComponent={
                     isFetchingNextPage ?
                       <ActivityIndicator size='small' className='my-8' /> :
-                      null
+                      <View className='mb-24'/>
                   }
                   refreshControl={
                     <RefreshControl

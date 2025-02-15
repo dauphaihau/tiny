@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { ProfileToggle } from '@/components/common/ProfileToggle';
 
 const sizeIcon = 22;
-const hiddenScreens = ['/chat/[profile_id]'];
+// const hiddenScreens = ['/chat/[profile_id]'];
 
 export const unstable_settings = {
   initialRouteName: 'home',
@@ -13,16 +13,16 @@ export const unstable_settings = {
 
 export default function TabsLayout() {
   const segments = useSegments();
-  const segmentsAsString = segments.join('/');
+  // const segmentsAsString = segments.join('/');
 
-  const isTabHidden = hiddenScreens.some((screen) => segmentsAsString.includes(screen));
+  // const isTabHidden = hiddenScreens.some((screen) => segmentsAsString.includes(screen));
 
   return (
     <Tabs
       screenOptions={{
         tabBarStyle: {
           height: 70,
-          display: isTabHidden ? 'none' : 'flex',
+          // display: isTabHidden ? 'none' : 'flex',
         },
         tabBarShowLabel: false,
         headerLeft: () => <ProfileToggle className='ml-4'/>,

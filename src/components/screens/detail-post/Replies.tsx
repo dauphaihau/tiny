@@ -57,7 +57,7 @@ export function Replies() {
                 ListFooterComponent={
                   isFetchingNextPage ?
                     <ActivityIndicator size='small' className='my-8' /> :
-                    null
+                    <View className='mb-24'/>
                 }
                 refreshControl={
                   <RefreshControl

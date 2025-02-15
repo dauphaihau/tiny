@@ -52,6 +52,16 @@ export const toastConfig: CustomToastConfig = {
       )}
     />
   ),
+  info: ({ props }) => (
+    <BaseToast
+      {...props}
+      renderLeading={() => (
+        <Text className="text-primary-foreground">
+          <Feather name="info" size={sizeIcon}/>
+        </Text>
+      )}
+    />
+  ),
   success: ({ props }) => (
     <BaseToast
       {...props}

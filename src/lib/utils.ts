@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import Toast from 'react-native-toast-message';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -29,3 +30,12 @@ export function truncate(text: string, max: number) {
   }
   return text;
 }
+
+export const featureNotAvailable = () => {
+  Toast.show({
+    type: 'info',
+    props: {
+      message: 'Feature not available yet',
+    },
+  });
+};

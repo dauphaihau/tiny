@@ -1,8 +1,9 @@
 import {
-  View, TextInput, KeyboardAvoidingView, Platform, Pressable, ImageURISource, Image
+  View, TextInput, KeyboardAvoidingView, Platform, Pressable, ImageURISource, Image,
+  ScrollView
 } from 'react-native';
 import {
-  Link, router, Stack, useLocalSearchParams 
+  Link, router, useLocalSearchParams
 } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import { AuthWrapper } from '@/components/common/AuthWrapper';
@@ -18,6 +19,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { uploadImage } from '@/services/image.service';
+import { useNavigation } from '@react-navigation/native';
 
 const sizeIcon = 18;
 const colorIcon = 'gray';
@@ -30,6 +32,13 @@ export default function NewPostScreen() {
   const { mutateAsync: createPost, isPending } = useCreatePost();
   const { mutateAsync: createPostImages } = useCreatePostImages();
   const [sourceImages, setSourceImages] = useState<ImageURISource[]>();
+  const navigation = useNavigation();
+
+  React.useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => <Link href="../">Cancel</Link>,
+    });
+  }, [navigation]);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -93,85 +102,80 @@ export default function NewPostScreen() {
 
   return (
     <AuthWrapper>
-      <View>
-        <Stack.Screen
-          options={{
-            headerLeft: () => <Link href="../">Cancel</Link>,
-          }}
-        />
-      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        className="flex-1"
+        keyboardVerticalOffset={100}
+      >
+        <SafeAreaView className="flex-1 p-5">
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View className="flex-1">
+              <View className="flex-row gap-2">
+                <View className="w-[10%]">
+                  <Avatar path={dataUser?.avatar} />
+                </View>
+                <View className="w-[90%] flex-1">
+                  <Text className="font-semibold">{dataUser?.username}</Text>
 
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-        <SafeAreaView className="p-5">
-          <View className="h-full">
-            <View className="flex-row gap-2">
-              <View className="w-[10%]">
-                <Avatar path={dataUser?.avatar}/>
-              </View>
-              <View className="w-[90%]">
-                <Text className="font-semibold">{dataUser?.username}</Text>
-                <TextInput
-                  autoFocus
-                  editable={!isPending}
-                  placeholder="What's new"
-                  ref={inputRef}
-                  onChangeText={(val) => setContent(val)}
-                  multiline
-                  numberOfLines={10}
-                />
+                  {/* Content Input Area */}
+                  <TextInput
+                    autoFocus
+                    editable={!isPending}
+                    placeholder="What's new"
+                    autoCapitalize="none"
+                    ref={inputRef}
+                    onChangeText={(val) => setContent(val)}
+                    multiline
+                    numberOfLines={10}
+                    className="flex-1"
+                  />
 
-                {
-                  sourceImages && sourceImages.length > 0 &&
-                  <View className="flex-row gap-4 mt-4">
-                    {
-                      sourceImages.map((item, index) => (
-                        <View key={index}>
-                          <Image source={item} className="w-40 h-40 rounded-md"/>
+                  {/* Image Previews */}
+                  {sourceImages && sourceImages.length > 0 && (
+                    <View className="flex-row flex-wrap gap-4 mt-4">
+                      {sourceImages.map((item, index) => (
+                        <View key={index} className="relative">
+                          <Image source={item} className="w-40 h-40 rounded-md" />
                           <Ionicons
                             onPress={() => removeImage(index)}
-                            className="bg-black/50 rounded-full absolute right-2 top-2 p-1"
-                            style={{ color: 'white' }}
+                            className="absolute right-2 top-2 bg-black/50 rounded-full p-1"
                             name="close"
-                            size={10}
-                            color={colorIcon}
+                            size={20}
+                            color="white"
                           />
                         </View>
-                      ))
-                    }
+                      ))}
+                    </View>
+                  )}
+
+                  {/* Action Icons */}
+                  <View className="flex-row gap-7 mt-4">
+                    <Pressable onPress={pickImage}>
+                      <Ionicons name="images-outline" size={sizeIcon} color={colorIcon} />
+                    </Pressable>
+                    <Feather name="camera" size={sizeIcon} color={colorIcon} />
+                    <SimpleLineIcons name="microphone" size={sizeIcon} color={colorIcon} />
+                    <Ionicons name="location-outline" size={sizeIcon} color={colorIcon} />
                   </View>
-                }
-                <View className="flex-row gap-7 mt-4">
-                  <Pressable onPress={pickImage}>
-                    <Ionicons name="images-outline" size={sizeIcon} color={colorIcon}/>
-                  </Pressable>
-                  <Feather name="camera" size={sizeIcon} color={colorIcon}/>
-                  <SimpleLineIcons name="microphone" size={sizeIcon} color={colorIcon}/>
-                  <Ionicons name="location-outline" size={sizeIcon} color={colorIcon}/>
                 </View>
               </View>
             </View>
+          </ScrollView>
 
-            <View className="absolute bottom-[25%] w-full">
-              <View className="flex-row items-center justify-between">
-
-                <Text className="text-md text-zinc-400">
-                  Anyone can reply & quote
-                </Text>
-
-                <Button
-                  disabled={isPending}
-                  onPress={() => onSubmit()}
-                  className="rounded-full"
-                >
-                  <Text>Post</Text>
-                </Button>
-
-              </View>
+          {/* Submit Button */}
+          <View className="bg-white pb-4">
+            <View className="flex-row items-center justify-between">
+              <Text className="text-md text-zinc-400">Anyone can reply & quote</Text>
+              <Button disabled={isPending} onPress={onSubmit} className="rounded-full">
+                <Text>Post</Text>
+              </Button>
             </View>
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>
-
     </AuthWrapper>
   );
 }

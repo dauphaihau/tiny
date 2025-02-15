@@ -61,8 +61,8 @@ export const LastMessage = ({ item }: LastMessageProps) => {
         <Pressable onPress={navigateProfileScreen}>
           <Avatar className="size-12" path={item?.other_profile_avatar}/>
         </Pressable>
-        <View>
-          <View className="flex-row justify-between w-[90%]">
+        <View className='flex-grow'>
+          <View className="flex-row justify-between">
             <Text className="font-semibold">{item?.other_profile_first_name}</Text>
             <Text className="font-medium text-zinc-400">
               {formatMessageTime(item.created_at)}
