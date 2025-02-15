@@ -74,17 +74,21 @@ export default function ChatScreen() {
                   onEndReachedThreshold={0.1} // Trigger load more when the user reaches within 10% of the top
                   ListFooterComponent={isFetchingNextPage && data.pages.length > 1 ?
                     <ActivityIndicator size="small"/> :
-                    null} // Show loader when fetching
-                  renderItem={({ item, index }) => <Message
-                    data={item}
-                    previousMessage={messages[index + 1]}
-                    nextMessage={messages[index - 1]}
-                  />}
+                    null
+                  } // Show loader when fetching
+                  renderItem={({ item, index }) => (
+                    <Message
+                      data={item}
+                      previousMessage={messages[index + 1]}
+                      nextMessage={messages[index - 1]}
+                    />
+                  )}
                 />
               )
             }
           </View>
-          <View className="p-2">
+
+          <View className="py-2 px-3 fixed bottom-0 bg-transparent">
             <SendMessageForm/>
           </View>
         </View>

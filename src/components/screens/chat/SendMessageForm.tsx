@@ -1,12 +1,18 @@
-import { TextInput, View } from 'react-native';
-import React, { useState } from 'react';
+import {
+  TextInput, View, Animated, Dimensions
+} from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
 import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
 import { useGetCurrentProfile } from '@/services/profile.service';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { useSendMessage } from '@/services/message.service';
 import { Profile } from '@/types/models/profile';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { featureNotAvailable } from '@/lib/utils';
+
+const sizeIconInput = 20;
 
 type SearchParams = {
   profile_id: Profile['id'];
@@ -18,14 +24,25 @@ export function SendMessageForm() {
   const [content, setContent] = useState<string>();
   const { isPending, mutateAsync: sendMessage } = useSendMessage();
 
+  const screenWidth = Dimensions.get('window').width;
+  const buttonPosition = useRef(new Animated.Value(screenWidth)).current; // Start off-screen
+
+  useEffect(() => {
+    Animated.timing(buttonPosition, {
+      toValue: content ? 0 : screenWidth, // Move in when typing, move out when empty
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  }, [content]);
+
   const onSubmit = async () => {
-    if(!currentProfile || !content) {
+    if (!currentProfile || !content) {
       return;
     }
     const { error } = await sendMessage({
       sender_id: currentProfile.id,
       receiver_id: profile_id,
-      content,
+      content: content.trim(),
     });
     if (!error) {
       setContent('');
@@ -33,21 +50,42 @@ export function SendMessageForm() {
   };
 
   return (
-    <View className="flex-row gap-4 items-center">
-      <TextInput
-        value={content}
-        multiline
-        numberOfLines={4}
-        placeholder='Start a messages'
-        className="max-h-20 rounded-2xl border border-input bg-zinc-100 px-3 py-3 text-base native:leading-[1.25] placeholder:text-muted-foreground w-[87%]"
-        editable={!isPending}
-        onChangeText={(val) => setContent(val)}
-      />
-      <Button disabled={!content} onPress={onSubmit} size="icon" className="rounded-full">
-        <Text className="text-primary-foreground">
-          <FontAwesome5 name="arrow-up" size={17} />
-        </Text>
-      </Button>
+    <View className="flex-row items-center gap-4 w-full">
+      <View className={`flex-1 rounded-2xl border border-input bg-zinc-100 px-3 relative ${content ? 'pr-16' : ''}`}>
+        <TextInput
+          value={content}
+          autoCapitalize="none"
+          multiline
+          numberOfLines={4}
+          placeholder="Start a message"
+          className="max-h-20 py-3 text-base native:leading-[1.25] placeholder:text-muted-foreground"
+          editable={!isPending}
+          onChangeText={(val) => setContent(val)}
+        />
+        <View className="absolute right-5 top-1/2 -translate-y-1/2 flex-row gap-3">
+          {!content && <Ionicons name="images-outline" size={sizeIconInput} onPress={featureNotAvailable}/>}
+          {!content && <Ionicons name="mic-outline" size={sizeIconInput} onPress={featureNotAvailable}/>}
+          <AntDesign name="pluscircleo" size={sizeIconInput} onPress={featureNotAvailable}/>
+        </View>
+      </View>
+
+      <Animated.View
+        style={{
+          display: content ? 'flex' : 'none',
+          transform: [{ translateX: buttonPosition }],
+        }}
+      >
+        <Button
+          disabled={!content?.trim()}
+          onPress={onSubmit}
+          size="icon"
+          className="rounded-full"
+        >
+          <Text className="text-primary-foreground">
+            <FontAwesome name="arrow-up" size={17}/>
+          </Text>
+        </Button>
+      </Animated.View>
     </View>
   );
 }

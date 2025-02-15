@@ -3,7 +3,9 @@ import { supabase } from '@/lib/supabase';
 import { useGetCurrentProfile } from '@/services/profile.service';
 import { Profile } from '@/types/models/profile';
 import { Database } from '@/types/database.types';
-import { GetLastMessagesParams, GetMessagesParams, IMessage } from '@/types/request/message';
+import {
+  GetLastMessagesParams, GetMessagesParams, ILastMessage, IMessage 
+} from '@/types/request/message';
 import React from 'react';
 
 const getMessages = async (params: GetMessagesParams) => {
@@ -119,10 +121,11 @@ export function useGetMessages(receiver_id: Profile['id']) {
 
 export function useGetLastMessages() {
   const { data: currentProfile } = useGetCurrentProfile();
+  const [messages, setMessages] = React.useState<ILastMessage[]>([]);
 
-  return useInfiniteQuery({
+  const query = useInfiniteQuery({
     enabled: !!currentProfile?.id,
-    queryKey: ['get-last-messages', currentProfile!.id],
+    queryKey: ['get-last-messages', currentProfile?.id],
     queryFn: ({ pageParam = 1 }) => getLastMessages({
       current_profile_id: currentProfile!.id,
       page: pageParam,
@@ -130,4 +133,15 @@ export function useGetLastMessages() {
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextPage,
   });
+
+  React.useEffect(() => {
+    if (query.data) {
+      setMessages(query.data.pages.flatMap((page) => page.data));
+    }
+  }, [query.data]);
+  
+  return {
+    ...query,
+    messages,
+  };
 }

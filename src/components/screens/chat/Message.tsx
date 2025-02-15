@@ -39,7 +39,7 @@ export const Message = ({ data, nextMessage, previousMessage }: MessageProps) =>
     (nextMessage && dayjs(nextMessage.created_at).diff(dayjs(data.created_at), 'minute') >= 10);
 
   return (
-    <View className="px-3">
+    <View className='px-3'>
       {isDifferentDay && <Text className="text-center font-semibold text-sm mb-5">{dayMessage}</Text>}
       <View className={`flex-row ${isSentByCurrentUser ? 'justify-end' : 'justify-start'} mb-2`}>
         <View className={`px-3 py-2 rounded-2xl ${isSentByCurrentUser ? 'bg-zinc-200' : 'border border-zinc-200'}`}>
