@@ -6,11 +6,16 @@ import { useGetPosts } from '@/services/post.service';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import React from 'react';
 import { Post } from '@/components/common/post';
-import { PostTabs } from '@/components/app/app/home/PostTabs';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { GetPostsParams } from '@/types/request/post';
 import { NonUndefined } from 'react-hook-form';
 import { NoResults } from '@/components/common/NoResults';
+import { Tabs } from '@/components/common/Tabs';
+
+const tabs = [
+  { label: 'For you', value: 'default' },
+  { label: 'Following', value: 'following' },
+];
 
 type SearchParams = {
   type: NonUndefined<GetPostsParams['type']> | 'default'
@@ -37,10 +42,16 @@ export default function HomeScreen() {
     setRefreshing(false);
   }, [refetch]);
 
+  const onPressTab = (value: string) => {
+    router.setParams({ type: value });
+  };
+
   return (
     <View className='flex-1'>
-      <PostTabs/>
-      <View className="border-[0.4px] border-zinc-300 w-full -mt-1.5"/>
+      <Tabs
+        tabs={tabs}
+        onPressTab={onPressTab}
+      />
       {
         isPending ?
           <LoadingScreen/> :

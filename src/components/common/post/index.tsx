@@ -13,6 +13,7 @@ import { LikePostButton } from '@/components/common/LikePostButton';
 import { ReplyButton } from '@/components/common/post/ReplyButton';
 import { useRootNameTab } from '@/hooks/useRootNameTab';
 import { IPost } from '@/types/components/common/post';
+import { usernameWithPrefix } from '@/lib/utils';
 
 interface PostProps {
   data: IPost;
@@ -41,12 +42,11 @@ export const Post = ({ data }: PostProps) => {
       });
     }
     else {
-      const result = await SheetManager.show('post-actions', {
+      await SheetManager.show('post-actions', {
         payload: {
           postId: data.id,
         },
       });
-      console.log('result', result);
     }
   };
 
@@ -61,9 +61,11 @@ export const Post = ({ data }: PostProps) => {
               </Pressable>
 
               <View className='w-[90%]'>
-                <View className="flex-row gap-2">
+                <View className="flex-row gap-1.5">
                   <Text onPress={navigateToProfile} className="font-semibold">{data?.profile?.first_name}</Text>
-                  <Text className="font-medium text-zinc-400">{parsePostCreatedAt(data?.created_at)}</Text>
+                  <Text className="font-medium text-zinc-500">{usernameWithPrefix(data?.profile?.username)}</Text>
+                  <Text className="font-medium text-zinc-500">·</Text>
+                  <Text className="font-medium text-zinc-500">{parsePostCreatedAt(data?.created_at)}</Text>
                 </View>
                 <Text>{data?.content}</Text>
               </View>

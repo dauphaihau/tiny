@@ -30,7 +30,7 @@ export default function AppLayout() {
           }}
         >
           <Drawer.Screen
-            name='(tabs)'
+            name="(tabs)"
             options={{
               swipeEnabled: allowSwipeList.includes(segmentsAsString),
             }}

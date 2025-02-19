@@ -10,11 +10,16 @@ import { useGetPostsByProfile } from '@/services/post.service';
 import { NonUndefined } from 'react-hook-form';
 import { GetPostsByProfileParams } from '@/types/request/post';
 import { NoResults } from '@/components/common/NoResults';
-import { ProfilePostTabs } from '@/components/screens/detail-profile/ProfilePostTabs';
+import { Tabs } from '@/components/common/Tabs';
 import { ProfilePosts } from '@/components/screens/detail-profile/ProfilePosts';
 import { ProfileInfo } from '@/components/screens/detail-profile/ProfileInfo';
 import { ProfileActions } from '@/components/screens/detail-profile/ProfileActions';
 import { useNavigation } from '@react-navigation/native';
+
+const tabs = [
+  { label: 'Posts', value: 'posts' },
+  { label: 'Likes', value: 'likes' },
+];
 
 type SearchParams = {
   id: string
@@ -48,6 +53,10 @@ export function DetailProfileScreen() {
     await refetch();
     setRefreshing(false);
   }, [refetch]);
+
+  const handleTabPress = (value: string) => {
+    router.setParams({ type: value });
+  };
 
   if (isPending) {
     return <LoadingScreen/>;
@@ -85,8 +94,11 @@ export function DetailProfileScreen() {
             </View>
           </View>
 
-          <ProfilePostTabs className='mt-4'/>
-          <View className="border-[0.4px] border-zinc-300 w-full -mt-1.5"/>
+          <Tabs 
+            tabs={tabs} 
+            onPressTab={handleTabPress}
+            defaultTab={type}
+          />
           <View className="">
             <ProfilePosts/>
           </View>

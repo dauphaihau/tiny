@@ -1,6 +1,5 @@
 import React from 'react';
 import { Stack } from 'expo-router';
-import { ProfileToggle } from '@/components/common/ProfileToggle';
 
 export default function SearchLayout() {
   return (
@@ -8,9 +7,15 @@ export default function SearchLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Search',
-          headerLeft: () => <ProfileToggle/>,
-          headerShadowVisible: false,
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="detail/[search]"
+        getId={({ params }) => params?.search}
+        options={{
+          headerShown: false,
+          animation: 'fade',
         }}
       />
     </Stack>
