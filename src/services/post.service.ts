@@ -72,7 +72,7 @@ const getPostsByProfile = async (params: GetPostsByProfileParams) => {
     data,
     nextPage: data?.length ? params.page + 1 : undefined,
   };
-};
+};  
 
 export const getDetailPost = async (params: GetDetailPostsParams) => {
   const { data, error } = await supabase.rpc('get_detail_post', {
@@ -85,7 +85,6 @@ export const getDetailPost = async (params: GetDetailPostsParams) => {
   }
   return data[0];
 };
-
 
 // hooks
 
@@ -283,4 +282,48 @@ export function useToggleLike() {
       return res;
     },
   });
+}
+
+interface SearchPostsParams {
+  searchTerm: string;
+  latest?: boolean;
+  pageSize: number
+}
+
+export function useSearchPosts({
+  searchTerm,
+  latest = false,
+  pageSize = 10,
+}: SearchPostsParams) {
+  const { data: currentProfile } = useGetCurrentProfile();
+
+  const query = useInfiniteQuery({
+    enabled: !!currentProfile?.id && !!searchTerm,
+    queryKey: ['search-posts', searchTerm, latest],
+    queryFn: async ({ pageParam = 1 }) => {
+      if (!currentProfile?.id) throw new Error('Current profile ID is undefined');
+
+      const { data, error } = await supabase.rpc('search_posts', {
+        search_term: searchTerm,
+        current_profile_id: currentProfile.id,
+        latest,
+        items_per_page: pageSize,
+        page_number: pageParam,
+      });
+
+      if (error) throw new Error(error.message);
+
+      return {
+        data,
+        nextPage: data.length === pageSize ? pageParam + 1 : undefined,
+      };
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+  });
+  
+  return {
+    ...query,
+    posts: query.data?.pages.flatMap(page => page.data as IPost[]) ?? [],
+  };
 }

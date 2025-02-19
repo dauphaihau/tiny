@@ -1,7 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation, useQuery, useQueryClient, useInfiniteQuery 
+} from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { UpdateUserDto } from '@/schemas/request/profile';
 import { Profile } from '@/types/models/profile';
+import React from 'react';
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
@@ -75,4 +78,92 @@ export function useGetProfileById(id: Profile['id']) {
       return data[0];
     },
   });
+}
+
+type UnfollowedProfilesProps = {
+  pageSize?: number;
+};
+
+export function useGetUnfollowedProfiles(props?: UnfollowedProfilesProps) {
+  const { data: currentProfile } = useGetCurrentProfile();
+  const pageSize = props?.pageSize ?? 20;
+
+  const query = useInfiniteQuery({
+    enabled: !!currentProfile?.id,
+    queryKey: ['profiles-not-followed'],
+    queryFn: async ({ pageParam = 1 }) => {
+      if (!currentProfile?.id) throw new Error('Current profile ID is undefined');
+
+      const { data, error } = await supabase.rpc('get_unfollowed_profiles', {
+        current_profile_id: currentProfile.id,
+        items_per_page: pageSize,
+        page_number: pageParam,
+      });
+
+      if (error) throw error;
+
+      return {
+        profiles: data,
+        nextPage: data.length === pageSize ? pageParam + 1 : undefined,
+      };
+    },
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    initialPageParam: 1,
+  });
+
+  return {
+    ...query,
+    profiles: query.data?.pages.flatMap(page => page.profiles) ?? [],
+  };
+}
+
+interface SearchProfilesParams {
+  searchTerm: string;
+  pageSize?: number;
+}
+
+export function useGetSearchProfiles({
+  searchTerm,
+  pageSize = 15,
+}: SearchProfilesParams) {
+  const { data: currentProfile } = useGetCurrentProfile();
+  const queryClient = useQueryClient();
+
+  const query = useInfiniteQuery({
+    enabled: !!currentProfile?.id && !!searchTerm,
+    queryKey: ['search-profiles', searchTerm, pageSize],
+    queryFn: async ({ pageParam = 1 }) => {
+      if (!currentProfile?.id) throw new Error('Current profile ID is undefined');
+
+      const { data, error } = await supabase.rpc('search_profiles', {
+        search_term: searchTerm,
+        current_profile_id: currentProfile.id,
+        items_per_page: pageSize,
+        page_number: pageParam,
+      });
+
+      if (error) throw error;
+
+      return {
+        profiles: data,
+        nextPage: data.length === pageSize ? pageParam + 1 : undefined,
+        pageParam,
+      };
+    },
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    initialPageParam: 1,
+    gcTime: 0, // Disable cache retention
+  });
+
+  // Reset query when search term changes
+  React.useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: ['search-profiles', searchTerm] });
+    };
+  }, [searchTerm, queryClient]);
+
+  return {
+    ...query,
+    profiles: query.data?.pages.flatMap(page => page.profiles) ?? [],
+  };
 }

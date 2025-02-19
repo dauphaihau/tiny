@@ -2,11 +2,11 @@ import { Pressable, View, ViewProps } from 'react-native';
 import { Text } from '@/components/ui/Text';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { FollowButton } from '@/components/screens/detail-profile/FollowButton';
 import { Button } from '@/components/ui/Button';
-import { useGetCurrentProfile } from '@/services/profile.service';
+import { useGetCurrentProfile, useGetProfileById } from '@/services/profile.service';
 import { GetProfileByIdResponse } from '@/types/request/profile';
 import { useRootNameTab } from '@/hooks/useRootNameTab';
+import { FollowButton } from '@/components/common/FollowButton';
 
 type ProfileActionsProps = {
   profile: GetProfileByIdResponse
@@ -14,10 +14,11 @@ type ProfileActionsProps = {
 
 export function ProfileActions({ profile, ...props }: ProfileActionsProps) {
   const { data: currentProfile } = useGetCurrentProfile();
+  const { refetch: refetchProfile } = useGetProfileById(profile.id);
   const rootNameTab = useRootNameTab();
 
   const navigateChatScreen = () => {
-    if(!profile || !rootNameTab) return;
+    if (!profile || !rootNameTab) return;
     router.push({
       pathname: `/${rootNameTab}/chat/[profile_id]`,
       params: {
@@ -50,7 +51,11 @@ export function ProfileActions({ profile, ...props }: ProfileActionsProps) {
               >
                 <Ionicons name="mail-outline" size={15} color="black"/>
               </Pressable>
-              <FollowButton data={profile}/>
+              <FollowButton
+                onSuccess={refetchProfile}
+                isFollowing={profile.is_following}
+                profileId={profile.id}
+              />
             </View>
           )
       }

@@ -323,6 +323,54 @@ export type Database = {
           likes_count: number
         }[]
       }
+      get_unfollowed_profiles: {
+        Args: {
+          current_profile_id: string
+          page_number?: number
+          items_per_page?: number
+        }
+        Returns: {
+          id: string
+          first_name: string
+          avatar: string
+          username: string
+          followers_count: number
+        }[]
+      }
+      search_posts: {
+        Args: {
+          search_term: string
+          current_profile_id: string
+          latest?: boolean
+          items_per_page?: number
+          page_number?: number
+        }
+        Returns: {
+          id: number
+          parent_id: number
+          content: string
+          created_at: string
+          profile: Json
+          likes_count: number
+          is_liked: boolean
+          images: Json
+        }[]
+      }
+      search_profiles: {
+        Args: {
+          search_term: string
+          current_profile_id: string
+          items_per_page: number
+          page_number: number
+        }
+        Returns: {
+          id: string
+          first_name: string
+          avatar: string
+          username: string
+          is_following: boolean
+        }[]
+      }
     }
     Enums: {
       post_filter_type: "following"
