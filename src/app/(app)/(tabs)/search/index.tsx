@@ -1,15 +1,16 @@
 import {
-  View, Animated, Dimensions, TouchableOpacity
+  View, Animated, Dimensions, TouchableOpacity, Pressable
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { ProfileToggle } from '@/components/common/ProfileToggle';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { TempSearchInput } from '@/components/app/app/search/TempSearchInput';
 import { SearchOverlay } from '@/components/app/app/search/SearchOverlay';
 import { UnfollowedProfiles } from '@/components/app/app/search/UnfollowedProfiles';
 import { TextInput } from 'react-native';
 import { featureNotAvailable } from '@/lib/utils';
+import { SearchInput } from '@/components/app/app/search/SearchInput';
+import { TAB_BAR_HEIGHT } from '@/constants/layout';
 
 export default function SearchScreen() {
   const [isFocusedSearchInput, setFocusSearchInput] = React.useState(false);
@@ -38,15 +39,18 @@ export default function SearchScreen() {
   }, [isFocusedSearchInput]);
 
   const screenHeight = Dimensions.get('window').height;
-  const tabBarHeight = 70;
 
   return (
     <SafeAreaView className="flex-1">
-      <View style={{ height: screenHeight - tabBarHeight }}>
+      <View style={{ height: screenHeight - TAB_BAR_HEIGHT }}>
         {/*Header*/}
-        <View className="flex-row items-center justify-between px-4 pb-3">
+        <View className="flex-row items-center justify-between px-4 pb-3 gap-2">
           <ProfileToggle/>
-          <TempSearchInput onPress={() => setFocusSearchInput(true)}/>
+          <SearchInput
+            editable={false}
+            placeholder='Search'
+            onPress={() => setFocusSearchInput(true)}
+          />
           <TouchableOpacity onPress={featureNotAvailable}>
             <Feather name="settings" size={20} color="black" className='opacity-70' />
           </TouchableOpacity>

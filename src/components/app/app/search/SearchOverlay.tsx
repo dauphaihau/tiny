@@ -30,7 +30,7 @@ export function SearchOverlay({
   });
 
   const screenHeight = Dimensions.get('window').height;
-  const tabBarHeight = 70;
+  const tabBarHeight = 75;
 
   const navigateDetailSearch = () => {
     router.push({

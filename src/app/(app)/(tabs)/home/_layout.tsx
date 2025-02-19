@@ -12,6 +12,7 @@ export default function HomeLayout() {
           headerShown: true,
           headerLeft: () => <ProfileToggle/>,
           headerShadowVisible: false,
+          headerTransparent: true,
         }}
       />
     </Stack>

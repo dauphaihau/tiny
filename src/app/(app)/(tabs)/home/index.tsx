@@ -11,6 +11,7 @@ import { GetPostsParams } from '@/types/request/post';
 import { NonUndefined } from 'react-hook-form';
 import { NoResults } from '@/components/common/NoResults';
 import { Tabs } from '@/components/common/Tabs';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const tabs = [
   { label: 'For you', value: 'default' },
@@ -47,7 +48,8 @@ export default function HomeScreen() {
   };
 
   return (
-    <View className='flex-1'>
+    <SafeAreaView className='flex-1'>
+      <View className="pt-8"/>
       <Tabs
         tabs={tabs}
         onPressTab={onPressTab}
@@ -82,6 +84,6 @@ export default function HomeScreen() {
             ) :
             (<NoResults/>)
       }
-    </View>
+    </SafeAreaView>
   );
 };
