@@ -30,10 +30,10 @@ export function SearchContent({
       onPress={onDismiss}
     >
       {searchTerm && (
-        <View>
+        <View className='flex-1'>
           <Pressable
             onPress={navigateDetailSearch}
-            className="flex-row px-4 py-3 border-b border-zinc-200 mb-2"
+            className="flex-row px-4 py-3 border-b border-zinc-200"
           >
             <View className="size-8 rounded-full mr-3 items-center justify-center">
               <FontAwesome name="search" size={16} color="gray" className="opacity-80"/>

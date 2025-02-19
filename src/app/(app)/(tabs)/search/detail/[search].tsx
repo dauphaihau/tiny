@@ -1,10 +1,10 @@
 import {
-  Pressable, TextInput, View, Dimensions, Animated, TouchableOpacity
+  Pressable, TextInput, View, Dimensions, Animated, TouchableOpacity,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Feather, FontAwesome } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Tabs } from '@/components/common/Tabs';
@@ -12,7 +12,9 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { ProfilesList } from '@/components/app/app/search/detail/ProfilesList';
 import { PostsList } from '@/components/app/app/search/detail/PostsList';
 import { SearchOverlay } from '@/components/app/app/search/SearchOverlay';
+import { SearchInput } from '@/components/app/app/search/SearchInput';
 import { featureNotAvailable } from '@/lib/utils';
+import { TAB_BAR_HEIGHT } from '@/constants/layout';
 
 const tabs = [
   { label: 'Top', value: 'default' },
@@ -77,28 +79,21 @@ export default function DetailSearchScreen() {
   };
 
   const screenHeight = Dimensions.get('window').height;
-  const tabBarHeight = 70;
 
   return (
     <SafeAreaView className="flex-1" edges={['top']}>
-      <View style={{ height: screenHeight - tabBarHeight }}>
+      <View style={{ height: screenHeight - TAB_BAR_HEIGHT }}>
         {/* Header */}
         <View className="flex-row items-center px-4 gap-3">
           <Pressable onPress={backScreen}>
             <Ionicons name="chevron-back" size={24} color="black"/>
           </Pressable>
-          <View className="flex-1 bg-zinc-100 rounded-full px-4 py-3 flex-row items-center">
-            <FontAwesome name="search" size={16} color="gray"/>
-            <TextInput
-              ref={searchInputRef}
-              value={searchTerm}
-              autoCapitalize="none"
-              className="ml-2 flex-1"
-              placeholderTextColor="gray"
-              onChangeText={handleSearchTermChange}
-              onFocus={() => setFocusSearchInput(true)}
-            />
-          </View>
+          <SearchInput
+            ref={searchInputRef}
+            value={searchTerm}
+            onChangeText={handleSearchTermChange}
+            onFocus={() => setFocusSearchInput(true)}
+          />
           <TouchableOpacity onPress={featureNotAvailable}>
             <Feather name="settings" size={20} color="black" className="opacity-70"/>
           </TouchableOpacity>
@@ -112,23 +107,21 @@ export default function DetailSearchScreen() {
             initialSearchTerm={searchTerm}
           />
         )}
-        {(
-          <>
-            {/*Search Tabs*/}
-            <Tabs tabs={tabs} onPressTab={handleTabPress}/>
+        <View>
+          {/*Search Tabs*/}
+          <Tabs tabs={tabs} onPressTab={handleTabPress}/>
 
-            {isProfileSearch ?
-              (
-                <ProfilesList searchTerm={searchTerm}/>
-              ) :
-              (
-                <PostsList
-                  searchTerm={debouncedSearchTerm}
-                  isLatest={type === 'latest'}
-                />
-              )}
-          </>
-        )}
+          {isProfileSearch ?
+            (
+              <ProfilesList searchTerm={searchTerm}/>
+            ) :
+            (
+              <PostsList
+                searchTerm={debouncedSearchTerm}
+                isLatest={type === 'latest'}
+              />
+            )}
+        </View>
       </View>
     </SafeAreaView>
   );

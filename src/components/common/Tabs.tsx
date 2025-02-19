@@ -1,5 +1,5 @@
 import {
-  Animated, Pressable, Text, View, useWindowDimensions
+  Animated, Pressable, Text, View, useWindowDimensions, ScrollView
 } from 'react-native';
 import React from 'react';
 
@@ -17,7 +17,8 @@ interface ITabsProps {
 export function Tabs({ tabs, onPressTab, defaultTab = 'default' }: ITabsProps) {
   const [currentTab, setCurrentTab] = React.useState(defaultTab);
   const { width } = useWindowDimensions();
-  const tabWidth = width / tabs.length;
+  const minTabWidth = 100; // minimum width for each tab
+  const tabWidth = Math.max(minTabWidth, width / tabs.length);
   const translateX = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
@@ -36,33 +37,41 @@ export function Tabs({ tabs, onPressTab, defaultTab = 'default' }: ITabsProps) {
   };
 
   return (
-    <View className="flex-row border-b border-zinc-200">
-      <Animated.View 
-        className="absolute bottom-0 h-0.5 bg-black"
-        style={{
-          width: tabWidth,
-          transform: [{ translateX }],
-        }}
-      />
-      {tabs.map((tab) => (
-        <Pressable
-          key={tab.value}
-          onPress={() => handlePress(tab.value)}
-          className="flex-1"
-        >
-          <View className="px-4 py-3">
-            <Text
-              className={`font-semibold text-center text-base ${
-                currentTab === tab.value ?
-                  'text-black' :
-                  'text-zinc-500'
-              }`}
-            >
-              {tab.label}
-            </Text>
-          </View>
-        </Pressable>
-      ))}
+    <View>
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false}
+        className="border-b border-zinc-200"
+      >
+        <Animated.View 
+          className="absolute bottom-0 h-0.5 bg-black"
+          style={{
+            width: tabWidth,
+            transform: [{ translateX }],
+          }}
+        />
+        {tabs.map((tab) => (
+          <Pressable
+            key={tab.value}
+            onPress={() => handlePress(tab.value)}
+            style={{ width: tabWidth }}
+          >
+            <View className="p-4">
+              <Text
+                adjustsFontSizeToFit
+                numberOfLines={1}
+                className={`font-semibold text-center text-md ${
+                  currentTab === tab.value ?
+                    'text-black' :
+                    'text-zinc-500'
+                }`}
+              >
+                {tab.label}
+              </Text>
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
     </View>
   );
 }

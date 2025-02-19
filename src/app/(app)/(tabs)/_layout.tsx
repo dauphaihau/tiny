@@ -3,8 +3,9 @@ import React from 'react';
 import Foundation from '@expo/vector-icons/Foundation';
 import { Feather } from '@expo/vector-icons';
 import { ProfileToggle } from '@/components/common/ProfileToggle';
+import { TAB_BAR_HEIGHT } from '@/constants/layout';
 
-const sizeIcon = 22;
+const sizeIcon = 23;
 // const hiddenScreens = ['/chat/[profile_id]'];
 
 export const unstable_settings = {
@@ -21,8 +22,11 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         tabBarStyle: {
-          height: 70,
+          height: TAB_BAR_HEIGHT,
           // display: isTabHidden ? 'none' : 'flex',
+        },
+        tabBarItemStyle: {
+          marginTop: 7,
         },
         tabBarShowLabel: false,
         headerLeft: () => <ProfileToggle className='ml-4'/>,

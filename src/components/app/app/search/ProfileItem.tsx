@@ -27,7 +27,7 @@ export function ProfileItem({
   return (
     <Pressable
       onPress={handlePress}
-      className="flex-row items-center px-4 py-2 active:bg-gray-100"
+      className="flex-row items-center px-4 py-3 active:bg-gray-100"
     >
       <Avatar
         path={avatar}
