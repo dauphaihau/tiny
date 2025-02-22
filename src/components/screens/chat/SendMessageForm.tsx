@@ -1,5 +1,5 @@
 import {
-  TextInput, View, Animated, Dimensions
+  TextInput, View, Animated, Dimensions, Pressable,
 } from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocalSearchParams } from 'expo-router';
@@ -63,9 +63,19 @@ export function SendMessageForm() {
           onChangeText={(val) => setContent(val)}
         />
         <View className="absolute right-5 top-1/2 -translate-y-1/2 flex-row gap-3">
-          {!content && <Ionicons name="images-outline" size={sizeIconInput} onPress={featureNotAvailable}/>}
-          {!content && <Ionicons name="mic-outline" size={sizeIconInput} onPress={featureNotAvailable}/>}
-          <AntDesign name="pluscircleo" size={sizeIconInput} onPress={featureNotAvailable}/>
+          {!content && (
+            <Pressable onPress={featureNotAvailable}>
+              <Ionicons name="images-outline" size={sizeIconInput}/>
+            </Pressable>
+          )}
+          {!content && (
+            <Pressable onPress={featureNotAvailable}>
+              <Ionicons name="mic-outline" size={sizeIconInput}/>
+            </Pressable>
+          )}
+          <Pressable onPress={featureNotAvailable}>
+            <AntDesign name="pluscircleo" size={sizeIconInput}/>
+          </Pressable>
         </View>
       </View>
 

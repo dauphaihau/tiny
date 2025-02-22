@@ -13,6 +13,7 @@ export default function WelcomeScreen() {
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('event', event);
       if (event === 'INITIAL_SESSION') {
         if (session) {
           router.replace('/(app)/(tabs)/home');

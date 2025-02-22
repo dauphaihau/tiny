@@ -11,6 +11,7 @@ import { TextInput } from 'react-native';
 import { featureNotAvailable } from '@/lib/utils';
 import { SearchInput } from '@/components/app/app/search/SearchInput';
 import { TAB_BAR_HEIGHT } from '@/constants/layout';
+import { Separator } from '@/components/common/Separator';
 
 export default function SearchScreen() {
   const [isFocusedSearchInput, setFocusSearchInput] = React.useState(false);
@@ -55,6 +56,7 @@ export default function SearchScreen() {
             <Feather name="settings" size={20} color="black" className='opacity-70' />
           </TouchableOpacity>
         </View>
+        <Separator/>
 
         {isFocusedSearchInput && (
           <SearchOverlay

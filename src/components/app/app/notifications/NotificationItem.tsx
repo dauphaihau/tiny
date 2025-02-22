@@ -52,7 +52,7 @@ export function NotificationItem({ data }: NotificationItemProps) {
   return (
     <Pressable
       onPress={handlePress}
-      className="flex-row p-4 active:bg-zinc-100"
+      className="flex-row p-4"
     >
       <Avatar
         path={data?.actor?.avatar}

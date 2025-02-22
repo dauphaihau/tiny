@@ -93,10 +93,9 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
             className="font-medium"
             onPress={() => router.push('/modals/settings')}
           >Settings and privacy</Text>
-          <Text
-            className="text-red-600 font-medium"
-            onPress={logout}
-          >Log out</Text>
+          <Pressable onPress={logout}>
+            <Text className="text-red-600 font-medium">Log out</Text>
+          </Pressable>
         </View>
       </View>
     </DrawerContentScrollView>

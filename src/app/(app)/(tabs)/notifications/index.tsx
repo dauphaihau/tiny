@@ -22,7 +22,7 @@ export default function NotificationScreen() {
   return (
     <SafeAreaView className="flex-1">
       <View style={{ height: screenHeight - TAB_BAR_HEIGHT }}>
-        <View className="pt-8"/>
+        <View className="pt-10"/>
         <Tabs
           tabs={tabs}
           onPressTab={onPressTab}

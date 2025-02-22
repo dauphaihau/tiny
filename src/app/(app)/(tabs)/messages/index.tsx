@@ -7,6 +7,7 @@ import React from 'react';
 import { NoResults } from '@/components/common/NoResults';
 import { ErrorScreen } from '@/components/common/ErrorScreen';
 import { LastMessage } from '@/components/app/app/messages/LastMessage';
+import { Separator } from '@/components/common/Separator';
 
 export default function RecentMessagesScreen() {
   const {
@@ -33,11 +34,13 @@ export default function RecentMessagesScreen() {
   else if (messages.length > 0) {
     return (
       <View className="flex-1">
-        <View className="px-4 mt-8 h-full">
+        <Separator/>
+        <View className="px-4 h-full">
           <FlatList
             data={messages}
             renderItem={({ item }) => <LastMessage item={item}/>}
             keyExtractor={(item) => item?.id?.toString()}
+            ListHeaderComponent={() => <View className='mt-4'/>}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}

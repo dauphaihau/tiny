@@ -1,10 +1,11 @@
-import { FlatList, View } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useGetPostsByProfile } from '@/services/post.service';
 import React from 'react';
 import { Post } from '@/components/common/post';
 import { NonUndefined } from 'react-hook-form';
 import { GetPostsByProfileParams } from '@/types/request/post';
+import { Separator } from '@/components/common/Separator';
 
 type SearchParams = {
   id: string
@@ -19,31 +20,40 @@ export function ProfilePosts() {
     isPending,
     hasNextPage,
     fetchNextPage,
+    isFetchingNextPage,
   } = useGetPostsByProfile({
     pr_id: profileId,
     type,
   });
 
-  if (isPending) {
+  if (isPending || !posts.length) {
     return null;
   }
-  else if (posts.length > 0) {
-    return (
-      <View>
-        <FlatList
-          data={posts}
-          scrollEnabled={false}
-          renderItem={({ item }) => <Post data={item}/>}
-          keyExtractor={(item) => item.id.toString()}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => {
-            if (hasNextPage) fetchNextPage();
-          }}
-        />
-      </View>
-    );
-  }
-  else {
-    return null;
-  }
+  return (
+    <View>
+      <FlatList
+        data={posts}
+        scrollEnabled={false}
+        renderItem={({ item }) => <Post data={item}/>}
+        ItemSeparatorComponent={() => <Separator/>}
+        keyExtractor={(item) => item.id.toString()}
+        ListFooterComponent={() => (
+          <View className="mb-24">
+            <Separator/>
+            {isFetchingNextPage ?
+              (
+                <View className="py-8">
+                  <ActivityIndicator/>
+                </View>
+              ) :
+              null}
+          </View>
+        )}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => {
+          if (hasNextPage) fetchNextPage();
+        }}
+      />
+    </View>
+  );
 }

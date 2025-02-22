@@ -1,5 +1,5 @@
 import {
-  Animated, Dimensions,
+  Animated, Dimensions, Pressable,
   TextInput, View
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
@@ -38,7 +38,7 @@ export function ReplyInput() {
   }, [content]);
 
   const onSubmit = async () => {
-    if(!post || !profile || !content) {
+    if (!post || !profile || !content) {
       return;
     }
     const { error } = await reply({
@@ -54,7 +54,7 @@ export function ReplyInput() {
   };
 
   return (
-    <View className='py-2 px-3'>
+    <View className="py-3 px-3">
       <View className="flex-row gap-4 items-center">
         <View className={`flex-1 rounded-2xl border border-input bg-zinc-100 px-3 relative ${content ? 'pr-16' : ''}`}>
           <TextInput
@@ -71,9 +71,19 @@ export function ReplyInput() {
             onChangeText={(val) => setContent(val)}
           />
           <View className="absolute right-5 top-1/2 -translate-y-1/2 flex-row gap-3">
-            {!content && <Ionicons name="images-outline" size={sizeIconInput} onPress={featureNotAvailable}/>}
-            {!content && <Ionicons name="mic-outline" size={sizeIconInput} onPress={featureNotAvailable}/>}
-            <AntDesign name="pluscircleo" size={sizeIconInput} onPress={featureNotAvailable}/>
+            {!content && (
+              <Pressable onPress={featureNotAvailable}>
+                <Ionicons name="images-outline" size={sizeIconInput}/>
+              </Pressable>
+            )}
+            {!content && (
+              <Pressable onPress={featureNotAvailable}>
+                <Ionicons name="mic-outline" size={sizeIconInput}/>
+              </Pressable>
+            )}
+            <Pressable onPress={featureNotAvailable}>
+              <AntDesign name="pluscircleo" size={sizeIconInput}/>
+            </Pressable>
           </View>
         </View>
         <Animated.View
@@ -95,5 +105,5 @@ export function ReplyInput() {
         </Animated.View>
       </View>
     </View>
-  );
+  )
 }

@@ -6,6 +6,7 @@ import React from 'react';
 import { Post } from '@/components/common/post';
 import { useGetRepliesPost } from '@/services/post.service';
 import { useLocalSearchParams } from 'expo-router';
+import { Separator } from '@/components/common/Separator';
 
 export function Replies() {
   const { id: postId } = useLocalSearchParams<{ id: string }>();
@@ -50,15 +51,23 @@ export function Replies() {
                 scrollEnabled={false}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item: post }) => (<Post data={post}/>)}
+                ItemSeparatorComponent={() => <Separator/>}
                 onEndReachedThreshold={0.5}
                 onEndReached={() => {
                   if (hasNextPage) fetchNextPage();
                 }}
-                ListFooterComponent={
-                  isFetchingNextPage ?
-                    <ActivityIndicator size='small' className='my-8' /> :
-                    <View className='mb-24'/>
-                }
+                ListFooterComponent={() => (
+                  <View className='mb-24'>
+                    {isFetchingNextPage ?
+                      (
+                        <View className="py-4">
+                          <ActivityIndicator />
+                        </View>
+                      ) :
+                      null}
+                    <Separator/>
+                  </View>
+                )}
                 refreshControl={
                   <RefreshControl
                     refreshing={refreshing}
