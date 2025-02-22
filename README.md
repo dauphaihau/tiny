@@ -1,50 +1,64 @@
-# Welcome to your Expo app 👋
+# Tiny
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile social networking application built with Expo and React Native.
 
-## Get started
+## Features
 
-1. Install dependencies
+- Real-time posts and interactions
+- Profile management
+- Post creation with image support
+- Reply system
+- Like functionality
+- Search capabilities
+- Infinite scrolling for content loading
 
-   ```bash
-   npm install
-   ```
+## Tech Stack
 
-2. Start the app
+- **Frontend**: React Native, Expo
+- **Backend**: Supabase
+- **Styling**: NativeWind (TailwindCSS for React Native)
+- **State Management**: React Query
+- **Authentication**: Supabase Auth
 
-   ```bash
-    npx expo start
-   ```
+## Prerequisites
 
-In the output, you'll find options to open the app in a
+- Node.js (v14 or higher)
+- npm or yarn
+- Expo CLI
+- iOS Simulator (for iOS development)
+- Android Studio (for Android development)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Getting Started
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+1. Clone the repository:
 ```bash
-npm run reset-project
+git clone https://github.com/dauphaihau/tiny.git
+cd tiny
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies:
+```bash
+cd mobile
+npm install
+```
 
-## Learn more
+3. Set up environment variables:
+   Create a `.env` file in the mobile directory with your Supabase configuration:
+```plaintext
+EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Testing on Physical Device
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+1. Download Expo Go app:
+   - [iOS App Store](https://apps.apple.com/app/expo-go/id982107779)
+   - [Android Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent)
 
-## Join the community
+2. Scan the QR code below to open the app in Expo Go:
 
-Join our community of developers creating universal apps.
+   <img src="./assets/images/preview-app-qr-code.png" alt="Expo QR Code" width="200" height="200"/>
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+   - iOS: Use your device's camera app
+   - Android: Use the Expo Go app's QR scanner
+
