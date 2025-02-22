@@ -13,7 +13,6 @@ import { useGetCurrentProfile } from '@/services/profile.service';
 import { Text } from '@/components/ui/Text';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { useCreatePost, useCreatePostImages } from '@/services/post.service';
-import { Button } from '@/components/ui/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -69,6 +68,7 @@ export default function NewPostScreen() {
       });
       if (responseCreatePost.error) throw new Error(responseCreatePost.error.message);
 
+      // Handle image uploads
       if (sourceImages && sourceImages?.length > 0) {
         const imagePaths = await Promise.all(
           sourceImages.map(item => uploadImage('posts', item.uri))
@@ -80,6 +80,7 @@ export default function NewPostScreen() {
         const response = await createPostImages(postImagesBody);
         if (response.error) throw new Error(response.error.message);
       }
+
       router.back();
       Toast.show({
         type: 'createdPost',
@@ -100,6 +101,8 @@ export default function NewPostScreen() {
     }
   };
 
+  const disabledSubmit = isPending || !content;
+
   return (
     <AuthWrapper>
       <KeyboardAvoidingView
@@ -115,7 +118,7 @@ export default function NewPostScreen() {
             <View className="flex-1">
               <View className="flex-row gap-2">
                 <View className="w-[10%]">
-                  <Avatar path={dataUser?.avatar} />
+                  <Avatar path={dataUser?.avatar}/>
                 </View>
                 <View className="w-[90%] flex-1">
                   <Text className="font-semibold">{dataUser?.username}</Text>
@@ -138,7 +141,7 @@ export default function NewPostScreen() {
                     <View className="flex-row flex-wrap gap-4 mt-4">
                       {sourceImages.map((item, index) => (
                         <View key={index} className="relative">
-                          <Image source={item} className="w-40 h-40 rounded-md" />
+                          <Image source={item} className="w-40 h-40 rounded-md"/>
                           <Ionicons
                             onPress={() => removeImage(index)}
                             className="absolute right-2 top-2 bg-black/50 rounded-full p-1"
@@ -154,24 +157,30 @@ export default function NewPostScreen() {
                   {/* Action Icons */}
                   <View className="flex-row gap-7 mt-4">
                     <Pressable onPress={pickImage}>
-                      <Ionicons name="images-outline" size={sizeIcon} color={colorIcon} />
+                      <Ionicons name="images-outline" size={sizeIcon} color={colorIcon}/>
                     </Pressable>
-                    <Feather name="camera" size={sizeIcon} color={colorIcon} />
-                    <SimpleLineIcons name="microphone" size={sizeIcon} color={colorIcon} />
-                    <Ionicons name="location-outline" size={sizeIcon} color={colorIcon} />
+                    <Feather name="camera" size={sizeIcon} color={colorIcon}/>
+                    <SimpleLineIcons name="microphone" size={sizeIcon} color={colorIcon}/>
+                    <Ionicons name="location-outline" size={sizeIcon} color={colorIcon}/>
                   </View>
                 </View>
               </View>
             </View>
           </ScrollView>
 
-          {/* Submit Button */}
+          {/* Submit Form */}
           <View className="bg-white pb-4">
             <View className="flex-row items-center justify-between">
               <Text className="text-md text-zinc-400">Anyone can reply & quote</Text>
-              <Button disabled={isPending} onPress={onSubmit} className="rounded-full">
-                <Text>Post</Text>
-              </Button>
+              <Pressable
+                onPress={onSubmit}
+                disabled={disabledSubmit}
+                className={`px-5 py-2 rounded-full bg-black ${disabledSubmit ? 'opacity-50' : ''} `}
+              >
+                <Text className="font-semibold text-white">
+                  Post
+                </Text>
+              </Pressable>
             </View>
           </View>
         </SafeAreaView>

@@ -3,21 +3,17 @@ import { supabase } from '@/lib/supabase';
 import { CreatePostDto, CreatePostImagesDto, CreateReplyPostDto } from '@/schemas/request/post';
 import { useGetCurrentProfile } from '@/services/profile.service';
 import {
-  GetDetailPostResponse,
-  GetDetailPostsParams, GetPostsByProfileParams, GetPostsParams, GetRepliesPostsParams
+  GetDetailPostsParams, GetPostsByProfileParams, GetPostsParams, GetRepliesPostsParams, SearchPostsParams
 } from '@/types/request/post';
 import { Post } from '@/types/models/post';
 import React from 'react';
 import { IPost } from '@/types/components/common/post';
 
 const getPosts = async (params: GetPostsParams) => {
-  const from = params.limit * (params.page - 1);
-  const to = from + params.limit - 1;
-
   const { data, error } = await supabase.rpc('get_posts', {
     current_profile_id: params.current_profile_id,
-    from_offset: from,
-    to_offset: to,
+    page_number: params.page,
+    items_per_page: params.limit,
     type: params.type,
   });
 
@@ -80,7 +76,7 @@ export const getDetailPost = async (params: GetDetailPostsParams) => {
     current_profile_id: params.current_profile_id,
   });
   if (error) {
-    console.log('error', error);
+    console.log('error get detail post', error);
     throw new Error();
   }
   return data[0];
@@ -237,7 +233,7 @@ export function useGetDetailPost(postId: Post['id']) {
   });
   return {
     ...query,
-    post: query.data as GetDetailPostResponse | undefined,
+    post: query.data as IPost | undefined,
   };
 }
 
@@ -282,12 +278,6 @@ export function useToggleLike() {
       return res;
     },
   });
-}
-
-interface SearchPostsParams {
-  searchTerm: string;
-  latest?: boolean;
-  pageSize: number
 }
 
 export function useSearchPosts({

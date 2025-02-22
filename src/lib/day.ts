@@ -37,3 +37,15 @@ export function parsePostCreatedAt(createdAt: string) {
   }
   return '';
 }
+
+export function parseNotificationCreatedAt(createdAt: string) {
+  if (dayjs(createdAt).isValid()) {
+
+    const oneWeekAgo = dayjs.utc().subtract(7, 'day');
+
+    return dayjs.utc(createdAt).isBefore(oneWeekAgo) ?
+      dayjs.utc(createdAt).format('D/MM/YYYY') :
+      dayjs.utc(createdAt).fromNow();
+  }
+  return '';
+}

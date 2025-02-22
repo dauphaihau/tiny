@@ -1,4 +1,6 @@
-import { TextInput, View, type TextInputProps, Pressable } from 'react-native';
+import {
+  TextInput, type TextInputProps, Pressable
+} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import React from 'react';
 import { cn } from '@/lib/utils';
@@ -17,14 +19,14 @@ const SearchInput = React.forwardRef<React.ElementRef<typeof TextInput>, TextInp
           placeholder="Search"
           className={cn(
             'ml-2 flex-1',
-            className,
+            className
           )}
           placeholderTextColor="gray"
           {...props}
         />
       </Pressable>
     );
-  },
+  }
 );
 
 SearchInput.displayName = 'SearchInput';

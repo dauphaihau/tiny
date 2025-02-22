@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from '@/components/ui/Button';
 import { useGetCurrentProfile, useGetProfileById } from '@/services/profile.service';
-import { GetProfileByIdResponse } from '@/types/request/profile';
+import { GetProfileByIdResponse } from '@/types/request/profile/get-profile-by-id';
 import { useRootNameTab } from '@/hooks/useRootNameTab';
 import { FollowButton } from '@/components/common/FollowButton';
 

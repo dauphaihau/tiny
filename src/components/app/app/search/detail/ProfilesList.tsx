@@ -3,7 +3,7 @@ import { FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { ProfileItem } from '@/components/app/app/search/ProfileItem';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { NoResults } from '@/components/common/NoResults';
-import { useGetSearchProfiles } from '@/services/profile.service';
+import { useSearchProfiles } from '@/services/profile.service';
 
 type ProfilesListProps = {
   searchTerm: string;
@@ -17,7 +17,7 @@ export function ProfilesList({ searchTerm }: ProfilesListProps) {
     isLoading,
     isFetchingNextPage,
     refetch,
-  } = useGetSearchProfiles({
+  } = useSearchProfiles({
     searchTerm,
   });
 

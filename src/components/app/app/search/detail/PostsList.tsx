@@ -2,13 +2,14 @@ import React, { useCallback, useMemo } from 'react';
 import {
   FlatList,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl, View
 } from 'react-native';
 import { Post } from '@/components/common/post';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { NoResults } from '@/components/common/NoResults';
 import { useSearchPosts } from '@/services/post.service';
 import { IPost } from '@/types/components/common/post';
+import { Separator } from '@/components/common/Separator';
 
 type PostsListProps = {
   searchTerm: string;
@@ -46,7 +47,17 @@ export function PostsList({ searchTerm, isLatest }: PostsListProps) {
   }, [hasNextPage, fetchNextPage]);
 
   const ListFooterComponent = useMemo(() => (
-    isFetchingNextPage ? <ActivityIndicator className='my-8' /> : null
+    // isFetchingNextPage ? <ActivityIndicator className='my-8' /> : null
+    <View className=''>
+      {isFetchingNextPage ?
+        (
+          <View className="py-4">
+            <ActivityIndicator />
+          </View>
+        ) :
+        null}
+      <Separator/>
+    </View>
   ), [isFetchingNextPage]);
 
   if (isPending) return <LoadingScreen />;
@@ -59,6 +70,7 @@ export function PostsList({ searchTerm, isLatest }: PostsListProps) {
       renderItem={renderItem}
       onEndReached={handleEndReached}
       onEndReachedThreshold={0.5}
+      ItemSeparatorComponent={() => <Separator/>}
       ListFooterComponent={ListFooterComponent}
       removeClippedSubviews={true}
       windowSize={5}

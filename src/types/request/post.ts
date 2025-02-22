@@ -1,6 +1,5 @@
 import { Profile } from '@/types/models/profile';
-import { getDetailPost } from '@/services/post.service';
-import { Post, PostImages } from '@/types/models/post';
+import { Post } from '@/types/models/post';
 import { Database } from '@/types/database.types';
 import { GetListParams } from '@/types/request/common';
 
@@ -25,7 +24,8 @@ export interface GetDetailPostsParams {
   current_profile_id: Profile['id']
 }
 
-export type GetDetailPostResponse = Awaited<ReturnType<typeof getDetailPost>> & {
-  profile: Pick<Profile, 'id' | 'avatar' | 'username' | 'first_name'>
-  images: Pick<PostImages, 'image_path'>[]
-};
+export interface SearchPostsParams {
+  searchTerm: string;
+  latest?: boolean;
+  pageSize: number
+}

@@ -14,8 +14,8 @@ interface ITabsProps {
   defaultTab?: string;
 }
 
-export function Tabs({ tabs, onPressTab, defaultTab = 'default' }: ITabsProps) {
-  const [currentTab, setCurrentTab] = React.useState(defaultTab);
+export function Tabs({ tabs, onPressTab, defaultTab }: ITabsProps) {
+  const [currentTab, setCurrentTab] = React.useState(defaultTab ?? tabs[0]?.value);
   const { width } = useWindowDimensions();
   const minTabWidth = 100; // minimum width for each tab
   const tabWidth = Math.max(minTabWidth, width / tabs.length);

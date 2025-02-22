@@ -11,6 +11,7 @@ export default function NotificationLayout() {
           title: 'Notifications',
           headerLeft: () => <ProfileToggle/>,
           headerShadowVisible: false,
+          headerTransparent: true,
         }}
       />
     </Stack>

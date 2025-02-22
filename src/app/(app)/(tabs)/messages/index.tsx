@@ -17,6 +17,7 @@ export default function RecentMessagesScreen() {
   } = useGetLastMessages();
 
   const [refreshing, setRefreshing] = React.useState(false);
+
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     await refetch();

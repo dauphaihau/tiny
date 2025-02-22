@@ -1,12 +1,12 @@
 import {
-  View, Animated, Dimensions, TouchableOpacity, Pressable
+  View, Animated, Dimensions, TouchableOpacity
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { ProfileToggle } from '@/components/common/ProfileToggle';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchOverlay } from '@/components/app/app/search/SearchOverlay';
-import { UnfollowedProfiles } from '@/components/app/app/search/UnfollowedProfiles';
+import { UnfollowedProfileList } from '@/components/app/app/search/UnfollowedProfileList';
 import { TextInput } from 'react-native';
 import { featureNotAvailable } from '@/lib/utils';
 import { SearchInput } from '@/components/app/app/search/SearchInput';
@@ -44,7 +44,7 @@ export default function SearchScreen() {
     <SafeAreaView className="flex-1">
       <View style={{ height: screenHeight - TAB_BAR_HEIGHT }}>
         {/*Header*/}
-        <View className="flex-row items-center justify-between px-4 pb-3 gap-2">
+        <View className="flex-row items-center justify-between px-4 pb-3 gap-4">
           <ProfileToggle/>
           <SearchInput
             editable={false}
@@ -65,7 +65,7 @@ export default function SearchScreen() {
         )}
 
         {/* Suggest unfollowed profiles */}
-        <UnfollowedProfiles />
+        <UnfollowedProfileList />
       </View>
     </SafeAreaView>
   );

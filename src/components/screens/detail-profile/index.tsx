@@ -58,57 +58,50 @@ export function DetailProfileScreen() {
     router.setParams({ type: value });
   };
 
-  if (isPending) {
-    return <LoadingScreen/>;
-  }
-  else if (profile) {
-    return (
-      <View>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
-          }
-        >
-          <View className="h-[150px] bg-zinc-100">
-            <Pressable
-              onPress={router.back}
-              className="absolute top-16 left-5 p-2 bg-black/50 rounded-full"
-            >
-              <Ionicons name="chevron-back" size={15} color="white"/>
-            </Pressable>
-            {
-              refreshing &&
-              <View className='absolute top-16 left-1/2 -translate-x-1/2'>
-                <ActivityIndicator />
-              </View>
-            }
-          </View>
+  if (isPending) return <LoadingScreen/>;
+  if (!profile) return <NoResults/>;
 
-          <View className="px-3">
-            <View className="flex-row justify-between">
-              <ProfileInfo profile={profile} className="gap-3 -mt-6"/>
-              <ProfileActions profile={profile} className="mt-3"/>
-            </View>
-          </View>
-
-          <Tabs 
-            tabs={tabs} 
-            onPressTab={handleTabPress}
-            defaultTab={type}
+  return (
+    <View>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
           />
-          <View className="">
-            <ProfilePosts/>
+        }
+      >
+        <View className="h-[150px] bg-zinc-100">
+          <Pressable
+            onPress={router.back}
+            className="absolute top-16 left-5 p-2 bg-black/50 rounded-full"
+          >
+            <Ionicons name="chevron-back" size={15} color="white"/>
+          </Pressable>
+          {
+            refreshing &&
+            <View className="absolute top-16 left-1/2 -translate-x-1/2">
+              <ActivityIndicator/>
+            </View>
+          }
+        </View>
+
+        <View className="px-3">
+          <View className="flex-row justify-between">
+            <ProfileInfo profile={profile} className="gap-3 -mt-6"/>
+            <ProfileActions profile={profile} className="mt-3"/>
           </View>
-        </ScrollView>
-      </View>
-    );
-  }
-  else {
-    return (
-      <NoResults/>
-    );
-  }
+        </View>
+
+        <Tabs
+          tabs={tabs}
+          onPressTab={handleTabPress}
+          defaultTab={type}
+        />
+        <View className="">
+          <ProfilePosts/>
+        </View>
+      </ScrollView>
+    </View>
+  );
 }
