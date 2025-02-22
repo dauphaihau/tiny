@@ -1,17 +1,20 @@
 import { View } from 'react-native';
-import { WrapperAuthScreen } from '@/components/app/auth/WrapperAuth';
+import { AuthScreenWrapper } from '@/components/app/auth/AuthScreenWrapper';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
 import { FormGroup } from '@/components/ui/FormGroup';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { Controller, useForm } from 'react-hook-form';
-import { useLogin } from '@/services/auth';
+import { useLogin } from '@/services/auth.service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginDto, loginSchema } from '@/schemas/request/auth';
+import { useState } from 'react';
+import { ErrorCallout } from '@/components/app/auth/ErrorCallout';
 
-export default function LoginPage() {
-  const { mutate: login, isPending, isError } = useLogin();
+export default function LoginScreen() {
+  const { mutateAsync: login, isPending } = useLogin();
+  const [serverErrorServerMessage, setServerErrorMessage] = useState<string>();
 
   const {
     control,
@@ -25,18 +28,25 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (data: LoginDto) => {
-    login(data);
+  const onSubmit = async (data: LoginDto) => {
+    const authError = await login(data);
+    if (!authError) {
+      router.replace('/(app)/(tabs)/home');
+    }
+    else if (authError.code === 'invalid_credentials') {
+      setServerErrorMessage('Incorrect email or password');
+    }
+    else {
+      setServerErrorMessage('Unknown error');
+    }
   };
 
   return (
-    <WrapperAuthScreen title="Login">
-      {
-        isError &&
-        <View className="bg-[#F8DDE0] justify-center py-4 px-4 rounded-md">
-          <Text className="text-[#823030] font-medium">Incorrect email or password</Text>
-        </View>
-      }
+    <AuthScreenWrapper
+      title="Login"
+      onBack={() => router.dismissAll()}
+    >
+      <ErrorCallout message={serverErrorServerMessage}/>
       <View className="gap-4">
         <Controller
           name="email"
@@ -64,21 +74,23 @@ export default function LoginPage() {
             </FormGroup>
           )}
         />
-        <Button size='sm' variant="link" className="w-1/2 -ml-7">
-          <Text>Forgot password?</Text>
-        </Button>
+        <Link href="/forgot-password" asChild>
+          <Button size="sm" variant="link" className="w-1/2 -ml-7">
+            <Text>Forgot password?</Text>
+          </Button>
+        </Link>
         <Button onPress={handleSubmit(onSubmit)}>
           <Text>Login</Text>
         </Button>
         <View className="flex-row items-center justify-center">
           <Text className="text-zinc-500 font-medium">Don&#39;t have account?</Text>
-          <Link href="/registerr" asChild>
+          <Link href="/register" asChild>
             <Button variant="link" className="-ml-4">
               <Text>Register</Text>
             </Button>
           </Link>
         </View>
       </View>
-    </WrapperAuthScreen>
+    </AuthScreenWrapper>
   );
 };

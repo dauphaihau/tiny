@@ -1,17 +1,20 @@
 import { View } from 'react-native';
-import { WrapperAuthScreen } from '@/components/app/auth/WrapperAuth';
+import { AuthScreenWrapper } from '@/components/app/auth/AuthScreenWrapper';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Text } from '@/components/ui/Text';
 import { FormGroup } from '@/components/ui/FormGroup';
 import { Controller, useForm } from 'react-hook-form';
-import { useRegister } from '@/services/auth';
+import { useRegister } from '@/services/auth.service';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { registerSchema, RegisterDto } from '@/schemas/request/auth';
+import { useState } from 'react';
+import { ErrorCallout } from '@/components/app/auth/ErrorCallout';
 
-export default function RegisterPage() {
+export default function RegisterScreen() {
   const { mutateAsync: register, isPending } = useRegister();
+  const [serverErrorMessage, setServerErrorMessage] = useState<string>();
 
   const {
     control,
@@ -29,15 +32,25 @@ export default function RegisterPage() {
 
   const onSubmit = async (data: RegisterDto) => {
     const authError = await register(data);
-    if (authError.code === 'user_already_exists') {
+    if (!authError) {
+      router.replace('/(app)/(tabs)/home');
+    }
+    else if (authError.code === 'user_already_exists') {
       setError('email', {
         message: 'Email exist!',
       });
     }
+    else {
+      setServerErrorMessage('Unknown error');
+    }
   };
 
   return (
-    <WrapperAuthScreen title="Register">
+    <AuthScreenWrapper
+      title="Register"
+      onBack={() => router.dismissAll()}
+    >
+      <ErrorCallout message={serverErrorMessage}/>
       <View className="gap-4">
         <Controller
           name="name"
@@ -95,6 +108,6 @@ export default function RegisterPage() {
           </Link>
         </View>
       </View>
-    </WrapperAuthScreen>
+    </AuthScreenWrapper>
   );
 };
