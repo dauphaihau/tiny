@@ -7,13 +7,14 @@ import { parsePostCreatedAt } from '@/lib/day';
 import { ScrollView } from 'react-native-gesture-handler';
 import { getImage } from '@/services/image.service';
 import React from 'react';
-import { GetDetailPostResponse } from '@/types/request/post';
 import { LikePostButton } from '@/components/common/LikePostButton';
 import { useRootNameTab } from '@/hooks/useRootNameTab';
 import { Text } from '@/components/ui/Text';
+import { ReplyPostButton } from '@/components/common/post/ReplyPostButton';
+import { IPost } from '@/types/components/common/post';
 
 interface ParentPostProps {
-  post: GetDetailPostResponse
+  post: IPost
 }
 
 export function ParentPost({ post }: ParentPostProps) {
@@ -32,7 +33,7 @@ export function ParentPost({ post }: ParentPostProps) {
             <Pressable onPress={navigateToProfile}>
               <Avatar path={post?.profile?.avatar}/>
             </Pressable>
-            <Text onPress={navigateToProfile} className="font-semibold">{post?.profile?.first_name}</Text>
+            <Text onPress={navigateToProfile} className="font-semibold">{post?.profile?.username}</Text>
             <Text className="font-medium text-zinc-400">{parsePostCreatedAt(post?.created_at)}</Text>
           </View>
           <Text>{post?.content}</Text>
@@ -60,11 +61,8 @@ export function ParentPost({ post }: ParentPostProps) {
           )
         }
         <View className="pl-4 flex-row gap-5 mt-4">
-          <LikePostButton post={{
-            id: post.id,
-            is_liked: post.is_liked,
-            likes_count: post.likes_count,
-          }}/>
+          <LikePostButton {...post}/>
+          <ReplyPostButton {...post}/>
         </View>
       </View>
     </View>

@@ -10,10 +10,9 @@ import { parsePostCreatedAt } from '@/lib/day';
 import { SheetManager } from 'react-native-actions-sheet';
 import { useGetCurrentProfile } from '@/services/profile.service';
 import { LikePostButton } from '@/components/common/LikePostButton';
-import { ReplyButton } from '@/components/common/post/ReplyButton';
 import { useRootNameTab } from '@/hooks/useRootNameTab';
 import { IPost } from '@/types/components/common/post';
-import { usernameWithPrefix } from '@/lib/utils';
+import { ReplyPostButton } from '@/components/common/post/ReplyPostButton';
 
 interface PostProps {
   data: IPost;
@@ -56,16 +55,17 @@ export const Post = ({ data }: PostProps) => {
         <View>
           <View className="py-4">
             <View className="flex-row gap-4 px-4">
-              <Pressable onPress={navigateToProfile} className='h-0'>
+              <Pressable onPress={navigateToProfile} className="h-0">
                 <Avatar path={data?.profile?.avatar}/>
               </Pressable>
 
-              <View className='w-[90%]'>
-                <View className="flex-row gap-1.5">
-                  <Text onPress={navigateToProfile} className="font-semibold">{data?.profile?.first_name}</Text>
-                  <Text className="font-medium text-zinc-500">{usernameWithPrefix(data?.profile?.username)}</Text>
-                  <Text className="font-medium text-zinc-500">·</Text>
-                  <Text className="font-medium text-zinc-500">{parsePostCreatedAt(data?.created_at)}</Text>
+              <View className="w-[90%]">
+                <View className="flex-row gap-1">
+                  <Pressable onPress={navigateToProfile}>
+                    <Text className="font-semibold">{data?.profile?.username}</Text>
+                  </Pressable>
+                  <Text className="font-medium text-zinc-400">·</Text>
+                  <Text className="font-medium text-zinc-400">{parsePostCreatedAt(data?.created_at)}</Text>
                 </View>
                 <Text>{data?.content}</Text>
               </View>
@@ -93,12 +93,10 @@ export const Post = ({ data }: PostProps) => {
               )
             }
             <View className="pl-16 flex-row gap-5 mt-3">
-              <LikePostButton post={data}/>
-              <ReplyButton post={data}/>
+              <LikePostButton {...data}/>
+              <ReplyPostButton {...data}/>
             </View>
           </View>
-
-          <View className="border-[0.4px] border-zinc-300 w-full"/>
         </View>
       </Pressable>
 

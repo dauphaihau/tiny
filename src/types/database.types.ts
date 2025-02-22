@@ -120,6 +120,51 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          actor_id: string
+          created_at: string
+          entity_id: number
+          entity_type: string
+          id: number
+          notification_type: string
+          profile_id: string
+        }
+        Insert: {
+          actor_id: string
+          created_at?: string
+          entity_id: number
+          entity_type: string
+          id?: number
+          notification_type: string
+          profile_id: string
+        }
+        Update: {
+          actor_id?: string
+          created_at?: string
+          entity_id?: number
+          entity_type?: string
+          id?: number
+          notification_type?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_images: {
         Row: {
           created_at: string
@@ -232,6 +277,7 @@ export type Database = {
           profile: Json
           images: Json
           likes_count: number
+          replies_count: number
           is_liked: boolean
         }[]
       }
@@ -253,11 +299,35 @@ export type Database = {
           other_profile_first_name: string
         }[]
       }
+      get_notifications:
+        | {
+            Args: {
+              target_profile_id: string
+              filter_type?: string
+              page_number?: number
+              items_per_page?: number
+            }
+            Returns: {
+              notifications: Json
+              pagination: Json
+            }[]
+          }
+        | {
+            Args: {
+              target_profile_id: string
+              page_number?: number
+              items_per_page?: number
+            }
+            Returns: {
+              notifications: Json
+              pagination: Json
+            }[]
+          }
       get_posts: {
         Args: {
-          from_offset: number
-          to_offset: number
           current_profile_id: string
+          page_number?: number
+          items_per_page?: number
           type?: Database["public"]["Enums"]["post_filter_type"]
         }
         Returns: {
@@ -268,6 +338,7 @@ export type Database = {
           profile: Json
           images: Json
           likes_count: number
+          replies_count: number
           is_liked: boolean
         }[]
       }

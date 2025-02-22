@@ -2,7 +2,7 @@ import {
   Animated, Dimensions, TextInput, View
 } from 'react-native';
 import React from 'react';
-import { useGetSearchProfiles } from '@/services/profile.service';
+import { useSearchProfiles } from '@/services/profile.service';
 import { router } from 'expo-router';
 import { useDebounce } from '@/hooks/useDebounce';
 import { SearchHeader } from './SearchHeader';
@@ -24,7 +24,7 @@ export function SearchOverlay({
   const [inputValue, setInputValue] = React.useState(initialSearchTerm);
   const searchTerm = useDebounce(inputValue, 300);
   
-  const { isPending: isSearching, profiles } = useGetSearchProfiles({
+  const { isPending: isSearching, profiles } = useSearchProfiles({
     searchTerm,
     pageSize: 10,
   });

@@ -5,7 +5,6 @@ import { Text } from '@/components/ui/Text';
 import { supabase } from '@/lib/supabase';
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
-import { usernameWithPrefix } from '@/lib/utils';
 import { useGetCurrentProfile } from '@/services/profile.service';
 import { Avatar } from '@/components/common/Avatar';
 import { useQueryClient } from '@tanstack/react-query';
@@ -51,7 +50,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
           </Pressable>
           <Pressable onPress={navigateToProfile} className="mt-2">
             <Text className="font-bold text-lg">{currentProfile?.first_name}</Text>
-            <Text className="text-zinc-500 text-base">{usernameWithPrefix(currentProfile?.username)}</Text>
+            <Text className="text-base">{currentProfile?.username}</Text>
           </Pressable>
           <View className="flex-row gap-2">
             <View className="flex-row gap-1">

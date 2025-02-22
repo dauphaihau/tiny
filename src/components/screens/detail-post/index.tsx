@@ -35,10 +35,10 @@ export function DetailPostScreen() {
       headerTitle: 'Post',
       headerShadowVisible: shadowVisible,
       getId: ({ params }: { params: { id: string } }) => params?.id,
-      headerLeft: () => <BackScreenButton />,
+      headerLeft: () => <BackScreenButton/>,
       headerRight: () => (
         <View className="flex-row gap-3">
-          <Feather name="bell" size={sizeIcon} />
+          <Feather name="bell" size={sizeIcon}/>
           <MaterialCommunityIcons
             name="dots-horizontal-circle-outline"
             size={sizeIcon}
@@ -60,34 +60,31 @@ export function DetailPostScreen() {
     setShadowVisible(scrollY > 20);
   };
 
-  if (isPending) {
-    return <LoadingScreen />;
-  }
-  else if (post) {
-    return (
-      <View className="h-full">
-        <View className="flex-1">
-          <ScrollView
-            onScroll={handleScroll}
-            scrollEventThrottle={16} // Ensures smooth updates
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-            <ParentPost post={post} />
-            <Replies />
-          </ScrollView>
-        </View>
+  if (isPending) return <LoadingScreen/>;
+  else if (!post) return <NoResults/>;
 
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={100}
-          className="absolute bottom-0 left-0 right-0 bg-transparent"
+  return (
+    <View className="h-full">
+      <View className="flex-1">
+        <ScrollView
+          onScroll={handleScroll}
+          scrollEventThrottle={16} // Ensures smooth updates
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+          }
         >
-          <ReplyInput />
-        </KeyboardAvoidingView>
+          <ParentPost post={post}/>
+          <Replies/>
+        </ScrollView>
       </View>
-    );
-  }
-  return <NoResults />;
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={100}
+        className="absolute bottom-0 left-0 right-0 bg-transparent"
+      >
+        <ReplyInput/>
+      </KeyboardAvoidingView>
+    </View>
+  );
 }

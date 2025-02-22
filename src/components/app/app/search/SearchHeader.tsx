@@ -20,7 +20,7 @@ export function SearchHeader({
   initialValue = '',
 }: SearchHeaderProps) {
   return (
-    <View className="flex-row items-center px-4 gap-3">
+    <View className="flex-row items-center px-4 gap-5">
       <Pressable onPress={onDismiss}>
         <Ionicons name="chevron-back" size={24} color="black"/>
       </Pressable>

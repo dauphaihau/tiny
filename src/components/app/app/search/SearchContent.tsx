@@ -5,9 +5,9 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { ProfileItem } from './ProfileItem';
 import { SearchSkeleton } from './SearchSkeleton';
-import { useGetSearchProfiles } from '@/services/profile.service';
+import { useSearchProfiles } from '@/services/profile.service';
 
-type Profile = ReturnType<typeof useGetSearchProfiles>['profiles'][number];
+type Profile = ReturnType<typeof useSearchProfiles>['profiles'][number];
 
 interface SearchContentProps {
   searchTerm: string;

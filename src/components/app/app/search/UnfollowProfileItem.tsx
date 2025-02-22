@@ -1,25 +1,17 @@
 import { Text, TouchableWithoutFeedback, View } from 'react-native';
 import { Avatar } from '@/components/common/Avatar';
 import { router } from 'expo-router';
-import { usernameWithPrefix } from '@/lib/utils';
 import { FollowButton } from '@/components/common/FollowButton';
 import React from 'react';
-
-interface UnfollowProfileItemProps {
-  id: string;
-  username: string;
-  first_name: string;
-  followers: number;
-  avatar?: string | null;
-}
+import { UnfollowedProfile } from '@/types/request/profile/get-unfollowed-profiles';
 
 export function UnfollowProfileItem({
   id,
   username,
   first_name,
-  followers,
+  followers_count,
   avatar,
-}: UnfollowProfileItemProps) {
+}: UnfollowedProfile) {
 
   const navigateDetailProfile = () => {
     router.push(`/search/profiles/${id}`);
@@ -32,13 +24,11 @@ export function UnfollowProfileItem({
           path={avatar}
           className="size-10 mr-3"
         />
-        <View className="flex-1 gap-1">
-          <View className="flex-row gap-1.5">
-            <Text className="font-semibold">{first_name}</Text>
-            <Text className="text-zinc-500">{usernameWithPrefix(username)}</Text>
-          </View>
-          <Text className="text-zinc-500 text-sm">
-            {followers.toLocaleString()} followers
+        <View className="flex-1">
+          <Text className="font-semibold">{username}</Text>
+          <Text className="text-zinc-500 mb-0.5">{first_name}</Text>
+          <Text className="text-sm">
+            {followers_count.toLocaleString()} followers
           </Text>
         </View>
         <FollowButton isFollowing={false} profileId={id}/>

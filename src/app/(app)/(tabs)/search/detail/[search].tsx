@@ -1,5 +1,5 @@
 import {
-  Pressable, TextInput, View, Dimensions, Animated, TouchableOpacity,
+  Pressable, TextInput, View, Animated, TouchableOpacity
 } from 'react-native';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
@@ -14,7 +14,6 @@ import { PostsList } from '@/components/app/app/search/detail/PostsList';
 import { SearchOverlay } from '@/components/app/app/search/SearchOverlay';
 import { SearchInput } from '@/components/app/app/search/SearchInput';
 import { featureNotAvailable } from '@/lib/utils';
-import { TAB_BAR_HEIGHT } from '@/constants/layout';
 
 const tabs = [
   { label: 'Top', value: 'default' },
@@ -78,13 +77,11 @@ export default function DetailSearchScreen() {
     router.setParams({ type: value });
   };
 
-  const screenHeight = Dimensions.get('window').height;
-
   return (
     <SafeAreaView className="flex-1" edges={['top']}>
-      <View style={{ height: screenHeight - TAB_BAR_HEIGHT }}>
+      <View className="flex-1">
         {/* Header */}
-        <View className="flex-row items-center px-4 gap-3">
+        <View className="flex-row items-center px-4 gap-5">
           <Pressable onPress={backScreen}>
             <Ionicons name="chevron-back" size={24} color="black"/>
           </Pressable>
@@ -107,7 +104,7 @@ export default function DetailSearchScreen() {
             initialSearchTerm={searchTerm}
           />
         )}
-        <View>
+        <View className="flex-1 pb-[2px]">
           {/*Search Tabs*/}
           <Tabs tabs={tabs} onPressTab={handleTabPress}/>
 
