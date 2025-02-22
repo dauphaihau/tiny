@@ -1,4 +1,6 @@
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import {
+  View, FlatList, ActivityIndicator, RefreshControl 
+} from 'react-native';
 import { useGetNotifications } from '@/services/notification.service';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import React from 'react';
@@ -17,6 +19,7 @@ export function NotificationList() {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
+    refetch,
   } = useGetNotifications({ type });
 
   const renderItem = ({ item }: { item: INotification }) => {
@@ -27,6 +30,8 @@ export function NotificationList() {
 
   if (isPending) return <LoadingScreen/>;
   if (!notifications.length) return <NoResults/>;
+
+  console.log('notifications', notifications);
 
   return (
     <FlatList
@@ -42,16 +47,22 @@ export function NotificationList() {
       onEndReachedThreshold={0.5}
       ListFooterComponent={() => (
         <View className="mb-24">
+          <Separator/>
           {isFetchingNextPage ?
             (
-              <View className="py-4">
+              <View className="py-8">
                 <ActivityIndicator/>
               </View>
             ) :
             null}
-          <Separator/>
         </View>
       )}
+      refreshControl={
+        <RefreshControl
+          refreshing={false}
+          onRefresh={refetch}
+        />
+      }
     />
   );
 }

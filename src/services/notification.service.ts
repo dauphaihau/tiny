@@ -24,9 +24,9 @@ export const useGetNotifications = (params?: GetNotificationsParams) => {
 
       // Type assertion for the entire response
       const response = data[0] as unknown as NotificationResponse;
-      
+
       return {
-        notifications: response.notifications,
+        notifications: response.notifications ?? [],
         pagination: response.pagination,
       };
     },

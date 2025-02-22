@@ -17,7 +17,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView className='flex-1'>
-      <View className="pt-8"/>
+      <View className="pt-10"/>
       <Tabs
         tabs={tabs}
         onPressTab={onPressTab}

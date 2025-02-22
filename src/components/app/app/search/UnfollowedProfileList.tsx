@@ -1,5 +1,5 @@
 import {
-  ActivityIndicator, FlatList, RefreshControl, View 
+  ActivityIndicator, FlatList, RefreshControl, View
 } from 'react-native';
 import { useGetUnfollowedProfiles } from '@/services/profile.service';
 import { UnfollowProfileItem } from './UnfollowProfileItem';
@@ -26,9 +26,13 @@ export function UnfollowedProfileList() {
   const keyExtractor = useCallback((item: UnfollowedProfile) => item.id, []);
 
   const ListFooterComponent = useMemo(() => (
-    isFetchingNextPage ?
-      <ActivityIndicator size='small' className='my-8' /> :
-      <View className='mb-24'/>
+    <View className='mb-24'>
+      {
+        isFetchingNextPage ?
+          <ActivityIndicator size="small" className="my-8"/> :
+          null
+      }
+    </View>
   ), [isFetchingNextPage]);
 
   const handleEndReached = useCallback(() => {
@@ -44,6 +48,7 @@ export function UnfollowedProfileList() {
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         ListFooterComponent={ListFooterComponent}
+        ListHeaderComponent={() => <View className="mt-4"/>}
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.5}
         initialNumToRender={PAGE_SIZE}

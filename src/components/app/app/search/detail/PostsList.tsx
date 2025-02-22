@@ -47,16 +47,15 @@ export function PostsList({ searchTerm, isLatest }: PostsListProps) {
   }, [hasNextPage, fetchNextPage]);
 
   const ListFooterComponent = useMemo(() => (
-    // isFetchingNextPage ? <ActivityIndicator className='my-8' /> : null
-    <View className=''>
+    <View className='mb-24'>
+      <Separator/>
       {isFetchingNextPage ?
         (
-          <View className="py-4">
+          <View className="py-8">
             <ActivityIndicator />
           </View>
         ) :
         null}
-      <Separator/>
     </View>
   ), [isFetchingNextPage]);
 
