@@ -1,6 +1,5 @@
 import React from 'react';
 import { Stack } from 'expo-router';
-import { ProfileToggle } from '@/components/common/ProfileToggle';
 
 export default function NotificationLayout() {
   return (
@@ -8,10 +7,7 @@ export default function NotificationLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Notifications',
-          headerLeft: () => <ProfileToggle/>,
-          headerShadowVisible: false,
-          headerTransparent: true,
+          headerShown: false,
         }}
       />
     </Stack>

@@ -1,18 +1,58 @@
-export const NAV_THEME = {
+export const NAVIGATION_THEME = {
   light: {
-    background: 'hsl(0 0% 100%)', // background
-    border: 'hsl(240 5.9% 90%)', // border
-    card: 'hsl(0 0% 100%)', // card
-    notification: 'hsl(0 84.2% 60.2%)', // destructive
-    primary: 'hsl(240 5.9% 10%)', // primary
-    text: 'hsl(240 10% 3.9%)', // foreground
+    background: 'hsl(0 0% 100%)',
+    foreground: 'hsl(240 10% 3.9%)',
+    card: 'hsl(0 0% 100%)',
+    cardForeground: 'hsl(240 10% 3.9%)',
+    popover: 'hsl(0 0% 100%)',
+    popoverForeground: 'hsl(240 10% 3.9%)',
+    primary: 'hsl(240 5.9% 10%)',
+    primaryForeground: 'hsl(0 0% 98%)',
+    secondary: 'hsl(240 4.8% 95.9%)',
+    secondaryForeground: 'hsl(240 5.9% 10%)',
+    muted: 'hsl(240 4.8% 95.9%)',
+    mutedForeground: 'hsl(240 3.8% 46.1%)',
+    accent: 'hsl(240 4.8% 95.9%)',
+    accentForeground: 'hsl(240 5.9% 10%)',
+    destructive: 'hsl(0 84.2% 60.2%)',
+    destructiveForeground: 'hsl(0 0% 98%)',
+    border: 'hsl(240 5.9% 90%)',
+    input: 'hsl(0 0% 96%)',
+    ring: 'hsl(240 5.9% 10%)',
+    text: 'hsl(240 10% 3.9%)',
+    notification: 'hsl(0 84.2% 60.2%)',
+    actionsheet: 'hsl(240 4.8% 95.9%)',
+    actionsheetForeground: 'hsl(0 0% 100%)',
+    actionsheetCard: 'hsl(0 0% 100%)',
+    actionsheetBorder: 'hsl(240 5.9% 90%)',
+    icon: 'hsl(0 0% 27%)',
   },
   dark: {
-    background: 'hsl(240 10% 3.9%)', // background
-    border: 'hsl(240 3.7% 15.9%)', // border
-    card: 'hsl(240 10% 3.9%)', // card
-    notification: 'hsl(0 72% 51%)', // destructive
-    primary: 'hsl(0 0% 98%)', // primary
-    text: 'hsl(0 0% 98%)', // foreground
+    background: 'hsl(240 10% 3.9%)',
+    foreground: 'hsl(0 0% 98%)',
+    card: 'hsl(240 10% 3.9%)',
+    cardForeground: 'hsl(0 0% 98%)',
+    popover: 'hsl(240 10% 3.9%)',
+    popoverForeground: 'hsl(0 0% 98%)',
+    primary: 'hsl(0 0% 98%)',
+    primaryForeground: 'hsl(240 5.9% 10%)',
+    secondary: 'hsl(240 3.7% 15.9%)',
+    secondaryForeground: 'hsl(0 0% 98%)',
+    muted: 'hsl(240 3.7% 15.9%)',
+    mutedForeground: 'hsl(240 5% 64.9%)',
+    accent: 'hsl(240 3.7% 15.9%)',
+    accentForeground: 'hsl(0 0% 98%)',
+    destructive: 'hsl(0 72% 51%)',
+    destructiveForeground: 'hsl(0 0% 98%)',
+    border: 'hsl(240 3.7% 15.9%)',
+    input: 'hsl(0 0 12%)',
+    ring: 'hsl(240 4.9% 83.9%)',
+    text: 'hsl(0 0% 98%)',
+    notification: 'hsl(0 72% 51%)',
+    actionsheet: 'hsl(240 5.9% 10%)',
+    actionsheetForeground: 'hsl(0 0% 100%)',
+    actionsheetCard: 'hsl(240 3.7% 15.9%)',
+    actionsheetBorder: 'hsl(240 2% 20%)',
+    icon: 'hsl(0 0% 63%)',
   },
 };

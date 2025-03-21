@@ -1,22 +1,34 @@
 import React from 'react';
-import { FlatList, View } from 'react-native';
-import { cn } from '@/lib/utils';
+import { View } from 'react-native';
+import { featureNotAvailable } from '@/utils';
 import { ButtonSheet } from '../ButtonSheet';
 import { DeleteButton } from './DeleteButton';
-import { Feather } from '@expo/vector-icons';
 import { ActionSheet } from '@/components/sheet/ActionSheet';
+import { Icon } from '@/components/common/Icon';
+import { ButtonSheetGroup } from '@/components/sheet/ButtonSheetGroup';
+import { ButtonSheetProps } from '@/components/sheet/ButtonSheet';
 
-type Option = {
-  label: string;
-  iconName?: keyof typeof Feather.glyphMap;
-};
-
-const options: Option[] = [
-  { label: 'Save', iconName: 'bookmark' },
-  { label: 'Pin to profile' },
-  { label: 'Archive', iconName: 'archive' },
-  { label: 'Hide like and share counts' },
-  { label: 'Who can reply & quote' },
+const options: ButtonSheetProps[] = [
+  {
+    label: 'Save',
+    icon: (size) => <Icon name="bookmark" size={size}/>,
+  },
+  {
+    label: 'Pin to profile',
+    icon: (size) => <Icon name="pin" size={size}/>,
+  },
+  {
+    label: 'Archive',
+    icon: (size) => <Icon name="archive" size={size}/>,
+  },
+  {
+    label: 'Hide like and share counts',
+    icon: (size) => <Icon name="eye.off" size={size}/>,
+  },
+  {
+    label: 'Who can reply & quote',
+    icon: (size) => <Icon name="chevron.right" size={size}/>,
+  },
 ];
 
 export default function CurrentProfilePostActions() {
@@ -25,32 +37,19 @@ export default function CurrentProfilePostActions() {
       <View className="gap-4 mt-5 px-4">
         <ButtonSheet
           label="Edit"
+          onPress={featureNotAvailable}
           icon={(size) => (
-            <Feather name="edit" size={size}/>
+            <Icon name="edit" size={size}/>
           )}
         />
-        <FlatList
-          data={options}
-          keyExtractor={(item) => item.label}
-          renderItem={({ item, index }) => (
-            <ButtonSheet
-              label={item.label}
-              icon={(size) => (
-                <Feather name={item.iconName} size={size}/>
-              )}
-              className={
-                cn('rounded-none border-t-[0.4px] border-zinc-200',
-                  // 'opacity-50',
-                  index === 0 && 'rounded-t-2xl',
-                  index === options.length - 1 && 'rounded-b-2xl'
-                )
-              }
-            />)}
-        />
+        
+        <ButtonSheetGroup options={options} />
+        
         <ButtonSheet
           label="Copy link"
+          onPress={featureNotAvailable}
           icon={(size) => (
-            <Feather name="link" size={size}/>
+            <Icon name="link" size={size}/>
           )}
         />
         <DeleteButton/>

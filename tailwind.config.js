@@ -5,12 +5,14 @@ module.exports = {
   // NOTE: Update this to include the paths to all of your component files.
   content: ['./src/app/**/*.{js,jsx,ts,tsx}', './src/components/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
+        icon: 'hsl(var(--icon))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
@@ -40,6 +42,12 @@ module.exports = {
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
+        },
+        actionsheet: {
+          DEFAULT: 'hsl(var(--actionsheet))',
+          foreground: 'hsl(var(--actionsheet-foreground))',
+          card: 'hsl(var(--actionsheet-card))',
+          border: 'hsl(var(--actionsheet-border))',
         },
       },
       borderWidth: {

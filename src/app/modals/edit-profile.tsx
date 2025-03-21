@@ -1,132 +1,146 @@
 import {
-  Image, ImageURISource, Pressable, View
+  ImageURISource, TouchableOpacity, View
 } from 'react-native';
-import { Link, router, Stack } from 'expo-router';
+import { router } from 'expo-router';
 import React from 'react';
 import { AuthWrapper } from '@/components/common/AuthWrapper';
 import { Text } from '@/components/ui/Text';
 import { Controller, useForm } from 'react-hook-form';
 import { useGetCurrentProfile, useUpdateProfile } from '@/services/profile.service';
-import { FormGroup } from '@/components/ui/FormGroup';
-import { Input } from '@/components/ui/Input';
 import { UpdateUserDto, updateProfileSchema } from '@/schemas/request/profile';
-import * as ImagePicker from 'expo-image-picker';
-import { getAvatarImage, uploadImage } from '@/services/image.service';
-import { Textarea } from '@/components/ui/Textarea';
+import { uploadImage } from '@/services/image.service';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/Button';
+import { BackScreenButton } from '@/components/layout/header/BackScreenButton';
+import { useNavigation } from '@react-navigation/native';
+import { compressImage } from '@/utils/compress-image';
+import { Input } from '@/components/ui/Input';
+import { FormGroup } from '@/components/app/modals/edit-profile/FormGroup';
+import { AvatarPicker } from '@/components/app/modals/edit-profile/AvatarPicker';
+import Toast from 'react-native-toast-message';
+import { Separator } from '@/components/common/Separator';
 
 export default function EditProfileScreen() {
-  const { data: profile } = useGetCurrentProfile();
-  const { mutateAsync: updateUser, isPending } = useUpdateProfile();
-  const currentSourceImage = getAvatarImage(profile?.avatar);
-  const [sourceImage, setSourceImage] = React.useState<ImageURISource>(getAvatarImage(profile?.avatar));
-  const [disabledSubmit, setDisabledSubmit] = React.useState(true);
+  const { data: currentProfile } = useGetCurrentProfile();
+  const { mutateAsync: updateProfile } = useUpdateProfile();
+  const [newSourceImage, setNewSourceImage] = React.useState<ImageURISource | null>(null);
+  const [disabledSubmitBtn, setDisabledSubmitBtn] = React.useState(true);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const navigation = useNavigation();
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
     watch,
   } = useForm<UpdateUserDto>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
-      name: profile?.first_name,
-      bio: profile?.bio ?? '',
+      name: currentProfile?.first_name,
+      bio: currentProfile?.bio ?? '',
     },
   });
 
   React.useEffect(() => {
-    const { unsubscribe } = watch(() => {
-      if (disabledSubmit) {
-        setDisabledSubmit(false);
-      }
+    navigation.setOptions({
+      headerLeft: () => (
+        <BackScreenButton disabled={isSubmitting} variant="text"/>
+      ),
+      headerRight: () => (
+        <TouchableOpacity
+          disabled={isSubmitting || disabledSubmitBtn}
+          onPress={handleSubmit(onSubmit)}
+          className="disabled:opacity-50"
+        >
+          <Text className="text-lg font-semibold">Save</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, newSourceImage, disabledSubmitBtn, isSubmitting]);
+
+  React.useEffect(() => {
+    if (newSourceImage) {
+      setDisabledSubmitBtn(false);
+    }
+
+    const { unsubscribe } = watch((data) => {
+      const hasEmptyFields = !data.name?.trim() || !data.bio?.trim();
+      const isUnchanged =
+        data.name === currentProfile?.first_name &&
+        data.bio === (currentProfile?.bio ?? '')
+      ;
+      setDisabledSubmitBtn(hasEmptyFields || isUnchanged);
     });
     return () => unsubscribe();
-  }, [watch]);
+  }, [watch, currentProfile, newSourceImage]);
 
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (disabledSubmit) {
-      setDisabledSubmit(false);
-    }
-    if (!result.canceled) {
-      setSourceImage({
-        uri: result.assets[0].uri,
-      });
-    }
-  };
-
-  const onSubmit = async (data: UpdateUserDto) => {
-    if (
-      typeof sourceImage === 'object' &&
-      JSON.stringify(sourceImage) !== JSON.stringify(currentSourceImage)
-    ) {
-      data.avatar = await uploadImage('profiles', sourceImage.uri);
-    }
-    const error = await updateUser(data);
-    if (!error) {
+  async function onSubmit(data: UpdateUserDto) {
+    try {
+      setIsSubmitting(true);
+      if (newSourceImage && newSourceImage.uri) {
+        const compressed = await compressImage(newSourceImage.uri);
+        data.avatar = await uploadImage('profiles', compressed.uri);
+      }
+      await updateProfile(data);
       router.back();
     }
-  };
+    catch (error) {
+      console.error(error);
+      setIsSubmitting(false);
+      Toast.show({
+        type: 'error',
+        props: {
+          message: 'Edit profile failed',
+        },
+      });
+    }
+  }
 
   return (
     <AuthWrapper>
-      <View>
-        <Stack.Screen
-          options={{
-            headerLeft: () => <Link disabled={isPending} href="../">Cancel</Link>,
-            headerRight: () => (
-              <Button
-                disabled={isPending || disabledSubmit}
-                onPress={handleSubmit(onSubmit)}
-                variant="ghost" className="native:px-0"
-              >
-                <Text>Save</Text>
-              </Button>
-            ),
-          }}
+      <View className="py-4 flex-1 mt-16">
+        <AvatarPicker
+          disabled={isSubmitting}
+          onImagePicked={setNewSourceImage}
         />
-        <View className="p-4 gap-4">
-          <Pressable onPress={pickImage}>
-            <Image
-              source={sourceImage}
-              className="size-16 rounded-full"
-            />
-          </Pressable>
-          <Controller
-            name="name"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <FormGroup label="Name" error={errors.name?.message}>
-                <Input
-                  editable={!isPending}
-                  value={value}
-                  onChangeText={onChange}
-                />
-              </FormGroup>
-            )}
-          />
-          <Controller
-            name="bio"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <FormGroup label="Bio" error={errors.bio?.message}>
-                <Textarea
-                  editable={!isPending}
-                  value={value}
-                  onChangeText={onChange}
-                />
-              </FormGroup>
-            )}
-          />
-        </View>
+        <Separator/>
+        <Controller
+          name="name"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <FormGroup label="Name" className="py-2">
+              <Input
+                variant="none"
+                size="none"
+                containerClassName='h-7'
+                editable={!isSubmitting}
+                value={value}
+                onChangeText={onChange}
+                placeholder="Add your name"
+              />
+            </FormGroup>
+          )}
+        />
+        <Separator/>
+        <Controller
+          name="bio"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <FormGroup label="Bio" classNameLabel="py-2">
+              <Input
+                variant="none"
+                size="none"
+                editable={!isSubmitting}
+                value={value}
+                onChangeText={onChange}
+                placeholder="Add a bio to your profile"
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+                className="min-h-[90px] max-h-[90px] py-2 items-start"
+              />
+            </FormGroup>
+          )}
+        />
+        <Separator/>
       </View>
     </AuthWrapper>
   );

@@ -28,9 +28,11 @@ export function useUpdateProfile() {
         .eq('id', profile.id)
         .select()
         .single();
+      if (error) {
+        throw new Error(error.message);
+      }
       queryClient.setQueryData(['profile', profile.id], data);
-      queryClient.setQueryData(['current-profile'], data);
-      return error;
+      queryClient.setQueryData(['current-profile'], { ...profile, ...data });
     },
   });
 }

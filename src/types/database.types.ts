@@ -168,21 +168,27 @@ export type Database = {
       post_images: {
         Row: {
           created_at: string
+          height: number | null
           id: number
           image_path: string
           post_id: number
+          width: number | null
         }
         Insert: {
           created_at?: string
+          height?: number | null
           id?: number
           image_path: string
           post_id: number
+          width?: number | null
         }
         Update: {
           created_at?: string
+          height?: number | null
           id?: number
           image_path?: string
           post_id?: number
+          width?: number | null
         }
         Relationships: [
           {
@@ -196,21 +202,21 @@ export type Database = {
       }
       posts: {
         Row: {
-          content: string
+          content: string | null
           created_at: string
           id: number
           parent_id: number | null
           profile_id: string
         }
         Insert: {
-          content: string
+          content?: string | null
           created_at?: string
           id?: number
           parent_id?: number | null
           profile_id: string
         }
         Update: {
-          content?: string
+          content?: string | null
           created_at?: string
           id?: number
           parent_id?: number | null
@@ -284,20 +290,19 @@ export type Database = {
       get_last_messages: {
         Args: {
           current_profile_id: string
-          p_limit?: number
-          p_offset?: number
+          page_number?: number
+          items_per_page?: number
         }
-        Returns: {
-          id: number
-          sender_id: string
-          receiver_id: string
-          content: string
-          created_at: string
+        Returns: Json
+      }
+      get_messages: {
+        Args: {
+          current_profile_id: string
           other_profile_id: string
-          other_profile_avatar: string
-          other_profile_username: string
-          other_profile_first_name: string
-        }[]
+          page_number?: number
+          items_per_page?: number
+        }
+        Returns: Json
       }
       get_notifications:
         | {
@@ -328,38 +333,19 @@ export type Database = {
           current_profile_id: string
           page_number?: number
           items_per_page?: number
-          type?: Database["public"]["Enums"]["post_filter_type"]
+          type?: string
         }
-        Returns: {
-          id: number
-          content: string
-          created_at: string
-          parent_id: number
-          profile: Json
-          images: Json
-          likes_count: number
-          replies_count: number
-          is_liked: boolean
-        }[]
+        Returns: Json
       }
       get_posts_by_profile: {
         Args: {
-          from_offset: number
-          to_offset: number
-          pr_id: string
+          target_profile_id: string
           current_profile_id: string
           type: string
+          page_number?: number
+          items_per_page?: number
         }
-        Returns: {
-          id: number
-          content: string
-          created_at: string
-          parent_id: number
-          profile: Json
-          images: Json
-          likes_count: number
-          is_liked: boolean
-        }[]
+        Returns: Json
       }
       get_profile_by_id: {
         Args: {
@@ -376,23 +362,17 @@ export type Database = {
           followers_count: number
           following_count: number
           is_following: boolean
+          posts_count: number
         }[]
       }
       get_replies_post: {
         Args: {
           parent_id: number
           current_profile_id: string
-          p_limit?: number
-          p_offset?: number
+          page_number?: number
+          items_per_page?: number
         }
-        Returns: {
-          id: number
-          created_at: string
-          content: string
-          profile: Json
-          is_liked: boolean
-          likes_count: number
-        }[]
+        Returns: Json
       }
       get_unfollowed_profiles: {
         Args: {
@@ -405,7 +385,7 @@ export type Database = {
           first_name: string
           avatar: string
           username: string
-          followers_count: number
+          bio: string
         }[]
       }
       search_posts: {
@@ -444,7 +424,7 @@ export type Database = {
       }
     }
     Enums: {
-      post_filter_type: "following"
+      [_ in never]: never
     }
     CompositeTypes: {
       image_type: {

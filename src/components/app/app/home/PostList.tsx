@@ -1,76 +1,78 @@
-import {
-  ActivityIndicator,
-  FlatList, RefreshControl, View
-} from 'react-native';
-import { useGetPosts } from '@/services/post.service';
-import { LoadingScreen } from '@/components/ui/LoadingScreen';
-import React from 'react';
+import React, { memo } from 'react';
 import { Post } from '@/components/common/post';
 import { useLocalSearchParams } from 'expo-router';
-import { NoResults } from '@/components/common/NoResults';
-import { Separator } from '@/components/common/Separator';
-import { NonUndefined } from 'react-hook-form';
-import { GetPostsParams } from '@/types/request/post';
+import { GetPostsParams, GetPostsTypes } from '@/types/request/post/get-posts';
+import { CustomFlatList } from '@/components/common/CustomFlatList';
+import { useGetPosts } from '@/services/post/get-posts';
+
+const ITEMS_PER_PAGE = 10;
 
 type SearchParams = {
-  type: NonUndefined<GetPostsParams['type']> | 'default'
+  type: GetPostsParams['type']
 };
 
-export function PostList() {
-  const { type } = useLocalSearchParams<SearchParams>();
+interface PostListProps {
+  headerHeight: number;
+}
+
+const MemoizedPost = memo(Post);
+
+export function PostList(props: PostListProps) {
+  const { headerHeight } = props;
+  const { type = GetPostsTypes.ALL } = useLocalSearchParams<SearchParams>();
+  
+  // Track the last scroll position to avoid unnecessary updates
+  // const lastScrollYRef = useRef(0);
+
   const {
     posts,
     isPending,
     refetch,
     isFetchingNextPage,
     hasNextPage,
+    isError,
     fetchNextPage,
   } = useGetPosts({
-    type: type === 'default' ? undefined : type,
+    type,
+    itemsPerPage: ITEMS_PER_PAGE,
   });
-  const [refreshing, setRefreshing] = React.useState(false);
 
-  const onRefresh = React.useCallback(async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  }, [refetch]);
+  // const { setScrollY, updateScrollDirection } = useScrollPositionStore();
 
-  
-  if (isPending) return <LoadingScreen/>;   
-  if (!posts.length) return <NoResults/>;   
-  
+  // const handleScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  //   const currentScrollY = event.nativeEvent.contentOffset.y;
+  //   console.log('current-scroll-y', currentScrollY);
+  //   if (currentScrollY < 0) return;
+
+  //   // Only update if scroll position has changed significantly to reduce updates
+  //   if (Math.abs(currentScrollY - lastScrollYRef.current) > SCROLL_UPDATE_THRESHOLD) {
+  //     setScrollY(currentScrollY);
+  //     updateScrollDirection(currentScrollY);
+  //     lastScrollYRef.current = currentScrollY;
+  //   }
+  // }, [setScrollY, updateScrollDirection]);
+
   return (
-    <View>
-      <FlatList
-        data={posts}
-        renderItem={({ item }) => <Post data={item}/>}
-        keyExtractor={(item) => item.id.toString()}
-        onEndReachedThreshold={0.5}
-        ItemSeparatorComponent={() => <Separator/>}
-        onEndReached={() => {
-          if (hasNextPage) fetchNextPage();
-        }}
-        ListFooterComponent={() => (
-          <View className='mb-24'>
-            {isFetchingNextPage ?
-              (
-                <View className="py-4">
-                  <ActivityIndicator />
-                </View>
-              ) :
-              null}
-            <Separator/>
-          </View>
-        )}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }
-      />
-    </View>
+    <CustomFlatList
+      data={posts}
+      renderItem={(item) => <MemoizedPost data={item}/>}
+      headerHeight={headerHeight}
+      isLoading={isPending}
+      isError={isError}
+      onRefresh={refetch}
+      isLoadingMore={isFetchingNextPage}
+      hasMoreData={hasNextPage}
+      onLoadMore={fetchNextPage}
 
+      // Configure Optimized
+      onEndReachedThreshold={0.3}
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={ITEMS_PER_PAGE}
+      initialNumToRender={ITEMS_PER_PAGE}
+      windowSize={3}
+      updateCellsBatchingPeriod={50}
+      // onScroll={handleScroll}
+      // scrollEventThrottle={32} // Reduce frequency of scroll events to 30fps instead of 60fps
+    />
   );
 }
