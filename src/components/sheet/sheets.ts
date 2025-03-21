@@ -12,6 +12,9 @@ declare module 'react-native-actions-sheet' {
       payload: {
         postId: Post['id']
       }
+      returnValue: {
+        isDeleted: boolean;
+      };
     }>;
     'post-actions': SheetDefinition<{
       payload: {

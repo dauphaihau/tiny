@@ -1,4 +1,6 @@
-import { View } from 'react-native';
+import {
+  View
+} from 'react-native';
 import { AuthScreenWrapper } from '@/components/app/auth/AuthScreenWrapper';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -50,62 +52,71 @@ export default function RegisterScreen() {
       title="Register"
       onBack={() => router.dismissAll()}
     >
-      <ErrorCallout message={serverErrorMessage}/>
-      <View className="gap-4">
-        <Controller
-          name="name"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <FormGroup label="Name" error={errors.name?.message}>
-              <Input
-                editable={!isPending}
-                value={value}
-                onChangeText={onChange}
-              />
-            </FormGroup>
-          )}
-        />
-        <Controller
-          name="email"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <FormGroup label="Email" error={errors.email?.message}>
-              <Input
-                editable={!isPending}
-                value={value}
-                onChangeText={onChange}
-              />
-            </FormGroup>
-          )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <FormGroup label="Password" error={errors.password?.message}>
-              <Input
-                editable={!isPending}
-                value={value}
-                onChangeText={onChange}
-                secureTextEntry
-              />
-            </FormGroup>
-          )}
-        />
-        <Button
-          disabled={isPending}
-          onPress={handleSubmit(onSubmit)}
-          className="mt-4"
-        >
-          <Text>Register</Text>
-        </Button>
-        <View className="flex-row items-center justify-center">
-          <Text className="text-zinc-500 font-medium">Already have account?</Text>
-          <Link href="/login" asChild>
-            <Button variant="link" className="-ml-4">
-              <Text>Login</Text>
-            </Button>
-          </Link>
+      <View className="flex-1">
+        <ErrorCallout message={serverErrorMessage}/>
+        <View className="gap-4">
+          <Controller
+            name="name"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <FormGroup label="Name" error={errors.name?.message}>
+                <Input
+                  autoFocus
+                  returnKeyLabel='Submit'
+                  editable={!isPending}
+                  value={value}
+                  onChangeText={onChange}
+                  onSubmitEditing={handleSubmit(onSubmit)}
+                />
+              </FormGroup>
+            )}
+          />
+          <Controller
+            name="email"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <FormGroup label="Email" error={errors.email?.message}>
+                <Input
+                  returnKeyLabel='Submit'
+                  editable={!isPending}
+                  value={value}
+                  onChangeText={onChange}
+                  onSubmitEditing={handleSubmit(onSubmit)}
+                />
+              </FormGroup>
+            )}
+          />
+          <Controller
+            name="password"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <FormGroup label="Password" error={errors.password?.message}>
+                <Input
+                  editable={!isPending}
+                  value={value}
+                  onChangeText={onChange}
+                  secureTextEntry
+                  onSubmitEditing={handleSubmit(onSubmit)}
+                  returnKeyLabel='Submit'
+                />
+              </FormGroup>
+            )}
+          />
+          <Button
+            disabled={isPending}
+            onPress={handleSubmit(onSubmit)}
+            className="mt-4"
+          >
+            <Text>Register</Text>
+          </Button>
+          <View className="flex-row items-center justify-center">
+            <Text className="text-muted-foreground font-medium">Already have account?</Text>
+            <Link href="/login" asChild>
+              <Button variant="link" className="-ml-4">
+                <Text>Login</Text>
+              </Button>
+            </Link>
+          </View>
         </View>
       </View>
     </AuthScreenWrapper>

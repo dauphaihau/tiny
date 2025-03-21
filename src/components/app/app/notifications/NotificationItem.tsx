@@ -1,10 +1,11 @@
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Avatar } from '@/components/common/Avatar';
 import { router } from 'expo-router';
 import { FollowButton } from '@/components/common/FollowButton';
-import { parseNotificationCreatedAt } from '@/lib/day';
 import { useRootNameTab } from '@/hooks/useRootNameTab';
 import { INotification } from '@/types/request/notification/get-notifications';
+import { parseNotificationCreatedAt } from '@/utils/parse-noti-created-at';
+import { Text } from '@/components/ui/Text';
 
 interface NotificationItemProps {
   data: INotification
@@ -56,21 +57,21 @@ export function NotificationItem({ data }: NotificationItemProps) {
     >
       <Avatar
         path={data?.actor?.avatar}
-        className="w-10 h-10 mr-3"
+        className="size-10 mr-3"
       />
       <View className="flex-1 gap-1">
         <View className="flex-row gap-1">
-          <Text className="font-semibold">{data?.actor?.username}</Text>
-          <Text className="font-medium text-zinc-400">·</Text>
-          <Text className="font-medium text-zinc-400">{parseNotificationCreatedAt(data?.created_at)}</Text>
+          <Text className="font-semibold text-lg leading-none">{data?.actor?.username}</Text>
+          <Text className="font-medium text-zinc-400 leading-none">·</Text>
+          <Text className="font-medium text-zinc-400 leading-none">{parseNotificationCreatedAt(data?.created_at)}</Text>
         </View>
-        <Text className="text-zinc-400 text-md font-medium">{actionsLabels[data?.type]}</Text>
+        <Text className="text-zinc-400 text-md">{actionsLabels[data?.type]}</Text>
         {
           (
             data.type === 'new_post' ||
             data.type === 'like' ||
             data.type === 'reply'
-          ) &&
+          ) && data?.entity?.preview?.content &&
           <Text>{data?.entity?.preview?.content}</Text>
         }
       </View>

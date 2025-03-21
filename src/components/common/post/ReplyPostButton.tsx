@@ -1,16 +1,14 @@
 import React from 'react';
-import { LayoutActionButton } from '@/components/common/post/LayoutActionButton';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { ActionIconButton } from '@/components/common/post/ActionIconButton';
 import { IPost } from '@/types/components/common/post';
-import { featureNotAvailable } from '@/lib/utils';
+import { featureNotAvailable } from '@/utils';
 
 export function ReplyPostButton({ replies_count }: IPost) {
-
   return (
-    <LayoutActionButton
+    <ActionIconButton
       onPress={featureNotAvailable}
       count={replies_count}
-      icon={(sizeIcon) => <Ionicons name="chatbubble-outline" size={sizeIcon}/>}
+      iconName={replies_count > 0 ? 'message.circle.dots' : 'message.circle'}
     />
   );
 }

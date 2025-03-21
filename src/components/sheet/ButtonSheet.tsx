@@ -1,42 +1,48 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
-import { Pressable, Text } from 'react-native';
+import { cn } from '@/utils';
+import { Pressable } from 'react-native';
+import { Text } from '@/components/ui/Text';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
-const sizeIcon = 17;
+const ICON_SIZE = 22;
 
-type ButtonProps = React.ComponentPropsWithoutRef<typeof Pressable> & {
+interface ButtonSheetProps extends React.ComponentPropsWithoutRef<typeof Pressable> {
   label: string;
-  icon?: (size: number) => React.ReactNode
-  textColorClassname?: string;
-};
+  icon?: (size: number, color: string) => React.ReactNode;
+  isDestructive?: boolean;
+}
 
-const ButtonSheet = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>(
-  ({
-    className, textColorClassname, label, ...props
-  }, ref) => {
-    return (
-      <Pressable
-        className={cn(
-          'bg-white px-4 py-3.5 flex-row justify-between rounded-2xl',
-          className
+const ButtonSheet = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonSheetProps>(({
+  className, label, isDestructive, ...props
+}, ref) => {
+  const { themeColors } = useColorScheme();
+  return (
+    <Pressable
+      className={cn(
+        'bg-actionsheet-card px-4 py-3.5 flex-row justify-between items-center rounded-2xl',
+        className
+      )}
+      ref={ref}
+      role="button"
+      {...props}
+    >
+      <Text
+        className={cn('font-semibold text-lg',
+          isDestructive && 'text-destructive'
         )}
-        ref={ref}
-        role="button"
-        {...props}
-      >
-        <Text className={cn('font-semibold', textColorClassname)}>{label}</Text>
-        {
-          props.icon && (
-            <Text className={cn('font-semibold', textColorClassname)}>
-              {props.icon(sizeIcon)}
-            </Text>
-          )
-        }
-      </Pressable>
-    );
-  }
-);
+      >{label}</Text>
+      {
+        props.icon && (
+          <Text className={cn('font-semibold')}>
+            {props.icon(ICON_SIZE, isDestructive ? themeColors.destructive : themeColors.foreground)}
+          </Text>
+        )
+      }
+    </Pressable>
+  );
+});
+
 ButtonSheet.displayName = 'ButtonSheet';
 
 export { ButtonSheet };
-export type { ButtonProps };
+export type { ButtonSheetProps };

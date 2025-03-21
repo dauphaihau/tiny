@@ -61,7 +61,7 @@ module.exports = {
     '@stylistic/brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
 
     // Operators
-    '@stylistic/multiline-ternary': ['error', 'always-multiline'],
+    // '@stylistic/multiline-ternary': ['error', 'always-multiline'],
     '@stylistic/no-mixed-operators': 'error',
     '@stylistic/operator-linebreak': ['error', 'after'],
     '@stylistic/dot-location': ['error', 'property'],
@@ -90,6 +90,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
 
     // react-native
+    'react-native/sort-styles': 0,
     'react-native/no-raw-text': 0,
     'react-native/no-inline-styles': 0,
   },

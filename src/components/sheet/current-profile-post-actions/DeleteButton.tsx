@@ -1,33 +1,58 @@
 import { Alert } from 'react-native';
-import { useDeletePost } from '@/services/post.service';
+import { deletePost } from '@/services/post.service';
 import { SheetManager, useSheetPayload } from 'react-native-actions-sheet';
 import Toast from 'react-native-toast-message';
 import { ButtonSheet } from '@/components/sheet/ButtonSheet';
-import { Feather } from '@expo/vector-icons';
 import React from 'react';
+import { supabase } from '@/lib/supabase';
+import { Icon } from '@/components/common/Icon';
 
 export function DeleteButton() {
   const payload = useSheetPayload('current-profile-post-actions');
-  const { mutateAsync: deletePost } = useDeletePost(payload.postId);
 
   const onPressDelete = () => {
     Alert.alert('Delete post', 'Are you sure?', [
-      {
-        text: 'Cancel',
-      },
+      { text: 'Cancel' },
       {
         text: 'Delete',
         style: 'destructive',
         onPress: async () => {
-          const { error } = await deletePost();
-          if (!error) {
-            SheetManager.hide('current-profile-post-actions', {
-              payload: true,
+          try {
+            await SheetManager.hide('current-profile-post-actions', {
+              payload: { isDeleted: true },
             });
+
+            Toast.show({
+              type: 'success',
+              props: {
+                isLoading: true,
+                message: 'Deleting...',
+              },
+            });
+
+            await deletePost(payload.postId);
+
+            await supabase.channel('posts').send({
+              type: 'broadcast',
+              event: 'delete_post',
+              payload: {
+                post_id: payload.postId,
+              },
+            });
+
             Toast.show({
               type: 'success',
               props: {
                 message: 'Post deleted',
+              },
+            });
+          }
+          catch (error) {
+            console.error('error', error);
+            Toast.show({
+              type: 'error',
+              props: {
+                message: 'Delete post failed',
               },
             });
           }
@@ -40,10 +65,10 @@ export function DeleteButton() {
     <ButtonSheet
       onPress={onPressDelete}
       label="Delete"
-      textColorClassname="text-red-400"
-      icon={(size) => (
-        <Feather name='trash' size={size}/>
+      icon={(size, color) => (
+        <Icon name="trash" size={size} color={color}/>
       )}
+      isDestructive={true}
     />
   );
 }

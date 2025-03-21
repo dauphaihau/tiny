@@ -1,4 +1,4 @@
-import ChatScreen from '@/components/screens/chat';
+import ChatScreen from '@/components/shared-screens/chat';
 
 export default function Screen() {
   return (

@@ -21,8 +21,13 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
+    --input: 0 0% 96%;
     --ring: 240 5.9% 10%;
+    --actionsheet: 240 4.8% 95.9%;
+    --actionsheet-foreground: 240 5.9% 10%;
+    --actionsheet-card: 0 0% 100%;
+    --actionsheet-border: 240 5.9% 90%;
+    --icon: 0 0% 27%;
   }
 
   .dark:root {
@@ -43,7 +48,12 @@
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
+    --input: 0 0% 12%;
     --ring: 240 4.9% 83.9%;
+    --actionsheet: 240 5.9% 10%;
+    --actionsheet-foreground: 240 4.8% 95.9%;;
+    --actionsheet-card: 240 3.7% 15.9%;
+    --actionsheet-border: 240, 2%, 20%;
+    --icon: 0 0% 63%;
   }
 }

@@ -1,0 +1,8 @@
+
+export const DETAIL_PROFILE_CONFIG = {
+  HEADER_HEIGHT: 150,
+  ITEMS_PER_PAGE: 10,
+  SCROLL_THRESHOLD: {
+    REFRESH: -55,
+  },
+};

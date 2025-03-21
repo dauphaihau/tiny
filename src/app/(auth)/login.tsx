@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginDto, loginSchema } from '@/schemas/request/auth';
 import { useState } from 'react';
 import { ErrorCallout } from '@/components/app/auth/ErrorCallout';
+import { featureNotAvailable } from '@/utils';
 
 export default function LoginScreen() {
   const { mutateAsync: login, isPending } = useLogin();
@@ -31,6 +32,7 @@ export default function LoginScreen() {
   const onSubmit = async (data: LoginDto) => {
     const authError = await login(data);
     if (!authError) {
+      router.dismissAll(); // Clears all navigation history
       router.replace('/(app)/(tabs)/home');
     }
     else if (authError.code === 'invalid_credentials') {
@@ -54,6 +56,10 @@ export default function LoginScreen() {
           render={({ field: { onChange, value } }) => (
             <FormGroup label="Email" error={errors.email?.message}>
               <Input
+                onSubmitEditing={handleSubmit(onSubmit)}
+                returnKeyLabel='Submit'
+                returnKeyType='done'
+                autoFocus
                 value={value}
                 onChangeText={onChange}
               />
@@ -66,6 +72,9 @@ export default function LoginScreen() {
           render={({ field: { onChange, value } }) => (
             <FormGroup label="Password" error={errors.password?.message}>
               <Input
+                onSubmitEditing={handleSubmit(onSubmit)}
+                returnKeyLabel='Submit'
+                returnKeyType='done'
                 editable={!isPending}
                 value={value}
                 onChangeText={onChange}
@@ -74,16 +83,22 @@ export default function LoginScreen() {
             </FormGroup>
           )}
         />
-        <Link href="/forgot-password" asChild>
-          <Button size="sm" variant="link" className="w-1/2 -ml-7">
-            <Text>Forgot password?</Text>
-          </Button>
-        </Link>
-        <Button onPress={handleSubmit(onSubmit)}>
+        <Button onPress={featureNotAvailable} size="sm" variant="link" className="w-1/2 -ml-7">
+          <Text>Forgot password?</Text>
+        </Button>
+        {/*<Link href="/forgot-password" asChild>*/}
+        {/*  <Button size="sm" variant="link" className="w-1/2 -ml-7">*/}
+        {/*    <Text>Forgot password?</Text>*/}
+        {/*  </Button>*/}
+        {/*</Link>*/}
+        <Button
+          disabled={isPending}
+          onPress={handleSubmit(onSubmit)}
+        >
           <Text>Login</Text>
         </Button>
         <View className="flex-row items-center justify-center">
-          <Text className="text-zinc-500 font-medium">Don&#39;t have account?</Text>
+          <Text className="text-muted-foreground font-medium">Don&#39;t have account?</Text>
           <Link href="/register" asChild>
             <Button variant="link" className="-ml-4">
               <Text>Register</Text>

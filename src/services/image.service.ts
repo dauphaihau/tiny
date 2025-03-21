@@ -35,23 +35,18 @@ export const uploadImage = async (folderName: string, fileUri: ImageURISource['u
 };
 
 const generateFileName = (folderName: string) => {
-  return `${folderName}/${new Date().getTime()}.png`;
+  const randomString = Math.random().toString(36).substring(2, 15);
+  return `${folderName}/${Date.now()}-${randomString}.png`;
 };
 
-export const getImage = (path: PostImages['image_path'] | null): ImageURISource => {
-  if (path) {
-    return {
-      uri: `${process.env.EXPO_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${path}`,
-    };
-  }
-  return require('assets/images/image-default.png');
-};
+const DEFAULT_IMAGE = require('assets/images/image-default.png');
+const DEFAULT_AVATAR = require('assets/images/avatar-default.jpg');
 
-export const getAvatarImage = (path?: Profile['avatar']): ImageURISource => {
-  if (path) {
-    return {
-      uri: `${process.env.EXPO_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${path}`,
-    };
-  }
-  return require('assets/images/avatar-default.jpg');
-};
+export const getStorageUrl = (path: string) =>
+  `${process.env.EXPO_PUBLIC_SUPABASE_URL}/storage/v1/object/public/uploads/${path}`;
+
+export const getImage = (path: PostImages['image_path'] | null): ImageURISource => 
+  path ? { uri: getStorageUrl(path) } : DEFAULT_IMAGE;
+
+export const getAvatarImage = (path?: Profile['avatar']): ImageURISource => 
+  path ? { uri: getStorageUrl(path) } : DEFAULT_AVATAR;

@@ -16,6 +16,7 @@ export default function SearchLayout() {
         options={{
           headerShown: false,
           animation: 'fade',
+          animationDuration: 200,
         }}
       />
     </Stack>

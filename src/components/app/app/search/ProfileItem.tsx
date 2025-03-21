@@ -1,8 +1,9 @@
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Avatar } from '@/components/common/Avatar';
 import { router } from 'expo-router';
-import { usernameWithPrefix } from '@/lib/utils';
 import { FollowButton } from '@/components/common/FollowButton';
+import React from 'react';
+import { Text } from '@/components/ui/Text';
 
 interface ProfileItemProps {
   id: string;
@@ -27,15 +28,15 @@ export function ProfileItem({
   return (
     <Pressable
       onPress={handlePress}
-      className="flex-row items-center px-4 py-3 active:bg-gray-100"
+      className="flex-row items-center px-4 py-3"
     >
       <Avatar
         path={avatar}
-        className="w-10 h-10 mr-3"
+        className="size-10 mr-3"
       />
       <View className="flex-1">
-        <Text className="font-semibold">{first_name}</Text>
-        <Text className="text-zinc-500">{usernameWithPrefix(username)}</Text>
+        <Text className="font-semibold text-lg leading-none">{username}</Text>
+        <Text className="text-muted-foreground text-lg mb-1.5 leading-5">{first_name}</Text>
       </View>
       <FollowButton profileId={id} isFollowing={is_following}/>
     </Pressable>

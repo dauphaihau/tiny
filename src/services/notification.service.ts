@@ -17,14 +17,11 @@ export const useGetNotifications = (params?: GetNotificationsParams) => {
         items_per_page: PAGE_SIZE,
         filter_type: params?.type || 'all',
       });
-
       if (error) {
         throw error;
       }
-
       // Type assertion for the entire response
       const response = data[0] as unknown as NotificationResponse;
-
       return {
         notifications: response.notifications ?? [],
         pagination: response.pagination,
