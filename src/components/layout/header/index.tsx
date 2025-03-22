@@ -8,9 +8,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   BASE_HEADER_HEIGHT, HEADER_CONFIG, HEADER_PADDING_BOTTOM,
   headerClassNames,
-  HIDE_OFFSET,
-  SCROLL_PROGRESS_INCREMENT
-} from '@/components/layout/header/constants';
+  HEADER_SCROLL_HIDE_OFFSET,
+  SCROLL_PROGRESS_INCREMENT, TAB_BAR_CONFIG
+} from '@/components/layout/constants';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
@@ -68,10 +68,9 @@ export function Header({
   isStatic = true,
 }: HeaderProps) {
   const insets = useSafeAreaInsets();
-  const { themeColors, isDarkColorScheme } = useColorScheme();
+  const { isDarkColorScheme } = useColorScheme();
   const { scrollY, isScrollingDown, currentRouteKey } = useScrollPositionStore();
 
-  const [intensityBlurView, setIntensityBlurView] = useState(0);
   const [statusBarStyle, setStatusBarStyle] = useState<StatusBarStyle>(
     isDarkColorScheme ? 'light' : 'auto'
   );
@@ -106,15 +105,6 @@ export function Header({
     // Get the current scroll state based on route
     const scrollState = getScrollState();
 
-    if (!isDarkColorScheme) {
-      if (scrollState.scrollY > 20) {
-        setIntensityBlurView(80);
-      }
-      else {
-        setIntensityBlurView(20);
-      }
-    }
-
     // Skip animation if header is static
     if (isStatic) {
       translateY.value = 0;
@@ -146,7 +136,7 @@ export function Header({
 
     // Apply animations with spring physics
     translateY.value = withSpring(
-      progressValue.value * HIDE_OFFSET,
+      progressValue.value * HEADER_SCROLL_HIDE_OFFSET,
       { damping: 30, stiffness: 150, mass: 1 }
     );
 
@@ -199,50 +189,63 @@ export function Header({
 
   return (
     <>
-      <AnimatedBlurView
-        tint={isDarkColorScheme ? undefined : 'systemThickMaterialLight'}
-        intensity={intensityBlurView}
-        className="absolute inset-x-0 top-0 z-20"
-        style={[
-          styles.header,
+      <View className="absolute inset-x-0 top-0">
+        <AnimatedBlurView
+          tint={isDarkColorScheme ? 'dark' : 'light'}
+          intensity={isDarkColorScheme ? 20 : 30}
+          className="z-20"
+          style={[
+            styles.header,
+            { paddingTop: insets.top },
+            animatedHeaderStyle,
+          ]}
+        >
+          <View>
+            <Animated.View
+              className={headerClassNames.container}
+              style={{
+                height: BASE_HEADER_HEIGHT,
+                marginBottom: hasTabs ? 0 : HEADER_PADDING_BOTTOM,
+              }}
+            >
+              <HeaderSection
+                className={cn('h-full justify-center items-start z-20', headerLeftClassName)}
+                style={{ flex: 1 }}
+              >
+                {renderLeft()}
+              </HeaderSection>
+
+              <HeaderSection
+                className={cn('h-full justify-center items-center z-10', headerMiddleClassName)}
+                style={{ position: 'absolute', left: 0, right: 0 }}
+              >
+                {renderMiddle()}
+              </HeaderSection>
+
+              <HeaderSection
+                className={cn('h-full justify-center items-end z-20 ', headerRightClassName)}
+                style={{ flex: 1 }}
+              >
+                {renderRight()}
+              </HeaderSection>
+            </Animated.View>
+
+            {hasTabs && (
+              <Tabs
+                tabs={tabs}
+                onPressTab={handleTabPress}
+              />
+            )}
+            {borderVisible && <Separator/>}
+          </View>
+        </AnimatedBlurView>
+        <View style={[
+          styles.overlay,
           {
-            paddingTop: insets.top,
-            // backgroundColor: isDarkColorScheme ? themeColors.background : '',
-            backgroundColor: themeColors.background,
+            backgroundColor: isDarkColorScheme ? TAB_BAR_CONFIG.DARK_OVERLAY_BACKGROUND_COLOR : TAB_BAR_CONFIG.LIGHT_OVERLAY_BACKGROUND_COLOR,
           },
-          animatedHeaderStyle,
-        ]}
-      >
-        <View>
-          <Animated.View
-            className={headerClassNames.container}
-            style={{
-              height: BASE_HEADER_HEIGHT,
-              marginBottom: hasTabs ? 0 : HEADER_PADDING_BOTTOM,
-            }}
-          >
-            <HeaderSection className={cn('h-full justify-center items-start z-20', headerLeftClassName)} style={{ flex: 1 }}>
-              {renderLeft()}
-            </HeaderSection>
-
-            <HeaderSection className={cn('h-full justify-center items-center z-10', headerMiddleClassName)} style={{ position: 'absolute', left: 0, right: 0 }}>
-              {renderMiddle()}
-            </HeaderSection>
-
-            <HeaderSection className={cn('h-full justify-center items-end z-20 ', headerRightClassName)} style={{ flex: 1 }}>
-              {renderRight()}
-            </HeaderSection>
-          </Animated.View>
-
-          {hasTabs && (
-            <Tabs
-              tabs={tabs}
-              onPressTab={handleTabPress}
-            />
-          )}
-          {borderVisible && <Separator/>}
-        </View>
-      </AnimatedBlurView>
+        ]}/>
+      </View>
 
       <StatusBar animated={true} style={statusBarStyle}/>
       <AnimatedLinearGradient
@@ -260,6 +263,10 @@ export function Header({
 const styles = StyleSheet.create({
   header: {
     zIndex: 20,
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 10,
   },
   gradient: {
     position: 'absolute',

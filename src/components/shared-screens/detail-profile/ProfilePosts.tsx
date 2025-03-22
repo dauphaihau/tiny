@@ -5,7 +5,7 @@ import { Post } from '@/components/common/post';
 import { GetPostsByProfileParams, PostsByProfileType } from '@/types/request/post/get-posts-by-profile';
 import { Text } from '@/components/ui/Text';
 import { CustomFlatList } from '@/components/common/CustomFlatList';
-import { DETAIL_PROFILE_CONFIG } from '@/components/shared-screens/detail-profile/constands';
+import { DETAIL_PROFILE_CONFIG } from '@/components/shared-screens/detail-profile/constants';
 import { useGetPostsByProfile } from '@/services/post/get-posts-by-profile';
 
 type SearchParams = {

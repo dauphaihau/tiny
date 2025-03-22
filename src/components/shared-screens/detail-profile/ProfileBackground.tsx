@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import { ImageBackground, ImageBackgroundProps } from 'expo-image';
 import { getStorageUrl } from '@/services/image.service';
 import React from 'react';
-import { DETAIL_PROFILE_CONFIG } from '@/components/shared-screens/detail-profile/constands';
+import { DETAIL_PROFILE_CONFIG } from '@/components/shared-screens/detail-profile/constants';
 
 interface Props extends ImageBackgroundProps {
   path?: string

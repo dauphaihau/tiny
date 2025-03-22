@@ -12,7 +12,7 @@ import { SearchParams } from '@/components/shared-screens/detail-profile/types';
 import { FollowButton } from './FollowButton';
 import React, { useState, forwardRef } from 'react';
 import { runOnJS } from 'react-native-reanimated';
-import { DETAIL_PROFILE_CONFIG } from './constands';
+import { DETAIL_PROFILE_CONFIG } from './constants';
 import { Icon } from '@/components/common/Icon';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';

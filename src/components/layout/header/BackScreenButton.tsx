@@ -3,7 +3,7 @@ import React from 'react';
 import { router } from 'expo-router';
 import { Text } from '@/components/ui/Text';
 import { Icon } from '@/components/common/Icon';
-import { HEADER_CONFIG } from '@/components/layout/header/constants';
+import { HEADER_CONFIG } from '@/components/layout/constants';
 
 interface BackScreenButtonProps extends TouchableOpacityProps {
   child?: React.ReactNode;
