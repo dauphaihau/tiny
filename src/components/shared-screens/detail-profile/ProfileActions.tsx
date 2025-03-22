@@ -25,6 +25,7 @@ export function ProfileActions({ profile, ...props }: ProfileActionsProps) {
         profile_id: profile.id,
         avatar: profile?.avatar ?? '',
         first_name: profile?.first_name ?? '',
+        username: profile?.username ?? '',
       },
     });
   };

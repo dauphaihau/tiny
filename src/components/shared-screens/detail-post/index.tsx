@@ -25,7 +25,7 @@ import { useHeaderHeight } from '@/hooks/useHeaderHeight';
 import { Icon } from '@/components/common/Icon';
 import { useTabBarStore } from '@/stores/tab-bar.store';
 import { useScrollPositionStore } from '@/stores/scroll-position.store';
-import { TAB_BAR_HEIGHT } from '@/constants/layout';
+import { TAB_BAR_CONFIG } from '@/components/layout/constants';
 
 const CONSTANTS = {
   LOAD_MORE_THRESHOLD: 0.3,
@@ -161,7 +161,7 @@ export function DetailPostScreen() {
           scrollEventThrottle={16}
           contentContainerStyle={{
             paddingTop: headerHeight,
-            paddingBottom: TAB_BAR_HEIGHT,
+            paddingBottom: TAB_BAR_CONFIG.TAB_BAR_HEIGHT,
           }}
           refreshControl={
             <RefreshControl

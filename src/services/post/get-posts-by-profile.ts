@@ -9,7 +9,7 @@ import { IPost } from '@/types/components/common/post';
 import { useNavigation } from 'expo-router';
 import { useInfiniteQuery, useQueryClient, InfiniteData } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { DETAIL_PROFILE_CONFIG } from '@/components/shared-screens/detail-profile/constands';
+import { DETAIL_PROFILE_CONFIG } from '@/components/shared-screens/detail-profile/constants';
 
 const getPostsByProfile = async (params: GetPostsByProfileParams) => {
   const type = params?.type ?? PostsByProfileType.ROOT;

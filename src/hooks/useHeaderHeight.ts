@@ -1,6 +1,6 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useMemo } from 'react';
-import { BASE_HEADER_HEIGHT, HEADER_PADDING_BOTTOM, TAB_HEIGHT } from '@/components/layout/header/constants';
+import { BASE_HEADER_HEIGHT, HEADER_PADDING_BOTTOM, TAB_HEIGHT } from '@/components/layout/constants';
 
 /**
  * Hook to calculate the dynamic header height based on device insets and tabs

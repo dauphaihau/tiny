@@ -14,7 +14,7 @@ import { ProfileList } from '@/components/app/app/search/ProfileList';
 import { SuggestNavigateSearch } from '@/components/app/app/search/SuggestNavigateSearch';
 import { useHeaderHeight } from '@/hooks/useHeaderHeight';
 import { router } from 'expo-router';
-import { HEADER_CONFIG, HEADER_PADDING_BOTTOM } from '@/components/layout/header/constants';
+import { HEADER_CONFIG, HEADER_PADDING_BOTTOM } from '@/components/layout/constants';
 import { Icon } from '@/components/common/Icon';
 import { Separator } from '@/components/common/Separator';
 import { BackScreenButton } from '@/components/layout/header/BackScreenButton';

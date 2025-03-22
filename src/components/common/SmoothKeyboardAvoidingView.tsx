@@ -12,9 +12,9 @@ import Animated, {
   Easing,
   interpolate
 } from 'react-native-reanimated';
-import { TAB_BAR_HEIGHT } from '@/constants/layout';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTabBarStore } from '@/stores/tab-bar.store';
+import { TAB_BAR_CONFIG } from '@/components/layout/constants';
 
 interface SmoothKeyboardAvoidingViewProps {
   children: React.ReactNode;
@@ -88,7 +88,7 @@ export const SmoothKeyboardAvoidingView = ({
 
   const animatedInputStyle = useAnimatedStyle(() => {
     // Position input above keyboard, accounting for tab bar
-    const basePosition = isShowTabBar ? TAB_BAR_HEIGHT : insets.bottom;
+    const basePosition = isShowTabBar ? TAB_BAR_CONFIG.TAB_BAR_HEIGHT : insets.bottom;
     
     // Calculate how much we need to move up
     const targetOffset = keyboardHeight.value - basePosition + offset;

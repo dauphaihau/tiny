@@ -4,7 +4,7 @@ import React from 'react';
 import { useGetCurrentProfile } from '@/services/profile.service';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { headerClassNames } from '@/components/layout/header/constants';
+import { headerClassNames } from '@/components/layout/constants';
 
 export const ProfileToggle: React.FC<PressableProps> = (props) => {
   const { data: profile } = useGetCurrentProfile();

@@ -11,7 +11,7 @@ type PostsListProps = {
 
 const PAGE_SIZE = 10;
 
-export function PostsList({ searchTerm, isLatest, headerHeight }: PostsListProps) {
+export function PostList({ searchTerm, isLatest, headerHeight }: PostsListProps) {
   const {
     posts,
     isPending,

@@ -11,6 +11,7 @@ import { useRootNameTab } from '@/hooks/useRootNameTab';
 import { Icon, IconName } from '@/components/common/Icon';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Separator } from '@/components/common/Separator';
+import { featureNotAvailable } from '@/utils';
 
 interface ILink {
   name: string;
@@ -97,7 +98,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
         <View className="gap-4 flex-1">
           <Text
             className="font-medium text-lg"
-            onPress={() => router.push('/modals/settings')}
+            onPress={featureNotAvailable}
           >Settings and privacy</Text>
           <Pressable onPress={logout}>
             <Text className="text-destructive font-medium text-lg">Log out</Text>

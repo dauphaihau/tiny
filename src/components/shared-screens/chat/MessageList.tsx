@@ -3,9 +3,10 @@ import { useLocalSearchParams } from 'expo-router';
 import { Profile } from '@/types/models/profile';
 import { Message } from '@/components/shared-screens/chat/Message';
 import { useHeaderHeight } from '@/hooks/useHeaderHeight';
-import { HEADER_PADDING_BOTTOM } from '@/components/layout/header/constants';
+import { HEADER_PADDING_BOTTOM } from '@/components/layout/constants';
 import { CustomFlatList } from '@/components/common/CustomFlatList';
 import { MESSAGES_PER_PAGE, useGetMessages } from '@/services/message/get-messages';
+import { View } from 'react-native';
 
 interface MessageItem {
   id: number;
@@ -56,6 +57,7 @@ export function MessageList() {
       hasMoreData={hasNextPage}
       headerHeight={headerHeight}
       separatorComponent={null}
+      emptyComponent={<View/>}
       onLoadMore={fetchNextPage}
       inverted
       removeClippedSubviews

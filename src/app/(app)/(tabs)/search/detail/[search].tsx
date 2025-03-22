@@ -7,7 +7,7 @@ import React, { useCallback, useMemo } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDebounce } from '@/hooks/useDebounce';
 import { ProfilesList } from '@/components/app/app/search/detail/ProfilesList';
-import { PostsList } from '@/components/app/app/search/detail/PostsList';
+import { PostList } from '@/components/app/app/search/detail/PostList';
 import { SearchInput } from '@/components/app/app/search/SearchInput';
 import { featureNotAvailable } from '@/utils';
 import { Header } from '@/components/layout/header';
@@ -15,7 +15,7 @@ import { SuggestNavigateSearch } from '@/components/app/app/search/SuggestNaviga
 import { ProfileList } from '@/components/app/app/search/ProfileList';
 import { useNavigation } from '@react-navigation/native';
 import { useHeaderHeight } from '@/hooks/useHeaderHeight';
-import { HEADER_CONFIG, TAB_HEIGHT } from '@/components/layout/header/constants';
+import { HEADER_CONFIG, TAB_HEIGHT } from '@/components/layout/constants';
 import { Icon } from '@/components/common/Icon';
 import { BackScreenButton } from '@/components/layout/header/BackScreenButton';
 
@@ -178,7 +178,7 @@ export default function DetailSearchScreen() {
                   headerHeight={headerHeight}
                   searchTerm={debouncedSearchTerm}
                 />) :
-                (<PostsList
+                (<PostList
                   headerHeight={headerHeight}
                   searchTerm={debouncedSearchTerm}
                   isLatest={type === 'latest'}

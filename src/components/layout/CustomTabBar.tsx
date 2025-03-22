@@ -2,20 +2,20 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useTabBarStore } from '@/stores/tab-bar.store';
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { TAB_BAR_HEIGHT } from '@/constants/layout';
 import { BlurView } from 'expo-blur';
 import Animated, {
   useAnimatedStyle,
   withSpring,
-  useSharedValue
+  useSharedValue,
 } from 'react-native-reanimated';
 import { useScrollPositionStore } from '@/stores/scroll-position.store';
 import { useNavigation } from 'expo-router';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Separator } from '../common/Separator';
+import { TAB_BAR_CONFIG } from '@/components/layout/constants';
 
 const SCROLL_PROGRESS_INCREMENT = 0.5; // increment of scroll progress
-const SIZE_ICON = 24;
+const ICON_SIZE = 24;
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -71,14 +71,14 @@ export function CustomTabBar({
       // Increase progress when scrolling down
       progressValue.value = Math.min(
         progressValue.value + ((scrollState.scrollY - lastScrollY.value) * SCROLL_PROGRESS_INCREMENT),
-        1
+        1,
       );
     }
     else {
       // Decrease progress when scrolling up
       progressValue.value = Math.max(
         progressValue.value - ((lastScrollY.value - scrollState.scrollY) * SCROLL_PROGRESS_INCREMENT),
-        0
+        0,
       );
     }
 
@@ -87,13 +87,13 @@ export function CustomTabBar({
 
     // Apply animations with spring physics - independent of isVisibleTabBar
     translateY.value = withSpring(
-      progressValue.value * TAB_BAR_HEIGHT,
-      { damping: 30, stiffness: 150, mass: 1 }
+      progressValue.value * TAB_BAR_CONFIG.TAB_BAR_HEIGHT,
+      { damping: 30, stiffness: 150, mass: 1 },
     );
 
     opacity.value = withSpring(
       1 - progressValue.value,
-      { damping: 15, stiffness: 150, mass: 1 }
+      { damping: 15, stiffness: 150, mass: 1 },
     );
   }, [scrollY, isScrollingDown, isStaticTabBar, currentRouteKey, getCurrentRouteState]);
 
@@ -110,14 +110,15 @@ export function CustomTabBar({
   }
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[
+      styles.container,
+      animatedContainerStyle,
+      { height: TAB_BAR_CONFIG.TAB_BAR_HEIGHT },
+    ]}>
       <BlurView
-        tint={isDarkColorScheme ? 'dark' : 'systemThickMaterialLight'}
-        intensity={isDarkColorScheme ? 60 : 80}
-        style={[
-          styles.container,
-          animatedContainerStyle,
-        ]}
+        tint={isDarkColorScheme ? 'dark' : 'light'}
+        intensity={isDarkColorScheme ? 20 : 30}
+        className="flex-1 z-20"
       >
         <Separator/>
         <View className="flex-row pt-2.5">
@@ -161,7 +162,7 @@ export function CustomTabBar({
                 {options.tabBarIcon && options.tabBarIcon({
                   focused: isFocused,
                   color: themeColors.foreground,
-                  size: SIZE_ICON,
+                  size: ICON_SIZE,
                 })}
                 {/*<Text className='text-sm'>{label}</Text>*/}
               </AnimatedPressable>
@@ -169,8 +170,16 @@ export function CustomTabBar({
           })}
         </View>
       </BlurView>
-      { isDarkColorScheme && <View style={styles.overlay}/>}
-    </View>
+      <View
+        style={[
+          styles.overlay,
+          {
+            // Lighter/Darker overlay for better contrast
+            backgroundColor: isDarkColorScheme ? TAB_BAR_CONFIG.DARK_OVERLAY_BACKGROUND_COLOR : TAB_BAR_CONFIG.LIGHT_OVERLAY_BACKGROUND_COLOR,
+          },
+        ]}
+      />
+    </Animated.View>
   );
 }
 
@@ -180,12 +189,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: TAB_BAR_HEIGHT,
-    zIndex: 20,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)', // Darker overlay for better contrast
+    height: TAB_BAR_CONFIG.TAB_BAR_HEIGHT,
     zIndex: 10,
   },
   tab: {

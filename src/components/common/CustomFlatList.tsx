@@ -23,15 +23,14 @@ import Animated, {
   useSharedValue,
   withTiming,
   interpolate,
-  Extrapolate
 } from 'react-native-reanimated';
-import { TAB_BAR_HEIGHT } from '@/constants/layout';
+import { TAB_BAR_CONFIG } from '@/components/layout/constants';
 
 // Memoized separator to prevent unnecessary re-renders
 const MemoizedSeparator = memo(Separator);
 
 // Threshold values for scroll behavior
-const SCROLL_THRESHOLD = 10;
+// const SCROLL_THRESHOLD = 10;
 const PULL_REFRESH_THRESHOLD = -50;
 
 interface CustomFlatListProps<T> extends Omit<FlatListProps<T>, 'renderItem'> {
@@ -95,32 +94,31 @@ function CustomFlatListComponent<T>({
 
   const flatListRef = useRef<FlatList<T>>(null);
 
-  // Use shared value for the opacity animation
-  const opacity = useSharedValue(0);
+  const refreshIndicatorOpacity = useSharedValue(0);
 
-  // Update the opacity value based on scroll position and refreshing state
+  // Update the refreshIndicatorOpacity value based on scroll position and refreshing state
   useEffect(() => {
     if (pullToRefreshTriggered || refreshing) {
-      opacity.value = withTiming(1, { duration: 200 });
+      // When refresh is triggered or ongoing, show the indicator at full opacity
+      refreshIndicatorOpacity.value = withTiming(1, { duration: 250 });
     }
     else if (lastScrollY <= 0 && isScrolling) {
-      // Calculate opacity based on scroll position
-      opacity.value = interpolate(
+      // Calculate refreshIndicatorOpacity based on scroll position
+      refreshIndicatorOpacity.value = interpolate(
         lastScrollY,
         [PULL_REFRESH_THRESHOLD, 0],
         [1, 0],
-        Extrapolate.CLAMP
+        { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
       );
     }
     else {
-      opacity.value = withTiming(0, { duration: 200 });
+      refreshIndicatorOpacity.value = withTiming(0, { duration: 250 });
     }
-  }, [lastScrollY, isScrolling, pullToRefreshTriggered, refreshing, opacity]);
+  }, [lastScrollY, isScrolling, pullToRefreshTriggered, refreshing, refreshIndicatorOpacity]);
 
-  // Create animated style for the fade effect
-  const animatedStyle = useAnimatedStyle(() => {
+  const animatedRefreshIndicatorStyle = useAnimatedStyle(() => {
     return {
-      opacity: opacity.value,
+      opacity: refreshIndicatorOpacity.value,
     };
   });
 
@@ -141,8 +139,8 @@ function CustomFlatListComponent<T>({
     }
 
     const currentScrollY = event.nativeEvent.contentOffset.y;
-    const contentHeight = event.nativeEvent.contentSize.height;
-    const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
+    // const contentHeight = event.nativeEvent.contentSize.height;
+    // const scrollViewHeight = event.nativeEvent.layoutMeasurement.height;
 
     // Check for pull-to-refresh threshold and trigger refresh immediately
     if (currentScrollY <= PULL_REFRESH_THRESHOLD && !pullToRefreshTriggered && onRefresh) {
@@ -156,21 +154,23 @@ function CustomFlatListComponent<T>({
 
     // Handle scroll direction change notification
     // Only update if scroll has changed significantly to prevent excessive updates
-    if (onScrollDirectionChange && Math.abs(currentScrollY - lastScrollY) > SCROLL_THRESHOLD) {
-      if (currentScrollY > lastScrollY &&
-        currentScrollY > SCROLL_THRESHOLD &&
-        currentScrollY + scrollViewHeight < contentHeight) {
-        // Scrolling down
-        onScrollDirectionChange(true);
-      }
-      else if (currentScrollY + SCROLL_THRESHOLD < lastScrollY || currentScrollY <= 0) {
-        // Scrolling up or at the top
-        onScrollDirectionChange(false);
-      }
-      
-      // Only update lastScrollY when direction is being checked
-      setLastScrollY(currentScrollY);
-    }
+    // if (onScrollDirectionChange && Math.abs(currentScrollY - lastScrollY) > SCROLL_THRESHOLD) {
+    //   if (currentScrollY > lastScrollY &&
+    //     currentScrollY > SCROLL_THRESHOLD &&
+    //     currentScrollY + scrollViewHeight < contentHeight) {
+    //     // Scrolling down
+    //     onScrollDirectionChange(true);
+    //   }
+    //   else if (currentScrollY + SCROLL_THRESHOLD < lastScrollY || currentScrollY <= 0) {
+    //     // Scrolling up or at the top
+    //     onScrollDirectionChange(false);
+    //   }
+    //
+    //   // Only update lastScrollY when direction is being checked
+    //   setLastScrollY(currentScrollY);
+    // }
+
+    setLastScrollY(currentScrollY);
   }, [lastScrollY, onScrollDirectionChange, pullToRefreshTriggered, handleRefresh, onRefresh, externalOnScroll]);
 
   const handleScrollBegin = useCallback(() => {
@@ -199,8 +199,8 @@ function CustomFlatListComponent<T>({
           setHeightListHeader(e.nativeEvent.layout.height);
         }}
       >
-        <Animated.View style={animatedStyle}>
-          {!refreshing || pullToRefreshTriggered ? (
+        <Animated.View style={animatedRefreshIndicatorStyle}>
+          {refreshing || pullToRefreshTriggered ? (
             <ActivityIndicator style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }] }}/>
           ) : (
             <Icon name="arrow.down" size={21} weight="bold"/>
@@ -208,7 +208,7 @@ function CustomFlatListComponent<T>({
         </Animated.View>
       </View>
     ) : null;
-  }, [pullToRefreshTriggered, refreshing, showPullToRefreshIndicator, animatedStyle]);
+  }, [pullToRefreshTriggered, refreshing, showPullToRefreshIndicator, animatedRefreshIndicatorStyle]);
 
   // Default list footer component with loading indicator
   const DefaultFooterComponent = useCallback(() => {
@@ -273,7 +273,7 @@ function CustomFlatListComponent<T>({
       }
       contentContainerStyle={{
         paddingTop: headerHeight - heightListHeader,
-        paddingBottom: TAB_BAR_HEIGHT,
+        paddingBottom: TAB_BAR_CONFIG.TAB_BAR_HEIGHT,
         ...contentContainerStyle,
       }}
       {...restProps}

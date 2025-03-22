@@ -2,7 +2,7 @@ import {
   Animated, Pressable, Text, View, useWindowDimensions, ScrollView
 } from 'react-native';
 import React from 'react';
-import { TAB_HEIGHT } from '@/components/layout/header/constants';
+import { TAB_HEIGHT } from '@/components/layout/constants';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 interface ITab {

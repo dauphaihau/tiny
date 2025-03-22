@@ -21,7 +21,7 @@ import { BlurView } from 'expo-blur';
 import { Header } from './Header';
 import { ProfileBackground } from '@/components/shared-screens/detail-profile/ProfileBackground';
 import { SearchParams } from '@/components/shared-screens/detail-profile/types';
-import { DETAIL_PROFILE_CONFIG } from '@/components/shared-screens/detail-profile/constands';
+import { DETAIL_PROFILE_CONFIG } from '@/components/shared-screens/detail-profile/constants';
 import { PostsByProfileType } from '@/types/request/post/get-posts-by-profile';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Separator } from '@/components/common/Separator';
