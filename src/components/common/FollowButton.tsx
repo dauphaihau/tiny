@@ -1,21 +1,24 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Text } from '@/components/ui/Text';
 import React from 'react';
 import { useToggleFollow } from '@/services/following.service';
 import { Profile } from '@/types/models/profile';
+import { Button } from '@/components/ui/Button';
 
 interface FollowButtonProps {
   profileId: Profile['id'];
   isFollowing: boolean;
   onSuccess?: () => void;
+  revertTheme?: boolean;
 }
 
 export function FollowButton({
+  profileId,
+  isFollowing: initialIsFollowing,
   onSuccess = () => {},
-  ...props
 }: FollowButtonProps) {
-  const { mutateAsync: toggleFollow } = useToggleFollow(props.profileId);
-  const [isFollowing, setIsFollowing] = React.useState(props.isFollowing);
+  const { mutateAsync: toggleFollow } = useToggleFollow(profileId);
+  const [isFollowing, setIsFollowing] = React.useState(initialIsFollowing);
 
   const onPress = async () => {
     const error = await toggleFollow();
@@ -27,22 +30,14 @@ export function FollowButton({
 
   return (
     <View>
-      <Pressable
-        className={`px-5 py-1.5 rounded-full ${
-          isFollowing ?
-            'border border-zinc-200 bg-white' :
-            'bg-black'
-        }`}
+      <Button
+        variant={isFollowing ? 'outline' : 'filled'}
         onPress={onPress}
+        className="px-5 py-1.5 h-10"
+        radius="full"
       >
-        <Text
-          className={`font-semibold ${
-            isFollowing ? 'text-black' : 'text-white'
-          }`}
-        >
-          {isFollowing ? 'Following' : 'Follow'}
-        </Text>
-      </Pressable>
+        <Text>{isFollowing ? 'Following' : 'Follow'}</Text>
+      </Button>
     </View>
   );
 }

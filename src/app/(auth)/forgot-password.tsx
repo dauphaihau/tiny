@@ -42,7 +42,7 @@ export default function ForgotPasswordScreen() {
       {
         successView ?
           <View>
-            <Text className='font-medium text-zinc-500 text-lg'>
+            <Text className='font-medium text-muted-foreground text-lg'>
               We sent a password reset link to {getValues('email')}, please check your email
             </Text>
           </View> :

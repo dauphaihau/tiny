@@ -1,99 +1,44 @@
-import { View } from 'react-native';
-import { Text } from '@/components/ui/Text';
-import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import Toast, { ToastConfig, ToastConfigParams } from 'react-native-toast-message';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Href, Link } from 'expo-router';
+import { ToastConfig, ToastConfigParams } from 'react-native-toast-message';
+import { BaseToast, BaseToastProps } from '@/components/toasts/BaseToast';
+import { CreatePostToast } from '@/components/toasts/CreatePostToast';
+import { Href } from 'expo-router';
+import { Icon } from '@/components/common/Icon';
 
-const sizeIcon = 20;
+const SIZE_ICON_TOAST = 20;
 
-interface BaseToastProps {
-  message: string;
-  renderLeading?: () => React.ReactNode;
-  renderTrailing?: () => React.ReactNode;
-}
-
-interface PostProps extends BaseToastProps {
-  detailPostHref: Href,
+export interface CreatePostToastProps extends BaseToastProps {
+  detailPostHref: Href;
 }
 
 interface CustomToastConfig extends ToastConfig {
-  createdPost: (params: ToastConfigParams<PostProps>) => React.ReactNode;
-}
-
-function BaseToast(props: BaseToastProps) {
-  return (
-    <View
-      className="h-16 w-[90%] rounded-md bg-primary"
-    >
-      <View className="flex-row gap-2 p-4">
-        {props.renderLeading && props.renderLeading()}
-        <Text
-          className="font-medium text-primary-foreground grow"
-          style={{ flexGrow: 1 }}
-        >
-          {props?.message}
-        </Text>
-        {props.renderTrailing && props.renderTrailing()}
-      </View>
-    </View>
-  );
+  createPost: (params: ToastConfigParams<CreatePostToastProps>) => React.ReactNode;
 }
 
 export const toastConfig: CustomToastConfig = {
   error: ({ props }) => (
     <BaseToast
       {...props}
-      renderLeading={() => (
-        <Text className="text-primary-foreground">
-          <MaterialIcons name="error-outline" size={sizeIcon}/>
-        </Text>
+      renderLeading={(currentTheme) => (
+        <Icon name="error" color={currentTheme.primaryForeground} size={SIZE_ICON_TOAST}/>
       )}
     />
   ),
   info: ({ props }) => (
     <BaseToast
       {...props}
-      renderLeading={() => (
-        <Text className="text-primary-foreground">
-          <Feather name="info" size={sizeIcon}/>
-        </Text>
+      renderLeading={(currentTheme) => (
+        <Icon name="info" color={currentTheme.primaryForeground} size={SIZE_ICON_TOAST}/>
       )}
     />
   ),
   success: ({ props }) => (
     <BaseToast
       {...props}
-      renderLeading={() => (
-        <Text className="text-primary-foreground">
-          <Feather name="check" size={sizeIcon}/>
-        </Text>
+      renderLeading={(currentTheme) => (
+        <Icon color={currentTheme.primaryForeground} name="check" size={SIZE_ICON_TOAST}/>
       )}
     />
   ),
-  createdPost: ({ props }) => (
-    <BaseToast
-      {...props}
-      renderLeading={() => (
-        <Text className="text-primary-foreground">
-          <Feather name="check" size={sizeIcon}/>
-        </Text>
-      )}
-      renderTrailing={() => (
-        <View>
-          {
-            props?.detailPostHref &&
-            <Link
-              push
-              href={props.detailPostHref}
-              onPress={() => Toast.hide()}
-            >
-              <Text className="font-semibold text-primary-foreground">View</Text>
-            </Link>
-          }
-        </View>
-      )}
-    />
-  ),
+  createPost: ({ props }) => <CreatePostToast {...props} />,
 };

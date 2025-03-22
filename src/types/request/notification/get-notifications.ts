@@ -1,6 +1,6 @@
-
 import { Profile } from '@/types/models/profile';
 import { Notification } from '@/types/models/notification';
+import { PaginationMetadata } from '@/types/request/common';
 
 export interface NotificationActor extends Pick<
   Profile,
@@ -15,7 +15,7 @@ export interface NotificationActor extends Pick<
 export interface NotificationEntityPreview {
   content?: string;
   total_likes?: number;
-  total_comments?: number;
+  total_replies?: number;
   type?: string;
 }
 
@@ -45,20 +45,17 @@ export interface INotification extends Pick<
   entity: NotificationEntity;
 }
 
-
-export interface PaginationMetadata {
-  current_page: number;
-  total_pages: number;
-  total_items: number;
-  has_next: boolean;
-  has_previous: boolean;
-}
-
 export interface NotificationResponse {
   notifications: INotification[];
   pagination: PaginationMetadata;
 }
 
+export enum NotificationType {
+  ALL = 'all',
+  FOLLOWS = 'follows',
+  REPLIES = 'replies'
+}
+
 export interface GetNotificationsParams {
-  type?: string;
+  type?: `${NotificationType}`;
 }

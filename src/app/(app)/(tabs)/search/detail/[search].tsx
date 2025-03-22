@@ -1,19 +1,23 @@
 import {
-  Pressable, TextInput, View, Animated, TouchableOpacity
+  TextInput, View, Animated, Keyboard
 } from 'react-native';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { Feather } from '@expo/vector-icons';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Tabs } from '@/components/common/Tabs';
 import { useDebounce } from '@/hooks/useDebounce';
 import { ProfilesList } from '@/components/app/app/search/detail/ProfilesList';
-import { PostsList } from '@/components/app/app/search/detail/PostsList';
-import { SearchOverlay } from '@/components/app/app/search/SearchOverlay';
+import { PostList } from '@/components/app/app/search/detail/PostList';
 import { SearchInput } from '@/components/app/app/search/SearchInput';
-import { featureNotAvailable } from '@/lib/utils';
+import { featureNotAvailable } from '@/utils';
+import { Header } from '@/components/layout/header';
+import { SuggestNavigateSearch } from '@/components/app/app/search/SuggestNavigateSearch';
+import { ProfileList } from '@/components/app/app/search/ProfileList';
+import { useNavigation } from '@react-navigation/native';
+import { useHeaderHeight } from '@/hooks/useHeaderHeight';
+import { HEADER_CONFIG, TAB_HEIGHT } from '@/components/layout/constants';
+import { Icon } from '@/components/common/Icon';
+import { BackScreenButton } from '@/components/layout/header/BackScreenButton';
 
 const tabs = [
   { label: 'Top', value: 'default' },
@@ -27,36 +31,23 @@ export type SearchScreenParams = {
 };
 
 export default function DetailSearchScreen() {
+  const headerHeight = useHeaderHeight(tabs);
   const { search, type } = useLocalSearchParams<SearchScreenParams>();
   const [searchTerm, setSearchTerm] = React.useState(search);
-
-  React.useEffect(() => {
-    if (search) {
-      setSearchTerm(search);
-    }
-  }, [search]);
-
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const navigation = useNavigation();
   const [isFocusedSearchInput, setFocusSearchInput] = React.useState(false);
   const searchInputRef = React.useRef<TextInput>(null);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
-  const isProfileSearch = type === 'profile';
-
-  const handleSearchTermChange = (val: string) => {
-    setSearchTerm(val);
-  };
-
-  const handleDismissSearch = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => {
-      searchInputRef.current?.blur();
-      setFocusSearchInput(false);
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (search) {
+        setSearchTerm(search);
+        Keyboard.dismiss();
+      }
     });
-  };
+    return unsubscribe;
+  }, [navigation, search]);
 
   React.useEffect(() => {
     if (isFocusedSearchInput) {
@@ -66,60 +57,135 @@ export default function DetailSearchScreen() {
         useNativeDriver: true,
       }).start();
     }
+  }, [fadeAnim, isFocusedSearchInput]);
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  const isProfileSearch = React.useMemo(() => type === 'profile', [type]);
+
+  const handleSearchTermChange = React.useCallback((val: string) => {
+    setSearchTerm(val);
+  }, []);
+
+  const handleDismissSearch = React.useCallback(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      searchInputRef.current?.blur();
+      setFocusSearchInput(false);
+    });
+  }, [fadeAnim]);
+
+  const handlePressSearchInput = useCallback(() => {
+    setFocusSearchInput(true);
+    searchInputRef.current?.focus();
+  }, []);
+
+  const navigateDetailSearch = useCallback(() => {
+    router.push({
+      pathname: '/search/detail/[search]',
+      params: {
+        search: searchTerm,
+      },
+    });
+    setTimeout(() => {
+      handleDismissSearch();
+    }, 800);
+  }, [handleDismissSearch, searchTerm]);
+
+  const handleBack = React.useCallback(() => {
+    if (isFocusedSearchInput) {
+      searchInputRef.current?.blur();
+      setFocusSearchInput(false);
+    }
+    else {
+      router.setParams({});
+      router.back();
+    }
   }, [isFocusedSearchInput]);
 
-  const backScreen = () => {
-    router.setParams({});
-    router.back();
-  };
+  const headerLeft = React.useCallback(() => (
+    <BackScreenButton onPress={handleBack} variant="icon" className='ml-2'/>
+  ), [handleBack]);
 
-  const handleTabPress = (value: string) => {
-    router.setParams({ type: value });
-  };
+  const headerMiddle = React.useCallback(() => (
+    <View className="flex-1 w-full">
+      <View className={`absolute inset-0 ${!isFocusedSearchInput ? 'z-10' : 'z-[-1]'}`}>
+        <SearchInput
+          value={searchTerm}
+          onPress={handlePressSearchInput}
+          editable={false}
+        />
+      </View>
+      <View className={`absolute inset-0 ${isFocusedSearchInput ? 'z-10' : 'z-[-1]'}`}>
+        <SearchInput
+          ref={searchInputRef}
+          onChangeText={handleSearchTermChange}
+          value={searchTerm}
+          onSubmitEditing={navigateDetailSearch}
+          selectTextOnFocus={true}
+        />
+      </View>
+    </View>
+  ), [isFocusedSearchInput, searchTerm, handlePressSearchInput, handleSearchTermChange, navigateDetailSearch]);
+
+  const headerRight = React.useCallback(() => (
+    <Icon name="settings" size={HEADER_CONFIG.ICON_SIZE} onPress={featureNotAvailable}/>
+  ), []);
+
+  const searchResult = useMemo(() => (
+    <Animated.View
+      className="flex-1"
+      style={{
+        opacity: fadeAnim,
+      }}
+    >
+      <View
+        className="flex-1"
+        style={{ paddingTop: headerHeight - TAB_HEIGHT }}
+      >
+        <SuggestNavigateSearch
+          searchTerm={searchTerm}
+          onDismiss={handleDismissSearch}
+        />
+        <ProfileList
+          searchInputRef={searchInputRef}
+          searchTerm={searchTerm}/>
+      </View>
+    </Animated.View>
+  ), [fadeAnim, headerHeight, searchTerm, handleDismissSearch]);
 
   return (
-    <SafeAreaView className="flex-1" edges={['top']}>
-      <View className="flex-1">
-        {/* Header */}
-        <View className="flex-row items-center px-4 gap-5">
-          <Pressable onPress={backScreen}>
-            <Ionicons name="chevron-back" size={24} color="black"/>
-          </Pressable>
-          <SearchInput
-            ref={searchInputRef}
-            value={searchTerm}
-            onChangeText={handleSearchTermChange}
-            onFocus={() => setFocusSearchInput(true)}
-          />
-          <TouchableOpacity onPress={featureNotAvailable}>
-            <Feather name="settings" size={20} color="black" className="opacity-70"/>
-          </TouchableOpacity>
-        </View>
-
-        {isFocusedSearchInput && (
-          <SearchOverlay
-            fadeAnim={fadeAnim}
-            searchInputRef={searchInputRef}
-            onDismiss={handleDismissSearch}
-            initialSearchTerm={searchTerm}
-          />
-        )}
-        <View className="flex-1 pb-[2px]">
-          {/*Search Tabs*/}
-          <Tabs tabs={tabs} onPressTab={handleTabPress}/>
-
-          {isProfileSearch ?
-            (
-              <ProfilesList searchTerm={searchTerm}/>
-            ) :
-            (
-              <PostsList
-                searchTerm={debouncedSearchTerm}
-                isLatest={type === 'latest'}
-              />
-            )}
-        </View>
-      </View>
+    <SafeAreaView className="flex-1" edges={['left', 'right']}>
+      <Header
+        tabs={isFocusedSearchInput ? [] : tabs}
+        headerLeft={headerLeft}
+        headerMiddle={headerMiddle}
+        headerRight={headerRight}
+        headerLeftClassName="max-w-[35px]"
+        headerRightClassName="max-w-[40px]"
+        headerMiddleClassName="ml-14 mr-10"
+      />
+      {
+        isFocusedSearchInput ?
+          searchResult :
+          (
+            <View className="flex-1 pb-[2px]">
+              {isProfileSearch ?
+                (<ProfilesList
+                  headerHeight={headerHeight}
+                  searchTerm={debouncedSearchTerm}
+                />) :
+                (<PostList
+                  headerHeight={headerHeight}
+                  searchTerm={debouncedSearchTerm}
+                  isLatest={type === 'latest'}
+                />)}
+            </View>
+          )
+      }
     </SafeAreaView>
   );
 }

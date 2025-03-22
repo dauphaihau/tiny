@@ -1,6 +1,5 @@
 import React from 'react';
 import { Stack } from 'expo-router';
-import { ProfileToggle } from '@/components/common/ProfileToggle';
 
 export default function HomeLayout() {
   return (
@@ -8,11 +7,7 @@ export default function HomeLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Home',
-          headerShown: true,
-          headerLeft: () => <ProfileToggle/>,
-          headerShadowVisible: false,
-          headerTransparent: true,
+          headerShown: false,
         }}
       />
     </Stack>

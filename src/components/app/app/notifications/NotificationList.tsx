@@ -1,68 +1,45 @@
-import {
-  View, FlatList, ActivityIndicator, RefreshControl 
-} from 'react-native';
 import { useGetNotifications } from '@/services/notification.service';
-import { LoadingScreen } from '@/components/ui/LoadingScreen';
-import React from 'react';
-import { Separator } from '@/components/common/Separator';
+import React, { memo } from 'react';
 import { NotificationItem } from '@/components/app/app/notifications/NotificationItem';
 import { useLocalSearchParams } from 'expo-router';
-import { NoResults } from '@/components/common/NoResults';
-import { INotification } from '@/types/request/notification/get-notifications';
+import { NotificationType } from '@/types/request/notification/get-notifications';
+import { CustomFlatList } from '@/components/common/CustomFlatList';
 
-export function NotificationList() {
-  const { type = 'all' } = useLocalSearchParams<{ type: string }>();
-  
+type SearchParams = {
+  type: NotificationType
+};
+
+interface NotificationsListProps {
+  headerHeight: number
+}
+
+const MemoizedNoti = memo(NotificationItem);
+
+export function NotificationList({ headerHeight }: NotificationsListProps) {
+  const { type = NotificationType.ALL } = useLocalSearchParams<SearchParams>();
+
   const {
     notifications,
     isPending,
+    isError,
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
     refetch,
   } = useGetNotifications({ type });
 
-  const renderItem = ({ item }: { item: INotification }) => {
-    return (
-      <NotificationItem data={item}/>
-    );
-  };
-
-  if (isPending) return <LoadingScreen/>;
-  if (!notifications.length) return <NoResults/>;
-
-  console.log('notifications', notifications);
-
   return (
-    <FlatList
+    <CustomFlatList
       data={notifications}
-      keyExtractor={(item) => item?.id?.toString()}
-      renderItem={renderItem}
-      ItemSeparatorComponent={() => <Separator/>}
-      onEndReached={() => {
-        if (hasNextPage) {
-          fetchNextPage();
-        }
-      }}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={() => (
-        <View className="mb-24">
-          <Separator/>
-          {isFetchingNextPage ?
-            (
-              <View className="py-8">
-                <ActivityIndicator/>
-              </View>
-            ) :
-            null}
-        </View>
-      )}
-      refreshControl={
-        <RefreshControl
-          refreshing={false}
-          onRefresh={refetch}
-        />
-      }
+      renderItem={(item) => <MemoizedNoti data={item}/>}
+      isLoading={isPending}
+      isError={isError}
+      isLoadingMore={isFetchingNextPage}
+      hasMoreData={hasNextPage}
+      headerHeight={headerHeight}
+      onRefresh={refetch}
+      onLoadMore={fetchNextPage}
+      onEndReachedThreshold={0.4}
     />
   );
 }

@@ -4,6 +4,7 @@ import React from 'react';
 import { useGetCurrentProfile } from '@/services/profile.service';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { headerClassNames } from '@/components/layout/constants';
 
 export const ProfileToggle: React.FC<PressableProps> = (props) => {
   const { data: profile } = useGetCurrentProfile();
@@ -14,7 +15,7 @@ export const ProfileToggle: React.FC<PressableProps> = (props) => {
       {...props}
       onPress={() => navigation.toggleDrawer()}
     >
-      <Avatar path={profile?.avatar}/>
+      <Avatar path={profile?.avatar} className={headerClassNames.avatar}/>
     </Pressable>
   );
 };

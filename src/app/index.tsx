@@ -6,14 +6,13 @@ import { View } from 'react-native';
 import React, { useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import * as Linking from 'expo-linking';
-import { parseSupabaseUrl } from '@/lib/utils';
+import { parseSupabaseUrl } from '@/utils';
 
 export default function WelcomeScreen() {
   const url = Linking.useURL();
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('event', event);
       if (event === 'INITIAL_SESSION') {
         if (session) {
           router.replace('/(app)/(tabs)/home');
@@ -26,10 +25,7 @@ export default function WelcomeScreen() {
         }
       }
       else if (event === 'SIGNED_OUT') {
-        if (router.canDismiss()) {
-          router.dismissTo('/');
-        }
-        else router.replace('/');
+        router.replace('/');
       }
     });
 
@@ -47,15 +43,24 @@ export default function WelcomeScreen() {
 
       if (typeof access_token === 'string' && typeof refresh_token === 'string') {
         (async () => {
-          // if verifying the token failed, it automatically emits event SIGNED_OUT
-          const { data: { user } } = await supabase.auth.getUser(access_token);
-          if (user) {
-            await supabase.auth.setSession({
-              access_token,
-              refresh_token,
-            });
-            await supabase.auth.refreshSession();
-            router.replace('/(auth)/reset-password');
+          try {
+            // if verifying the token failed, it automatically emits event SIGNED_OUT
+            const { data: { user } } = await supabase.auth.getUser(access_token);
+            if (user) {
+              const { error } = await supabase.auth.setSession({
+                access_token,
+                refresh_token,
+              });
+              if (error) {
+                console.error('Error setting session:', error);
+                return;
+              }
+              // await supabase.auth.refreshSession();
+              router.replace('/(auth)/reset-password');
+            }
+          }
+          catch (error) {
+            console.error('Authentication error:', error);
           }
         })();
       }
@@ -63,15 +68,17 @@ export default function WelcomeScreen() {
   }, [url]);
 
   return (
-    <SafeAreaView className="bg-white">
+    <SafeAreaView>
       <View className="px-6">
         <View className="h-[80%] justify-center items-center">
-          <Text className="text-5xl font-semibold">Tiny</Text>
-          <Text className="text-zinc-500">What&#39;s up?</Text>
+          <Text className="text-6xl font-semibold">Tiny</Text>
+          <Text className="text-muted-foreground font-medium text-lg">What&#39;s up?</Text>
         </View>
 
         <View className="gap-4">
-          <Button onPress={() => router.push('/(auth)/register')}>
+          <Button
+            onPress={() => router.push('/(auth)/register')}
+          >
             <Text>Create account</Text>
           </Button>
           <Button variant="secondary" onPress={() => router.push('/(auth)/login')}>

@@ -1,8 +1,8 @@
-import React from 'react';
-import { useToggleLike } from '@/services/post.service';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { LayoutActionButton } from '@/components/common/post/LayoutActionButton';
+import React, { useEffect } from 'react';
+import { useToggleLikePost } from '@/services/post.service';
+import { ActionIconButton } from '@/components/common/post/ActionIconButton';
 import { IPost } from '@/types/components/common/post';
+import { supabase } from '@/lib/supabase';
 
 export function LikePostButton({
   is_liked,
@@ -10,32 +10,39 @@ export function LikePostButton({
   likes_count,
 }: IPost) {
   const [isLiked, setIsLiked] = React.useState(is_liked);
-  const [likeCount, setLikeCount] = React.useState(likes_count ?? 0);
-  const { mutateAsync: like } = useToggleLike();
+  const [likesCount, setLikesCount] = React.useState(0);
+  const { mutateAsync: like } = useToggleLikePost();
+
+  useEffect(() => {
+    setLikesCount(likes_count);
+  },[likes_count]);
 
   const handleLike = async () => {
     const { error } = await like(postId);
     if (!error) {
-      setIsLiked(!isLiked);
-      if (!isLiked) {
-        setLikeCount((prevState) => prevState + 1);
-      }
-      else setLikeCount((prevState) => prevState - 1);
+      const newIsLiked = !isLiked;
+      setIsLiked(newIsLiked);
+      const newLikesCount = newIsLiked ?
+        likesCount + 1 :
+        likesCount - 1;
+      setLikesCount(newLikesCount);
+      
+      await supabase.channel('posts').send({
+        type: 'broadcast',
+        event: 'like_post',
+        payload: { 
+          post_id: postId,
+          likes_count: newLikesCount,
+        },
+      });
     }
   };
 
   return (
-    <LayoutActionButton
+    <ActionIconButton
       onPress={handleLike}
-      count={likeCount}
-      icon={
-        (sizeIcon) => (
-          <Ionicons
-            name={isLiked ? 'heart' : 'heart-outline'}
-            size={sizeIcon}
-          />
-        )
-      }
+      count={likesCount}
+      iconName={isLiked ? 'heart.fill' : 'heart'}
     />
   );
 }

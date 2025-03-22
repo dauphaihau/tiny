@@ -46,7 +46,7 @@ export function SearchOverlay({
 
   return (
     <Animated.View
-      className="absolute inset-0 bg-white z-10"
+      className="absolute inset-0 bg-white z-10 pt-[46.5px] px-2"
       style={{
         height: screenHeight - tabBarHeight,
         opacity: fadeAnim,

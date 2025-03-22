@@ -3,7 +3,7 @@ import {
 } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import React from 'react';
-import { featureNotAvailable } from '@/lib/utils';
+import { featureNotAvailable } from '@/utils';
 import { SearchInput } from './SearchInput';
 
 interface SearchHeaderProps {
@@ -20,13 +20,14 @@ export function SearchHeader({
   initialValue = '',
 }: SearchHeaderProps) {
   return (
-    <View className="flex-row items-center px-4 gap-5">
-      <Pressable onPress={onDismiss}>
+    <View className="flex-row items-center gap-2 px-2">
+      <Pressable onPress={onDismiss} className='w-10'>
         <Ionicons name="chevron-back" size={24} color="black"/>
       </Pressable>
       <SearchInput
         ref={searchInputRef}
         autoFocus
+        className='flex-1'
         placeholder="Search"
         onChangeText={setInputValue}
         defaultValue={initialValue}

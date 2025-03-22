@@ -4,7 +4,7 @@ import {
   ForgotPasswordDto, LoginDto, RegisterDto, ResetPasswordDto
 } from '@/schemas/request/auth';
 import * as Linking from 'expo-linking';
-import { getUsernameFromEmail } from '@/lib/utils';
+import { getUsernameFromEmail } from '@/utils';
 
 export function useRegister() {
   return useMutation({

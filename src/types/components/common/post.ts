@@ -3,7 +3,7 @@ import { Post, PostImages } from '@/types/models/post';
 
 export type IPost = {
   profile: Pick<Profile, 'id' | 'avatar' | 'username' | 'first_name'>
-  images: Pick<PostImages, 'image_path'>[]
+  images: Pick<PostImages, 'image_path' | 'width' | 'height'>[]
   likes_count: number
   replies_count: number
   is_liked: boolean

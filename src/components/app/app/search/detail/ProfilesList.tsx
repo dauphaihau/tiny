@@ -1,34 +1,31 @@
 import React from 'react';
-import { FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { ProfileItem } from '@/components/app/app/search/ProfileItem';
-import { LoadingScreen } from '@/components/ui/LoadingScreen';
-import { NoResults } from '@/components/common/NoResults';
 import { useSearchProfiles } from '@/services/profile.service';
+import { CustomFlatList } from '@/components/common/CustomFlatList';
 
 type ProfilesListProps = {
   searchTerm: string;
+  headerHeight: number
 };
 
-export function ProfilesList({ searchTerm }: ProfilesListProps) {
+export function ProfilesList({ searchTerm, headerHeight }: ProfilesListProps) {
   const {
     profiles,
     hasNextPage,
     fetchNextPage,
-    isLoading,
+    isPending,
+    isError,
     isFetchingNextPage,
     refetch,
   } = useSearchProfiles({
     searchTerm,
   });
 
-  if (isLoading) return <LoadingScreen />;
-  if (!profiles.length) return <NoResults />;
-
   return (
-    <FlatList
+    <CustomFlatList
       data={profiles}
-      keyExtractor={(item, index) => `${item.id}-${index}`}
-      renderItem={({ item }) => (
+      headerHeight={headerHeight}
+      renderItem={(item) => (
         <ProfileItem
           id={item.id}
           username={item.username}
@@ -37,21 +34,12 @@ export function ProfilesList({ searchTerm }: ProfilesListProps) {
           is_following={item.is_following}
         />
       )}
-      onEndReached={() => {
-        if (hasNextPage) {
-          fetchNextPage();
-        }
-      }}
-      onEndReachedThreshold={0.5}
-      ListFooterComponent={() => (
-        isFetchingNextPage ? <ActivityIndicator className='my-8' /> : null
-      )}
-      refreshControl={
-        <RefreshControl
-          refreshing={false}
-          onRefresh={refetch}
-        />
-      }
+      isLoading={isPending}
+      isError={isError}
+      isLoadingMore={isFetchingNextPage}
+      hasMoreData={hasNextPage}
+      onRefresh={refetch}
+      onLoadMore={fetchNextPage}
     />
   );
 }

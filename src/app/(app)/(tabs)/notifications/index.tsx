@@ -1,34 +1,22 @@
-import { Dimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Tabs } from '@/components/common/Tabs';
-import { router } from 'expo-router';
 import { NotificationList } from '@/components/app/app/notifications/NotificationList';
-import { TAB_BAR_HEIGHT } from '@/constants/layout';
+import { NotificationType } from '@/types/request/notification/get-notifications';
+import { Header } from '@/components/layout/header';
+import { useHeaderHeight } from '@/hooks/useHeaderHeight';
 
 const tabs = [
-  { label: 'All', value: 'all' },
-  { label: 'Follows', value: 'follows' },
-  { label: 'Replies', value: 'replies' },
+  { label: 'All', value: NotificationType.ALL },
+  { label: 'Follows', value: NotificationType.FOLLOWS },
+  { label: 'Replies', value: NotificationType.REPLIES },
 ];
 
 export default function NotificationScreen() {
-
-  const onPressTab = (value: string) => {
-    router.setParams({ type: value });
-  };
-
-  const screenHeight = Dimensions.get('window').height;
+  const headerHeight = useHeaderHeight(tabs);
 
   return (
-    <SafeAreaView className="flex-1">
-      <View style={{ height: screenHeight - TAB_BAR_HEIGHT }}>
-        <View className="pt-10"/>
-        <Tabs
-          tabs={tabs}
-          onPressTab={onPressTab}
-        />
-        <NotificationList/>
-      </View>
+    <SafeAreaView className='flex-1' edges={['left', 'right']}>
+      <Header title='Notifications' tabs={tabs} isStatic={false}/>
+      <NotificationList headerHeight={headerHeight}/>
     </SafeAreaView>
   );
 }
