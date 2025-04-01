@@ -2,6 +2,7 @@ import React from 'react';
 import { ProfileItem } from '@/components/app/app/search/ProfileItem';
 import { useSearchProfiles } from '@/services/profile.service';
 import { CustomFlatList } from '@/components/common/CustomFlatList';
+import { NoResults } from '@/components/common/NoResults';
 
 type ProfilesListProps = {
   searchTerm: string;
@@ -40,6 +41,7 @@ export function ProfilesList({ searchTerm, headerHeight }: ProfilesListProps) {
       hasMoreData={hasNextPage}
       onRefresh={refetch}
       onLoadMore={fetchNextPage}
+      emptyComponent={<NoResults />}
     />
   );
 }

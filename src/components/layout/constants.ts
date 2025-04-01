@@ -7,10 +7,10 @@ export const SCROLL_PROGRESS_INCREMENT = 0.5; // increment of scroll progress
 export const LIGHT_OVERLAY_BACKGROUND_COLOR = 'rgba(255,255,255,0.8)';
 export const DARK_OVERLAY_BACKGROUND_COLOR = 'rgba(0, 0, 0, 0.85)';
 
-const TAB_BAR_HEIGHT = 87;
+const TAB_BAR_HEIGHT = 86;
 
 export const HEADER_CONFIG = {
-  ICON_SIZE: 22,
+  ICON_SIZE: 24,
   LIGHT_OVERLAY_BACKGROUND_COLOR,
   DARK_OVERLAY_BACKGROUND_COLOR,
 };
@@ -23,6 +23,7 @@ export const TAB_BAR_CONFIG = {
 
 export const headerClassNames = {
   container: 'flex-row items-center justify-between mx-[16px]',
+  // container: 'flex-row items-center justify-between mx-[16px] bg-red-300',
   avatar: 'size-10',
   title: 'text-xl font-bold text-center',
 };

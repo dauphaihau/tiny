@@ -106,11 +106,12 @@ export default function EditProfileScreen() {
           name="name"
           control={control}
           render={({ field: { onChange, value } }) => (
-            <FormGroup label="Name" className="py-2">
+            <FormGroup label="Name" className="py-1" classNameLabel="pt-2">
               <Input
                 variant="none"
                 size="none"
-                containerClassName='h-7'
+                containerClassName='h-10'
+                className="text-lg leading-[1.3]"
                 editable={!isSubmitting}
                 value={value}
                 onChangeText={onChange}
@@ -135,7 +136,7 @@ export default function EditProfileScreen() {
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
-                className="min-h-[90px] max-h-[90px] py-2 items-start"
+                className="min-h-[94px] max-h-[94px] py-2 items-start text-lg leading-[1.3]"
               />
             </FormGroup>
           )}

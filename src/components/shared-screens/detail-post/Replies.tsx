@@ -9,7 +9,6 @@ import { Text } from '@/components/ui/Text';
 import { Icon } from '@/components/common/Icon';
 import { featureNotAvailable } from '@/utils';
 import { useColorScheme } from '@/hooks/useColorScheme';
-
 const MemoizedPost = memo(Post);
 
 export function Replies() {

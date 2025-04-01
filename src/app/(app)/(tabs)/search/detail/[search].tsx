@@ -16,8 +16,9 @@ import { ProfileList } from '@/components/app/app/search/ProfileList';
 import { useNavigation } from '@react-navigation/native';
 import { useHeaderHeight } from '@/hooks/useHeaderHeight';
 import { HEADER_CONFIG, TAB_HEIGHT } from '@/components/layout/constants';
-import { Icon } from '@/components/common/Icon';
 import { BackScreenButton } from '@/components/layout/header/BackScreenButton';
+import { Separator } from '@/components/common/Separator';
+import { Button } from '@/components/ui/Button';
 
 const tabs = [
   { label: 'Top', value: 'default' },
@@ -132,7 +133,12 @@ export default function DetailSearchScreen() {
   ), [isFocusedSearchInput, searchTerm, handlePressSearchInput, handleSearchTermChange, navigateDetailSearch]);
 
   const headerRight = React.useCallback(() => (
-    <Icon name="settings" size={HEADER_CONFIG.ICON_SIZE} onPress={featureNotAvailable}/>
+    <Button
+      icon="settings"
+      iconSize={HEADER_CONFIG.ICON_SIZE}
+      onPress={featureNotAvailable}
+      variant="none"
+    />
   ), []);
 
   const searchResult = useMemo(() => (
@@ -150,6 +156,7 @@ export default function DetailSearchScreen() {
           searchTerm={searchTerm}
           onDismiss={handleDismissSearch}
         />
+        <Separator/>
         <ProfileList
           searchInputRef={searchInputRef}
           searchTerm={searchTerm}/>
@@ -165,7 +172,7 @@ export default function DetailSearchScreen() {
         headerMiddle={headerMiddle}
         headerRight={headerRight}
         headerLeftClassName="max-w-[35px]"
-        headerRightClassName="max-w-[40px]"
+        headerRightClassName="max-w-[40px] -mr-0.5"
         headerMiddleClassName="ml-14 mr-10"
       />
       {

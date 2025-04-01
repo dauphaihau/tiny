@@ -1,10 +1,10 @@
 import { TouchableWithoutFeedback, View } from 'react-native';
-import { Avatar } from '@/components/common/Avatar';
 import { router } from 'expo-router';
 import { FollowButton } from '@/components/common/FollowButton';
 import React from 'react';
 import { UnfollowedProfile } from '@/types/request/profile/get-unfollowed-profiles';
 import { Text } from '@/components/ui/Text';
+import { Avatar } from '@/components/common/Avatar';
 
 export function UnfollowProfileItem({
   id,

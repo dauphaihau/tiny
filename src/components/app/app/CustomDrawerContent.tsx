@@ -5,13 +5,14 @@ import { Text } from '@/components/ui/Text';
 import { supabase } from '@/lib/supabase';
 import React from 'react';
 import { useGetCurrentProfile } from '@/services/profile.service';
-import { Avatar } from '@/components/common/Avatar';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRootNameTab } from '@/hooks/useRootNameTab';
 import { Icon, IconName } from '@/components/common/Icon';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Separator } from '@/components/common/Separator';
 import { featureNotAvailable } from '@/utils';
+import { Avatar } from '@/components/common/Avatar';
+import { Button } from '@/components/ui/Button';
 
 interface ILink {
   name: string;
@@ -52,9 +53,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
     >
       <View className="px-4 flex-1 flex-col">
         <View className="gap-1">
-          <Pressable onPress={navigateToProfile}>
-            <Avatar path={currentProfile?.avatar} className="size-12"/>
-          </Pressable>
+          <Avatar onPress={navigateToProfile} path={currentProfile?.avatar} className="size-12"/>
           <Pressable onPress={navigateToProfile} className="mt-2">
             <Text className="font-bold text-xl leading-none">{currentProfile?.first_name}</Text>
             <Text className="text-lg leading-none mt-0.5">{currentProfile?.username}</Text>
@@ -106,7 +105,12 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
         </View>
 
         <View className="flex-row">
-          <Icon onPress={toggleColorScheme} name={isDarkColorScheme ? 'moon' : 'sun'} size={20}/>
+          <Button
+            onPress={toggleColorScheme}
+            icon={isDarkColorScheme ? 'moon' : 'sun'}
+            variant="none"
+            size="lg"
+          />
         </View>
       </View>
     </DrawerContentScrollView>
