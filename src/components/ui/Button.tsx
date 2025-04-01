@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Pressable, View, type PressableProps } from 'react-native';
 import { cn } from '@/utils';
 import { TextClassContext } from '@/components/ui/Text';
+import { Icon, type IconProps } from '@/components/common/Icon';
 
 const buttonVariants = cva(
   'group flex items-center justify-center',
@@ -11,7 +12,7 @@ const buttonVariants = cva(
       variant: {
         none: '',
         filled: 'bg-primary active:opacity-90',
-        outline: 'border border-input bg-background active:bg-accent',
+        outline: 'border border-border bg-background active:bg-accent',
         secondary: 'bg-secondary active:opacity-80',
         ghost: 'active:bg-accent',
         link: 'text-primary group-active:underline',
@@ -36,7 +37,25 @@ const buttonVariants = cva(
       size: 'lg',
       radius: 'md',
     },
-  }
+  },
+);
+
+const buttonIconVariants = cva(
+  'group flex items-center justify-center',
+  {
+    variants: {
+      size: {
+        none: '',
+        sm: 'p-1',
+        md: 'p-1.5',
+        lg: 'p-2',
+        xl: 'p-2.5',
+      },
+    },
+    defaultVariants: {
+      size: 'none',
+    },
+  },
 );
 
 const buttonTextVariants = cva(
@@ -57,41 +76,84 @@ const buttonTextVariants = cva(
         md: 'text-base',
         lg: 'text-lg',
         xl: 'text-xl',
-        icon: '',
       },
     },
     defaultVariants: {
       variant: 'filled',
       size: 'lg',
     },
-  }
+  },
 );
 
 type ButtonProps = Omit<PressableProps, 'children'> &
   VariantProps<typeof buttonVariants> & {
-    leadingIcon?: React.ReactNode;
-    trailingIcon?: React.ReactNode;
-    children?: React.ReactNode;
-  };
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
+  icon?: IconProps['name'];
+  iconSize?: IconProps['size'];
+  iconWeight?: IconProps['weight'];
+  children?: React.ReactNode;
+  iconClassName?: string;
+};
 
 const Button = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>(
   ({
     className,
-    variant,
+    iconClassName,
+    variant = 'filled',
     size,
     radius,
     leadingIcon,
     trailingIcon,
+    icon,
+    iconSize,
+    iconWeight,
     children,
     ...props
   }, ref) => {
-    const content = (
+    // Determine the appropriate icon size based on button size
+    const getIconSize = () => {
+      if (iconSize) return iconSize;
+
+      switch (size) {
+        case 'sm':
+          return 16;
+        case 'md':
+          return 20;
+        case 'lg':
+          return 24;
+        case 'xl':
+          return 28;
+        default:
+          return 24;
+      }
+    };
+
+    // Determine if this is an icon-only button
+    const isIconOnly = icon && !children;
+
+    const content = isIconOnly ? (
+      <Icon
+        name={icon}
+        size={getIconSize()}
+        weight={iconWeight}
+        className={cn(buttonTextVariants({ variant }), iconClassName)}
+      />
+    ) : (
       <View className="flex flex-row items-center justify-center gap-1">
         {leadingIcon}
         {children}
         {trailingIcon}
       </View>
     );
+
+    const buttonClasses = isIconOnly
+      ? cn(
+          buttonVariants({ variant, size: 'none', radius }),
+          buttonIconVariants({ size }),
+          className
+        )
+      : buttonVariants({ variant, size, radius, className: cn(className) });
 
     return (
       <TextClassContext.Provider
@@ -100,9 +162,7 @@ const Button = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>
         <Pressable
           className={cn(
             props.disabled && 'opacity-50',
-            buttonVariants({
-              variant, size, radius, className, 
-            })
+            buttonClasses,
           )}
           ref={ref}
           role="button"
@@ -112,9 +172,9 @@ const Button = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>
         </Pressable>
       </TextClassContext.Provider>
     );
-  }
+  },
 );
 Button.displayName = 'Button';
 
-export { Button, buttonTextVariants, buttonVariants };
+export { Button, buttonTextVariants, buttonVariants, buttonIconVariants };
 export type { ButtonProps };

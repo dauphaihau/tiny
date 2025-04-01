@@ -3,7 +3,6 @@ import {
 } from 'react-native';
 import React from 'react';
 import { TAB_HEIGHT } from '@/components/layout/constants';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 interface ITab {
   label: string;
@@ -22,7 +21,6 @@ export function Tabs({ tabs, onPressTab, defaultTab }: ITabsProps) {
   const minTabWidth = 100; // minimum width for each tab
   const tabWidth = Math.max(minTabWidth, width / tabs.length);
   const translateX = React.useRef(new Animated.Value(0)).current;
-  const { themeColors } = useColorScheme();
 
   React.useEffect(() => {
     const index = tabs.findIndex(tab => tab.value === currentTab);
@@ -49,9 +47,8 @@ export function Tabs({ tabs, onPressTab, defaultTab }: ITabsProps) {
         }}
       >
         <Animated.View
-          className="absolute bottom-0 h-1 rounded-lg"
+          className="absolute bottom-0 h-1 rounded-lg bg-foreground"
           style={{
-            backgroundColor: themeColors.foreground,
             width: tabWidth,
             transform: [{ translateX }],
           }}

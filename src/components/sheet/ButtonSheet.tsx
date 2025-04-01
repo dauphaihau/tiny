@@ -2,20 +2,21 @@ import React from 'react';
 import { cn } from '@/utils';
 import { Pressable } from 'react-native';
 import { Text } from '@/components/ui/Text';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Icon, IconName } from '@/components/common/Icon';
 
 const ICON_SIZE = 22;
 
 interface ButtonSheetProps extends React.ComponentPropsWithoutRef<typeof Pressable> {
   label: string;
-  icon?: (size: number, color: string) => React.ReactNode;
+  icon: {
+    name: IconName,
+  };
   isDestructive?: boolean;
 }
 
 const ButtonSheet = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonSheetProps>(({
   className, label, isDestructive, ...props
 }, ref) => {
-  const { themeColors } = useColorScheme();
   return (
     <Pressable
       className={cn(
@@ -28,14 +29,16 @@ const ButtonSheet = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonS
     >
       <Text
         className={cn('font-semibold text-lg',
-          isDestructive && 'text-destructive'
+          isDestructive && 'text-destructive',
         )}
       >{label}</Text>
       {
         props.icon && (
-          <Text className={cn('font-semibold')}>
-            {props.icon(ICON_SIZE, isDestructive ? themeColors.destructive : themeColors.foreground)}
-          </Text>
+          <Icon
+            name={props?.icon?.name}
+            className={isDestructive ? 'text-destructive' : 'text-foreground'}
+            size={ICON_SIZE}
+          />
         )
       }
     </Pressable>

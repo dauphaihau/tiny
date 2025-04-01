@@ -9,7 +9,7 @@ import { Text } from '@/components/ui/Text';
 import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { useGetCurrentProfile, useGetProfileById } from '@/services/profile.service';
 import { SearchParams } from '@/components/shared-screens/detail-profile/types';
-import { FollowButton } from './FollowButton';
+import { FollowButton } from '@/components/common/FollowButton';
 import React, { useState, forwardRef } from 'react';
 import { runOnJS } from 'react-native-reanimated';
 import { DETAIL_PROFILE_CONFIG } from './constants';
@@ -43,7 +43,7 @@ interface FixedHeaderProps extends BlurViewProps {
 function BackButton() {
   return (
     <Button onPress={router.back} className="rounded-full bg-black/60 size-10" size="none" radius="full">
-      <Icon name="chevron.left" size={CONSTANTS.ICON_SIZE} color="white" weight="bold"/>
+      <Icon name="chevron.left" size={CONSTANTS.ICON_SIZE} className="text-white" weight="bold"/>
     </Button>
   );
 }
@@ -52,12 +52,12 @@ function ActionButtons({ isOwnProfile }: { isOwnProfile: boolean }) {
   return (
     <View className="flex-row gap-2">
       <Button onPress={featureNotAvailable} className="rounded-full bg-black/60 size-10" size="none" radius="full" >
-        <Icon name="search" size={CONSTANTS.ICON_SIZE} color="white" weight="bold"/>
+        <Icon name="search" size={CONSTANTS.ICON_SIZE} className="text-white" weight="bold"/>
       </Button>
       <Button onPress={featureNotAvailable} className="rounded-full bg-black/60 size-10" size="none" radius="full" >
         {isOwnProfile ?
-          (<Icon name="share" size={CONSTANTS.ICON_SIZE} color="white" weight="bold"/>) :
-          (<Icon name="dots.horizontal" size={CONSTANTS.ICON_SIZE} color="white" weight="bold"/>)
+          (<Icon name="share" size={CONSTANTS.ICON_SIZE} className="text-white" weight="bold"/>) :
+          (<Icon name="dots.horizontal" size={CONSTANTS.ICON_SIZE} className="text-white" weight="bold"/>)
         }
       </Button>
     </View>
@@ -147,7 +147,7 @@ export const Header = forwardRef<React.ElementRef<typeof BlurView>, FixedHeaderP
       return <ActivityIndicator color="white"/>;
     }
     else if (scrollYState < 0) {
-      return <Icon name="arrow.down" size={20} color="white" weight="bold"/>;
+      return <Icon name="arrow.down" size={20} className="text-white" weight="bold"/>;
     }
     return null;
   };

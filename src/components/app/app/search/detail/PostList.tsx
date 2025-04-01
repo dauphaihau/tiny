@@ -2,6 +2,7 @@ import React from 'react';
 import { Post } from '@/components/common/post';
 import { useSearchPosts } from '@/services/post.service';
 import { CustomFlatList } from '@/components/common/CustomFlatList';
+import { NoResults } from '@/components/common/NoResults';
 
 type PostsListProps = {
   searchTerm: string;
@@ -37,6 +38,7 @@ export function PostList({ searchTerm, isLatest, headerHeight }: PostsListProps)
       hasMoreData={hasNextPage}
       onRefresh={refetch}
       onLoadMore={fetchNextPage}
+      emptyComponent={<NoResults />}
     />
   );
 }

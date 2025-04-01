@@ -13,6 +13,7 @@ interface SuggestNavigateSearchProps {
 }
 
 export function SuggestNavigateSearch({ searchTerm, onDismiss }: SuggestNavigateSearchProps) {
+
   const navigateDetailSearch = () => {
     router.push({
       pathname: '/search/detail/[search]',

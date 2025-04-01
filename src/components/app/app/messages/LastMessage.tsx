@@ -1,14 +1,14 @@
-import { useGetCurrentProfile } from '@/services/profile.service';
-import { useRootNameTab } from '@/hooks/useRootNameTab';
 import { router } from 'expo-router';
 import dayjs from 'dayjs';
+import React from 'react';
+import { Pressable, View } from 'react-native';
 import isToday from 'dayjs/plugin/isToday';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { Pressable, View } from 'react-native';
-import { Avatar } from '@/components/common/Avatar';
-import React from 'react';
+import { useGetCurrentProfile } from '@/services/profile.service';
+import { useRootNameTab } from '@/hooks/useRootNameTab';
 import { ILastMessage } from '@/types/request/message';
 import { Text } from '@/components/ui/Text';
+import { Avatar } from '@/components/common/Avatar';
 
 type LastMessageProps = {
   item: ILastMessage
@@ -60,9 +60,7 @@ export const LastMessage = ({ item }: LastMessageProps) => {
   return (
     <Pressable onPress={navigateChatScreen}>
       <View className="flex-row items-center gap-3 mb-5">
-        <Pressable onPress={navigateProfileScreen}>
-          <Avatar className="size-12" path={item?.other_profile.avatar}/>
-        </Pressable>
+        <Avatar onPress={navigateProfileScreen} path={item?.other_profile.avatar} className="size-12"/>
         <View className='flex-grow'>
           <View className="flex-row justify-between">
             <Text className="font-semibold text-xl leading-none">{item?.other_profile.username}</Text>

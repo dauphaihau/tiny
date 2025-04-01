@@ -1,14 +1,13 @@
 import { Pressable, View } from 'react-native';
 import { Text } from '@/components/ui/Text';
-import { Avatar } from '@/components/common/Avatar';
 import { parsePostCreatedAt } from '@/utils/parse-post-created-at';
 import { IPost } from '@/types/components/common/post';
 import { useGetCurrentProfile } from '@/services/profile.service';
 import { SheetManager } from 'react-native-actions-sheet';
 import { useRootNameTab } from '@/hooks/useRootNameTab';
 import { router } from 'expo-router';
-import { Icon } from '@/components/common/Icon';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Avatar } from '../Avatar';
+import { Button } from '@/components/ui/Button';
 
 interface PostAuthorSectionProps {
   data: IPost;
@@ -17,7 +16,6 @@ interface PostAuthorSectionProps {
 export const PostAuthorSection = ({ data }: PostAuthorSectionProps) => {
   const { data: currentProfile } = useGetCurrentProfile();
   const rootNameTab = useRootNameTab();
-  const { themeColors } = useColorScheme();
 
   const navigateToProfile = () => {
     if (!data?.profile?.id || !rootNameTab) return;
@@ -43,9 +41,11 @@ export const PostAuthorSection = ({ data }: PostAuthorSectionProps) => {
 
   return (
     <View className="flex-row gap-4 px-4">
-      <Pressable onPress={navigateToProfile} className='h-0'>
-        <Avatar path={data?.profile?.avatar} className="size-10"/>
-      </Pressable>
+      <Avatar
+        path={data?.profile?.avatar}
+        onPress={navigateToProfile}
+        className="size-10"
+      />
 
       <View className="flex-1 gap-1">
         <View className="flex-row justify-between  ">
@@ -56,7 +56,14 @@ export const PostAuthorSection = ({ data }: PostAuthorSectionProps) => {
             <Text className="font-medium text-muted-foreground leading-none">·</Text>
             <Text className="font-medium text-muted-foreground leading-none">{parsePostCreatedAt(data?.created_at)}</Text>
           </View>
-          <Icon name='dots.horizontal' size={16} color={themeColors.mutedForeground} className="px-1 pb-2" onPress={showActions}/>
+          <Button
+            icon="dots.horizontal"
+            size="sm"
+            variant="none"
+            onPress={showActions}
+            className="pt-0"
+            iconClassName="text-icon"
+          />
         </View>
         {data?.content ? <Text className="text-lg -mt-2.5">{data.content}</Text> : null}
       </View>

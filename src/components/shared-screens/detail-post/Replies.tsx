@@ -8,12 +8,10 @@ import { Separator } from '@/components/common/Separator';
 import { Text } from '@/components/ui/Text';
 import { Icon } from '@/components/common/Icon';
 import { featureNotAvailable } from '@/utils';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 const MemoizedPost = memo(Post);
 
 export function Replies() {
-  const { themeColors } = useColorScheme();
   const { id: postId } = useLocalSearchParams<{ id: string }>();
   const {
     replies,
@@ -33,7 +31,7 @@ export function Replies() {
           <Text className="font-semibold">Replies</Text>
           <Pressable onPress={featureNotAvailable} className="flex-row items-center gap-1">
             <Text className="text-muted-foreground">View activity</Text>
-            <Icon name="chevron.right" color={themeColors.mutedForeground} size={14} weight="bold"/>
+            <Icon name="chevron.right" className="text-muted-foreground" size={14} weight="bold"/>
           </Pressable>
         </View>
       </View>

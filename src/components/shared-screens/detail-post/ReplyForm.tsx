@@ -1,22 +1,36 @@
 import { View } from 'react-native';
-import React from 'react';
-import { useCreateReply, useGetDetailPost } from '@/services/post.service';
-import { useLocalSearchParams } from 'expo-router';
+import React, { useRef, useImperativeHandle, forwardRef } from 'react';
+import { useCreateReply } from '@/services/post.service';
 import { useGetCurrentProfile } from '@/services/profile.service';
 import { useGetRepliesPost } from '@/services/post/get-replies-post';
 import { QuickResponseForm } from '@/components/common/QuickResponseForm';
+import { supabase } from '@/lib/supabase';
+import { IPost } from '@/types/components/common/post';
+import { TextInput } from 'react-native';
 import { Avatar } from '@/components/common/Avatar';
 
-type SearchParams = Record<'id', string>;
+export type ReplyFormRef = {
+  focusInput: () => void;
+};
 
-export function ReplyForm() {
-  const { id } = useLocalSearchParams<SearchParams>();
-  const { post, refetch: refetchDetailPost } = useGetDetailPost(Number(id));
-  const { refetch: refetchReplies } = useGetRepliesPost(Number(id));
+type ReplyFormProps = {
+  post: IPost;
+};
 
+export const ReplyForm = forwardRef<ReplyFormRef, ReplyFormProps>(({ post }, ref) => {
+  const { refetch: refetchReplies } = useGetRepliesPost(Number(post.id));
+  const inputRef = useRef<TextInput>(null);
   const { data: profile } = useGetCurrentProfile();
   const { isPending, mutateAsync: reply } = useCreateReply();
   
+  useImperativeHandle(ref, () => ({
+    focusInput: () => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    },
+  }));
+
   const onSubmit = async (content: string) => {
     if (!post || !profile || !content) {
       return;
@@ -27,7 +41,15 @@ export function ReplyForm() {
       content,
     });
     if (!error) {
-      refetchDetailPost();
+
+      await supabase.channel(`post-${post.id}`).send({
+        type: 'broadcast',
+        event: 'update_post',
+        payload: { 
+          replies_count: (post.replies_count || 0) + 1,
+        },
+      });
+
       refetchReplies();
     }
   };
@@ -35,11 +57,12 @@ export function ReplyForm() {
   return (
     <View className="mx-3 mb-3">
       <QuickResponseForm
+        ref={inputRef}
         isPending={isPending}
         onSubmit={onSubmit}
-        leadingIcon={<Avatar path={profile?.avatar} className="size-[25px]"/>}
+        leadingIcon={<Avatar path={profile?.avatar} className="size-[28px]" />}
         placeholder={post?.profile?.first_name === profile?.first_name ? 'Add to post...' : `Reply to ${post?.profile?.first_name}...`}
       />
     </View>
   );
-}
+});

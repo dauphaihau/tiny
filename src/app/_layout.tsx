@@ -7,10 +7,12 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, {
+  useEffect, useLayoutEffect, useRef, useState 
+} from 'react';
 import 'react-native-reanimated';
 import { NAVIGATION_THEME } from '@/constants/theme';
-import { Platform } from 'react-native';
+import { AppState, AppStateStatus, Platform } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@/constants/toast';
@@ -18,6 +20,8 @@ import { SheetProvider } from 'react-native-actions-sheet';
 import '@/components/sheet/sheets.ts';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import * as Updates from 'expo-updates';
+import { useCameraPermissions } from 'expo-camera';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,20 +35,18 @@ const DARK_THEME: Theme = {
   colors: NAVIGATION_THEME.dark,
 };
 
-const useIsomorphicLayoutEffect =
-  Platform.OS === 'web' && typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
-
 export default function RootLayout() {
-  const hasMounted = React.useRef(false);
+  const hasMounted = useRef(false);
   const queryClient = new QueryClient();
   const { isDarkColorScheme } = useColorScheme();
-  const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
+  const [isColorSchemeLoaded, setIsColorSchemeLoaded] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
 
   const [loaded] = useFonts({
     SpaceMono: require('assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  useIsomorphicLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (hasMounted.current) {
       return;
     }
@@ -55,6 +57,24 @@ export default function RootLayout() {
     setIsColorSchemeLoaded(true);
     hasMounted.current = true;
   }, []);
+
+  useEffect(() => {
+    const handleAppStateChange = async (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        // Check if coming back from settings and permission was previously denied
+        if (permission && !permission.granted && !permission.canAskAgain) {
+          // Re-check permission status
+          const newPermission = await requestPermission();
+          if (newPermission.granted) {
+            console.log('Permission granted after returning from settings, reloading app...');
+            await Updates.reloadAsync(); // Only reload when permission was granted after returning from settings
+          }
+        }
+      }
+    };
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    return () => subscription.remove();
+  }, [permission, requestPermission]);
 
   if (!loaded || !isColorSchemeLoaded) {
     return null;

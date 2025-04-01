@@ -36,7 +36,8 @@ export default function TabsLayout() {
         name="new-post-blank"
         options={{
           title: 'New post',
-          tabBarIcon: ({ color, size }) => (<Icon name="plus" size={size + 2} color={color}/>
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="plus" size={size + 2} color={color}/>
           ),
         }}
         listeners={({ navigation }) => ({

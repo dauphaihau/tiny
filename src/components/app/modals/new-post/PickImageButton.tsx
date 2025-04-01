@@ -1,16 +1,14 @@
-import { Pressable } from 'react-native';
 import React from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageURISource } from 'react-native';
 import { LIMIT_IMAGES_PER_POST } from '@/constants/post';
-import { COLOR_ICON_BUTTON, SIZE_ICON_BUTTON } from '@/components/app/modals/new-post/constants';
-import { Icon } from '@/components/common/Icon';
+import { Button } from '@/components/ui/Button';
 
 interface PickImageButtonProps {
   onImagesPicked: (sources: ImageURISource[]) => void;
 }
 
-export function PickImageButton({ 
+export function PickImageButton({
   onImagesPicked,
 }: PickImageButtonProps) {
   const pickImage = async () => {
@@ -28,19 +26,18 @@ export function PickImageButton({
       videoQuality: undefined,
       orderedSelection: true,
     });
-    
+
     if (!result.canceled) {
       onImagesPicked(result.assets);
     }
   };
 
   return (
-    <Pressable onPress={pickImage}>
-      <Icon
-        name="photo"
-        size={SIZE_ICON_BUTTON}
-        color={COLOR_ICON_BUTTON}
-      />
-    </Pressable>
+    <Button
+      onPress={pickImage}
+      icon='photo'
+      iconClassName="text-muted-foreground"
+      variant="none"
+    />
   );
 }

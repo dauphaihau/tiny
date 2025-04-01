@@ -4,9 +4,10 @@ import {
 import { supabase } from '@/lib/supabase';
 import { UpdateUserDto } from '@/schemas/request/profile';
 import { Profile } from '@/types/models/profile';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { UnfollowedProfilesProps } from '@/types/request/profile/get-unfollowed-profiles';
 import { SearchProfilesParams } from '@/types/request/profile/search-profiles';
+import { useFocusEffect } from 'expo-router';
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
@@ -81,12 +82,20 @@ export function useGetProfileById(id: Profile['id']) {
       if (error) throw error;
       return data[0];
     },
+    refetchOnMount: true,
   });
 }
 
 export function useGetUnfollowedProfiles(props?: UnfollowedProfilesProps) {
   const { data: currentProfile } = useGetCurrentProfile();
   const pageSize = props?.pageSize ?? 20;
+  const queryClient = useQueryClient();
+
+  useFocusEffect(
+    useCallback(() => {
+      queryClient.invalidateQueries({ queryKey: ['profiles-not-followed'] });
+    }, [queryClient])
+  );
 
   const query = useInfiniteQuery({
     enabled: !!currentProfile?.id,

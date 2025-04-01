@@ -61,22 +61,9 @@ export function useGetPosts(params: Pick<GetPostsParams, 'type' | 'itemsPerPage'
           );
         }
       )
-      .on(
-        'broadcast',
-        { event: 'like_post' },
-        (payload) => {
-          const { post_id, likes_count } = payload.payload;
-          setPosts(prevPosts =>
-            prevPosts.map(post => 
-              post.id === post_id ? 
-                { ...post, likes_count } :
-                post
-            )
-          );
-        }
-      )
       .subscribe();
 
+    // ensures data is always refreshed when leaving the home screen
     const unsubscribeBlur = navigation.addListener('blur', () => {
       queryClient.invalidateQueries({
         queryKey: ['get-posts'],
@@ -84,7 +71,7 @@ export function useGetPosts(params: Pick<GetPostsParams, 'type' | 'itemsPerPage'
       });
     });
 
-    // ensures your data is always refreshed when returning to the home screen
+    // ensures data is always refreshed when returning to the home screen
     const unsubscribeFocus = navigation.addListener('focus', () => {
       query.refetch();
     });

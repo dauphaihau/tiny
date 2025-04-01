@@ -30,7 +30,7 @@ export const BackScreenButton = ({
               (<Text className="text-lg">Cancel</Text>) :
               (
                 <View className="flex-row items-center gap-1">
-                  <Icon name="chevron.left" size={HEADER_CONFIG.ICON_SIZE - 5}/>
+                  <Icon name="chevron.left" size={HEADER_CONFIG.ICON_SIZE - 2}/>
                   <Text className="text-xl">Back</Text>
                 </View>
               )

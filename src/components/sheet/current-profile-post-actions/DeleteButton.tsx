@@ -5,7 +5,6 @@ import Toast from 'react-native-toast-message';
 import { ButtonSheet } from '@/components/sheet/ButtonSheet';
 import React from 'react';
 import { supabase } from '@/lib/supabase';
-import { Icon } from '@/components/common/Icon';
 
 export function DeleteButton() {
   const payload = useSheetPayload('current-profile-post-actions');
@@ -65,10 +64,8 @@ export function DeleteButton() {
     <ButtonSheet
       onPress={onPressDelete}
       label="Delete"
-      icon={(size, color) => (
-        <Icon name="trash" size={size} color={color}/>
-      )}
-      isDestructive={true}
+      icon={{ name: 'trash' }}
+      isDestructive
     />
   );
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import { View, Dimensions, TextInput } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/common/Icon';
@@ -10,7 +10,7 @@ import Animated, {
   Easing,
   interpolate
 } from 'react-native-reanimated';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { featureNotAvailable } from '@/utils';
 
 const ICON_SIZE_INPUT = 24;
 const BUTTON_SIZE = 40; // Size of the button (10 units = 40px)
@@ -23,15 +23,12 @@ type QuickResponseFormProps = {
   placeholder?: string;
 };
 
-export function QuickResponseForm({
+export const QuickResponseForm = forwardRef<TextInput, QuickResponseFormProps>(({
   isPending, onSubmit, leadingIcon, placeholder, 
-}: QuickResponseFormProps) {
-  const inputRef = useRef<TextInput>(null);
+}, ref) => {
   const [content, setContent] = useState<string>();
   const [isAutoFocus, setIsAutoFocus] = useState(false);
   const screenWidth = Dimensions.get('window').width;
-  const { themeColors } = useColorScheme();
-
 
   // Use shared values for animations
   const animationProgress = useSharedValue(0);
@@ -74,8 +71,8 @@ export function QuickResponseForm({
   });
 
   const handleInputPress = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
+    if (ref && 'current' in ref && ref.current) {
+      ref.current.focus();
     }
   };
 
@@ -87,11 +84,11 @@ export function QuickResponseForm({
   };
 
   return (
-    <View className="flex-row items-center relative">
+    <View className="flex-row items-center relative shadow-[0px_1px_4px_0px_#00000024]">
       <Animated.View style={[inputContainerStyle, inputPaddingStyle]}>
         <Input
           onPress={handleInputPress}
-          ref={inputRef}
+          ref={ref}
           value={content}
           variant="soft"
           radius="none"
@@ -101,16 +98,16 @@ export function QuickResponseForm({
           onFocus={() => setIsAutoFocus(true)}
           onBlur={() => setIsAutoFocus(false)}
           placeholder={placeholder}
-          containerClassName="rounded-[19px] max-h-20 w-full"
+          containerClassName="rounded-[19px] max-h-20 w-full border-border"
           className='py-[14.5px]'
           editable={!isPending}
           onChangeText={(val) => setContent(val)}
           leadingIcon={!isAutoFocus && leadingIcon}
           trailingIcon={
-            <View className="flex-row gap-3">
-              {!content && <Icon name="photo" onPress={() => {}} size={ICON_SIZE_INPUT}/>}
-              {!content && <Icon name="mic" onPress={() => {}} size={ICON_SIZE_INPUT}/>}
-              <Icon name="plus.circle" onPress={() => {}} size={ICON_SIZE_INPUT}/>
+            <View className="flex-row gap-4">
+              {!content && <Button icon="photo" variant="none" onPress={featureNotAvailable} iconSize={ICON_SIZE_INPUT}/>}
+              {!content && <Button icon="mic" variant="none" onPress={featureNotAvailable} iconSize={ICON_SIZE_INPUT}/>}
+              <Button icon="plus.circle" variant="none" onPress={featureNotAvailable} iconSize={ICON_SIZE_INPUT}/>
             </View>
           }
         />
@@ -124,9 +121,9 @@ export function QuickResponseForm({
           className="size-10"
           size="none"
         >
-          <Icon name="arrow.up" size={19} color={themeColors.primaryForeground} weight='bold'/>
+          <Icon name="arrow.up" size={19} className="text-primary-foreground" weight='bold'/>
         </Button>
       </Animated.View>
     </View>
   );
-} 
+}); 

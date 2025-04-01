@@ -1,9 +1,9 @@
 import { Pressable, View } from 'react-native';
-import { Avatar } from '@/components/common/Avatar';
 import { router } from 'expo-router';
 import { FollowButton } from '@/components/common/FollowButton';
 import React from 'react';
 import { Text } from '@/components/ui/Text';
+import { Avatar } from '@/components/common/Avatar';
 
 interface ProfileItemProps {
   id: string;
