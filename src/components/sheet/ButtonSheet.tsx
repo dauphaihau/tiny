@@ -10,7 +10,7 @@ interface ButtonSheetProps extends React.ComponentPropsWithoutRef<typeof Pressab
   label: string;
   icon: {
     name: IconName,
-  }
+  };
   isDestructive?: boolean;
 }
 
@@ -29,12 +29,16 @@ const ButtonSheet = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonS
     >
       <Text
         className={cn('font-semibold text-lg',
-          isDestructive && 'text-destructive'
+          isDestructive && 'text-destructive',
         )}
       >{label}</Text>
       {
         props.icon && (
-          <Icon name={props?.icon?.name} className={isDestructive ? 'text-destructive' : 'text-foreground'} size={ICON_SIZE} />
+          <Icon
+            name={props?.icon?.name}
+            className={isDestructive ? 'text-destructive' : 'text-foreground'}
+            size={ICON_SIZE}
+          />
         )
       }
     </Pressable>

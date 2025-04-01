@@ -34,6 +34,8 @@ const Avatar = ({
 // Memoize the entire Avatar component
 export const MemoizedAvatar = React.memo(Avatar, (prevProps, nextProps) => {
   // Only re-render if the path or className changes
-  return prevProps.path === nextProps.path && prevProps.className === nextProps.className;
+  return prevProps.path === nextProps.path &&
+    prevProps.className === nextProps.className &&
+    prevProps.containerClassName === nextProps.containerClassName;
 });
 export { MemoizedAvatar as Avatar };

@@ -45,8 +45,8 @@ export default function ChatScreen() {
               <BackScreenButton>
                 <Icon name="chevron.left" size={iconSize} weight="bold"/>
               </BackScreenButton>
-              <Avatar path={profile?.avatar} className="size-10 mx-2"/>
-              <Text className="font-semibold text-lg">{profile?.username}</Text>
+              <Avatar path={profile?.avatar} className="size-10" containerClassName="ml-2"/>
+              <Text className="font-semibold text-lg ml-2">{profile?.username}</Text>
             </View>
           )
         }

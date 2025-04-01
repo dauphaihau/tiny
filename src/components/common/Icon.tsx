@@ -8,6 +8,7 @@ import {
   Bell,
   BookmarkSimple,
   Camera,
+  CameraRotate,
   CaretLeft,
   CaretRight,
   ChatCircle,
@@ -70,6 +71,7 @@ export type IconName =
   | 'photo'
   | 'photos'
   | 'camera'
+  | 'camera.rotate'
   | 'mic'
   | 'lock'
   | 'location'
@@ -122,6 +124,7 @@ const ICON_COMPONENTS = {
   photo: Image,
   photos: Images,
   camera: Camera,
+  'camera.rotate': CameraRotate,
   mic: Microphone,
   location: MapPin,
   trash: Trash,
@@ -159,7 +162,7 @@ const ICON_COMPONENTS = {
 };
 
 // Type for the component props
-interface IconProps {
+export interface IconProps {
   name: IconName | string;
   size?: number;
   style?: StyleProp<ViewStyle>;

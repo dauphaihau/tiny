@@ -15,11 +15,13 @@ export type CustomImageProps = React.ComponentProps<typeof StyledImage> & {
   onPress?: PressableProps['onPress']
   showActivityIndicator?: boolean
   className?: string
+  containerClassName?: string
 };
 
 export const CustomImage = ({
   source,
   className,
+  containerClassName,
   style,
   contentFit = 'cover',
   fallback,
@@ -67,7 +69,8 @@ export const CustomImage = ({
       }}
       className={cn(
         'overflow-hidden border border-border',
-        className
+        className,
+        containerClassName
       )}
     >
       {onPress ? (

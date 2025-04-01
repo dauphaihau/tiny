@@ -26,7 +26,7 @@ import { Header } from '@/components/layout/header';
 import { useHeaderHeight } from '@/hooks/useHeaderHeight';
 import { useTabBarStore } from '@/stores/tab-bar.store';
 import { useScrollPositionStore } from '@/stores/scroll-position.store';
-import { TAB_BAR_CONFIG } from '@/components/layout/constants';
+import { HEADER_CONFIG, TAB_BAR_CONFIG } from '@/components/layout/constants';
 import { usePostRealtime } from '@/hooks/usePostRealtime';
 import { useQueryClient } from '@tanstack/react-query';
 import { IPost } from '@/types/components/common/post';
@@ -187,8 +187,8 @@ export function DetailPostScreen() {
         headerLeft={<BackScreenButton/>}
         headerRight={() => (
           <View className="flex-row gap-3">
-            <Button icon="bell" variant="none" onPress={featureNotAvailable}/>
-            <Button icon="dots.horizontal.circle" variant="none" onPress={showActions}/>
+            <Button iconSize={HEADER_CONFIG.ICON_SIZE} icon="bell" variant="none" onPress={featureNotAvailable}/>
+            <Button iconSize={HEADER_CONFIG.ICON_SIZE} icon="dots.horizontal.circle" variant="none" onPress={showActions}/>
           </View>
         )}
         borderVisible={visibleBorderHeader}
