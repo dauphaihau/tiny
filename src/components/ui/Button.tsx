@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Pressable, View, type PressableProps } from 'react-native';
 import { cn } from '@/utils';
 import { TextClassContext } from '@/components/ui/Text';
-import { Icon, type IconName } from '@/components/common/Icon';
+import { Icon, type IconProps } from '@/components/common/Icon';
 
 const buttonVariants = cva(
   'group flex items-center justify-center',
@@ -89,8 +89,9 @@ type ButtonProps = Omit<PressableProps, 'children'> &
   VariantProps<typeof buttonVariants> & {
   leadingIcon?: React.ReactNode;
   trailingIcon?: React.ReactNode;
-  icon?: IconName;
-  iconSize?: number;
+  icon?: IconProps['name'];
+  iconSize?: IconProps['size'];
+  iconWeight?: IconProps['weight'];
   children?: React.ReactNode;
   iconClassName?: string;
 };
@@ -106,6 +107,7 @@ const Button = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>
     trailingIcon,
     icon,
     iconSize,
+    iconWeight,
     children,
     ...props
   }, ref) => {
@@ -134,6 +136,7 @@ const Button = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>
       <Icon
         name={icon}
         size={getIconSize()}
+        weight={iconWeight}
         className={cn(buttonTextVariants({ variant }), iconClassName)}
       />
     ) : (

@@ -9,7 +9,7 @@ import { Text } from '@/components/ui/Text';
 import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { useGetCurrentProfile, useGetProfileById } from '@/services/profile.service';
 import { SearchParams } from '@/components/shared-screens/detail-profile/types';
-import { FollowButton } from './FollowButton';
+import { FollowButton } from '@/components/common/FollowButton';
 import React, { useState, forwardRef } from 'react';
 import { runOnJS } from 'react-native-reanimated';
 import { DETAIL_PROFILE_CONFIG } from './constants';

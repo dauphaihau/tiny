@@ -14,16 +14,14 @@ interface FollowButtonProps {
 
 export function FollowButton({
   profileId,
-  isFollowing: initialIsFollowing,
+  isFollowing,
   onSuccess = () => {},
 }: FollowButtonProps) {
-  const { mutateAsync: toggleFollow } = useToggleFollow(profileId);
-  const [isFollowing, setIsFollowing] = React.useState(initialIsFollowing);
+  const { mutateAsync: toggleFollow, isPending } = useToggleFollow(profileId);
 
   const onPress = async () => {
     const error = await toggleFollow();
     if (!error) {
-      setIsFollowing(!isFollowing);
       onSuccess();
     }
   };
@@ -35,6 +33,7 @@ export function FollowButton({
         onPress={onPress}
         className="px-5 py-1.5 h-10"
         radius="full"
+        disabled={isPending}
       >
         <Text>{isFollowing ? 'Following' : 'Follow'}</Text>
       </Button>
