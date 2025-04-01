@@ -15,8 +15,8 @@ export function FormGroup({
 }: FormGroupProps) {
   return (
     <View className={cn('flex-row items-start gap-3 px-4', className)} {...props}>
-      <Text className={cn('font-bold text-lg w-24', classNameLabel)}>{label}</Text>
-      <View className="flex-1 ">
+      <Text className={cn('font-bold text-lg w-24 h-10', classNameLabel)}>{label}</Text>
+      <View className="flex-1">
         {children}
       </View>
     </View>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { getImage } from '@/services/image.service';
-import { Image } from 'expo-image';
 import { IPost } from '@/types/components/common/post';
 
 import { Dimensions, ScrollViewProps } from 'react-native';
@@ -8,12 +7,13 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { postStyles } from '@/constants/post';
 import { POST_CONTENT_INDENT } from '@/components/common/post/constants';
 import { scaleDownPostImage } from '@/utils/scale-down-post-image';
+import { CustomImage } from '@/components/common/CustomImage';
 
-const FIXED_HEIGHT = Dimensions.get('window').width * 0.69;
+const FIXED_HEIGHT = Dimensions.get('window').width * 0.49;
 
 interface PostImagesProps {
   images: IPost['images'];
-  contentContainerStyle?: ScrollViewProps['contentContainerStyle']
+  contentContainerStyle?: ScrollViewProps['contentContainerStyle'];
 }
 
 export function PostImageList({ images, contentContainerStyle }: PostImagesProps) {
@@ -26,13 +26,15 @@ export function PostImageList({ images, contentContainerStyle }: PostImagesProps
     });
 
     return (
-      <Image
+      <CustomImage
         source={getImage(images[0].image_path)}
         cachePolicy="memory-disk"
-        style={[
-          postStyles.postImage,
-          { width, height, marginLeft: POST_CONTENT_INDENT },
-        ]}
+        style={{
+          width,
+          height,
+          marginLeft: POST_CONTENT_INDENT,
+          ...postStyles.postImage,
+        }}
       />
     );
   }
@@ -50,15 +52,14 @@ export function PostImageList({ images, contentContainerStyle }: PostImagesProps
     >
       {images.map((item, index) => (
         <React.Fragment key={index}>
-          <Image
+          <CustomImage
             source={getImage(item.image_path)}
-            style={[
-              postStyles.postImage,
+            style={
               {
+                ...postStyles.postImage,
                 width: ((item.width ?? 1) / (item.height ?? 1)) * FIXED_HEIGHT,
                 height: FIXED_HEIGHT,
-              },
-            ]}
+              }}
           />
         </React.Fragment>
       ))}

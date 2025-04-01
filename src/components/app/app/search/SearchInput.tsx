@@ -12,8 +12,9 @@ const SearchInput = React.forwardRef<React.ElementRef<typeof TextInput>, TextInp
         ref={ref}
         radius="full"
         variant="soft"
+        returnKeyType='search'
         leadingIcon={
-          <Icon name="search" size={16} color="gray" weight="bold"/>
+          <Icon name="search" size={16} className="text-muted-foreground" weight="bold"/>
         }
         placeholder="Search"
         {...props}

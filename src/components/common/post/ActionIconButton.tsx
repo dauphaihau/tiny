@@ -9,6 +9,7 @@ import Animated, {
   Easing 
 } from 'react-native-reanimated';
 import { View } from 'react-native';
+import { cn } from '@/utils';
 
 const ICON_SIZE = 21;
 const ANIMATION_DURATION = 200;
@@ -16,10 +17,12 @@ const ANIMATION_DURATION = 200;
 interface LayoutActionButtonProps extends ButtonProps {
   iconName: IconName;
   count?: number;
+  countColor?: string;
+  iconClassName?: string;
 }
 
 export const ActionIconButton: React.FC<LayoutActionButtonProps> = ({
-  count, iconName, ...props
+  count, iconName, iconClassName, countColor, ...props
 }) => {
   const { themeColors } = useColorScheme();
   const prevCountRef = useRef<number | undefined>(count);
@@ -119,7 +122,7 @@ export const ActionIconButton: React.FC<LayoutActionButtonProps> = ({
         <Icon
           name={iconName || ''}
           size={ICON_SIZE}
-          color={themeColors.icon}
+          className={cn('text-icon', iconClassName)}
         />
       }
       {...props}
@@ -130,7 +133,7 @@ export const ActionIconButton: React.FC<LayoutActionButtonProps> = ({
            prevCountRef.current !== count && 
            prevCountRef.current > 0 && (
             <Animated.Text 
-              style={[currentCountStyle, { color: themeColors.icon }]}
+              style={[currentCountStyle, { color: countColor || themeColors.icon }]}
               className="font-normal"
             >
               {prevCountRef.current}
@@ -138,7 +141,7 @@ export const ActionIconButton: React.FC<LayoutActionButtonProps> = ({
           )}
           {count > 0 && (
             <Animated.Text 
-              style={[newCountStyle, { color: themeColors.icon }]}
+              style={[newCountStyle, { color: countColor || themeColors.icon }]}
               className="font-normal"
             >
               {count}

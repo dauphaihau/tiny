@@ -2,7 +2,6 @@ import { View } from 'react-native';
 import React from 'react';
 import { SendMessageForm } from '@/components/shared-screens/chat/SendMessageForm';
 import { useLocalSearchParams } from 'expo-router';
-import { Avatar } from '@/components/common/Avatar';
 import { BackScreenButton } from '@/components/layout/header/BackScreenButton';
 import { useNavigation } from '@react-navigation/native';
 import { MessageList } from '@/components/shared-screens/chat/MessageList';
@@ -11,6 +10,7 @@ import { Header } from '@/components/layout/header';
 import { Icon } from '@/components/common/Icon';
 import { SmoothKeyboardAvoidingView } from '@/components/common/SmoothKeyboardAvoidingView';
 import { Text } from '@/components/ui/Text';
+import { Avatar } from '@/components/common/Avatar';
 
 type SearchParams = {
   avatar: string
@@ -37,7 +37,7 @@ export default function ChatScreen() {
   }, [navigation, profile?.avatar, profile?.username, setIsShowTabBar]);
 
   return (
-    <SmoothKeyboardAvoidingView paddingDuration={10} customInput={<SendMessageForm/>}>
+    <SmoothKeyboardAvoidingView customInput={<SendMessageForm/>}>
       <Header
         headerLeft={
           (iconSize) => (
@@ -45,7 +45,7 @@ export default function ChatScreen() {
               <BackScreenButton>
                 <Icon name="chevron.left" size={iconSize} weight="bold"/>
               </BackScreenButton>
-              <Avatar path={profile?.avatar} className="size-10 mr-2 ml-2"/>
+              <Avatar path={profile?.avatar} className="size-10 mx-2"/>
               <Text className="font-semibold text-lg">{profile?.username}</Text>
             </View>
           )

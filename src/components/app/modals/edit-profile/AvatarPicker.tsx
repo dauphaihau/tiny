@@ -42,7 +42,7 @@ export function AvatarPicker({ onImagePicked, ...props }: AvatarPickerProps) {
         resizeMethod="resize"
       />
       <View className="absolute justify-center items-center bg-black/30 size-20 rounded-full">
-        <Icon name="camera" size={20} color="white"/>
+        <Icon name="camera" size={20} className="text-white"/>
       </View>
     </Pressable>
   );

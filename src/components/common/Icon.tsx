@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet, ViewStyle, TextStyle, StyleProp, GestureResponderEvent, Platform, TouchableOpacity
+  View, Text, StyleSheet, ViewStyle, TextStyle, StyleProp
 } from 'react-native';
 import {
   ArrowLeft,
@@ -44,7 +44,8 @@ import {
   Gear, Archive, Lock, DotsThreeOutline, ArrowUp, ArrowRight,
   IconProps as PhosphorIconProps
 } from 'phosphor-react-native';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { cssInterop } from 'nativewind';
+import { cn } from '@/utils';
 
 // Define color constants
 const COLORS = {
@@ -161,13 +162,9 @@ const ICON_COMPONENTS = {
 interface IconProps {
   name: IconName | string;
   size?: number;
-  color?: string;
   style?: StyleProp<ViewStyle>;
   weight?: PhosphorIconProps['weight']
-  onPress?: (event: GestureResponderEvent) => void;
-  hitSlop?: {
-    top?: number; left?: number; bottom?: number; right?: number
-  };
+  className?: string
   [key: string]: unknown; // For other props we want to pass through
 }
 
@@ -175,26 +172,21 @@ interface IconProps {
 interface Styles {
   errorContainer: ViewStyle;
   errorText: TextStyle;
-  touchableContainer: ViewStyle;
 }
 
 export const Icon: React.FC<IconProps> = ({
   name,
   size = 24,
-  color,
   weight = 'regular',
-  onPress,
-  hitSlop,
+  className,
   ...props
 }) => {
   // Get the icon component from our mapping
-  const IconComponent = ICON_COMPONENTS[name as IconName];
-  const { themeColors } = useColorScheme();
+  const BaseIconComponent = ICON_COMPONENTS[name as IconName];
 
-  let iconColor = color;
-  if (!color) {
-    iconColor = themeColors.foreground;
-  }
+  const IconComponent = cssInterop(BaseIconComponent, {
+    className: 'style',
+  });
 
   // Auto set weight
   let iconWeight = weight;
@@ -210,33 +202,11 @@ export const Icon: React.FC<IconProps> = ({
     );
   }
 
-  // If onPress is provided, wrap the icon in a TouchableOpacity with transparent background
-  if (onPress) {
-    return (
-      <TouchableOpacity
-        onPress={onPress}
-        style={styles.touchableContainer}
-        activeOpacity={0.7}
-        hitSlop={hitSlop || {
-          top: 10, right: 10, bottom: 10, left: 10,
-        }}
-        accessibilityRole="button"
-        {...props}
-      >
-        <IconComponent
-          size={size}
-          color={iconColor}
-          weight={iconWeight}
-        />
-      </TouchableOpacity>
-    );
-  }
-
   return (
     <IconComponent
       size={size}
-      color={iconColor}
       weight={iconWeight}
+      className={cn('text-foreground', className)}
       {...props}
     />
   );
@@ -251,18 +221,5 @@ const styles = StyleSheet.create<Styles>({
   errorText: {
     color: COLORS.errorText,
     fontSize: 12,
-  },
-  touchableContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden', // Prevents ripple from extending beyond the container
-    ...Platform.select({
-      android: {
-        elevation: 0, // Remove shadow on Android
-      },
-      ios: {
-        // iOS-specific styles if needed
-      },
-    }),
   },
 });

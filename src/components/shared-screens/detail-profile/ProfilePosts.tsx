@@ -39,7 +39,7 @@ export function ProfilePosts() {
       scrollEnabled={false}
       loadingComponent={
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" />
+          <ActivityIndicator />
         </View>
       }
       emptyComponent={

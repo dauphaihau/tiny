@@ -1,9 +1,11 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useGetDetailPost } from '@/services/post.service';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState, useEffect, useCallback, useRef 
+} from 'react';
 import { RefreshControl, View } from 'react-native';
 import { NoResults } from '@/components/common/NoResults';
-import { ReplyForm } from '@/components/shared-screens/detail-post/ReplyForm';
+import { ReplyForm, ReplyFormRef } from '@/components/shared-screens/detail-post/ReplyForm';
 import { ParentPost } from '@/components/shared-screens/detail-post/ParentPost';
 import { Replies } from '@/components/shared-screens/detail-post/Replies';
 import { useNavigation } from '@react-navigation/native';
@@ -22,39 +24,76 @@ import Animated, {
 import { useGetRepliesPost } from '@/services/post/get-replies-post';
 import { Header } from '@/components/layout/header';
 import { useHeaderHeight } from '@/hooks/useHeaderHeight';
-import { Icon } from '@/components/common/Icon';
 import { useTabBarStore } from '@/stores/tab-bar.store';
 import { useScrollPositionStore } from '@/stores/scroll-position.store';
 import { TAB_BAR_CONFIG } from '@/components/layout/constants';
+import { usePostRealtime } from '@/hooks/usePostRealtime';
+import { useQueryClient } from '@tanstack/react-query';
+import { IPost } from '@/types/components/common/post';
+import { Button } from '@/components/ui/Button';
 
 const CONSTANTS = {
   LOAD_MORE_THRESHOLD: 0.3,
 };
 
+// Custom hook to safely handle conditional usage of usePostRealtime
+function useSafePostRealtime(post: IPost | undefined): IPost | undefined {
+  const emptyPost: IPost = {} as IPost;
+  const result = usePostRealtime(post || emptyPost);
+  
+  // Only return the result if we had a valid post
+  return post ? result : undefined;
+}
+
 export function DetailPostScreen() {
+  const queryClient = useQueryClient();
   const navigation = useNavigation();
-  const { id: postId } = useLocalSearchParams<{ id: string }>();
-  const { post, isPending, refetch: refetchPost } = useGetDetailPost(Number(postId));
+
+  const { id: postId, focus } = useLocalSearchParams<{ id: string, focus?: string }>();
+  const numericPostId = Number(postId);
+  const replyFormRef = useRef<ReplyFormRef>(null);
+  const { post: fetchedPost, isPending, refetch: refetchPost } = useGetDetailPost(numericPostId);
+
+  // Replies query
   const {
     refetch: refetchReplies,
     fetchNextPage,
     isFetchingNextPage,
     hasNextPage,
-  } = useGetRepliesPost(Number(postId));
+  } = useGetRepliesPost(numericPostId);
+  
   const { data: currentProfile } = useGetCurrentProfile();
   const headerHeight = useHeaderHeight();
+  
+  // Apply realtime updates to the post using the safe wrapper
+  const post = useSafePostRealtime(fetchedPost);
+  
+  // When post changes from realtime updates, update the cache
+  useEffect(() => {
+    if (post && numericPostId) {
+      queryClient.setQueryData(['detail-post', numericPostId], post);
+    }
+  }, [post, numericPostId, queryClient]);
 
   const [refreshing, setRefreshing] = useState(false);
   const [visibleBorderHeader, setVisibleBorderHeader] = useState(false);
   const isNearBottom = useSharedValue(false);
   const setIsStaticTabBar = useTabBarStore(state => state.setIsStatic);
   const setCurrentRouteKey = useScrollPositionStore((state) => state.setCurrentRouteKey);
-  // const { setScrollY, updateScrollDirection } = useScrollPositionStore();
 
   useFocusEffect(
     useCallback(() => {
       setCurrentRouteKey(`posts/${postId}`);
-    }, [postId, setCurrentRouteKey])
+      
+      // Focus the reply form if requested
+      if (focus === 'reply' && replyFormRef.current) {
+        // Use a short timeout to ensure form is rendered
+        setTimeout(() => {
+          replyFormRef.current?.focusInput();
+        }, 300);
+      }
+    // }, [postId, setCurrentRouteKey, refetchPost, cachedPost, focus])
+    }, [postId, setCurrentRouteKey, focus])
   );
 
   const showActions = useCallback(async () => {
@@ -138,18 +177,18 @@ export function DetailPostScreen() {
     },
   });
 
-  if (isPending) return <LoadingScreen/>;
+  if (isPending && !post) return <LoadingScreen/>;
   else if (!post) return <NoResults/>;
 
   return (
-    <SmoothKeyboardAvoidingView customInput={<ReplyForm/>}>
+    <SmoothKeyboardAvoidingView customInput={<ReplyForm ref={replyFormRef} post={post}/>}>
       <Header
         title="Post"
         headerLeft={<BackScreenButton/>}
-        headerRight={(size) => (
+        headerRight={() => (
           <View className="flex-row gap-3">
-            <Icon name="bell" size={size} onPress={featureNotAvailable}/>
-            <Icon name="dots.horizontal.circle" size={size} onPress={showActions}/>
+            <Button icon="bell" variant="none" onPress={featureNotAvailable}/>
+            <Button icon="dots.horizontal.circle" variant="none" onPress={showActions}/>
           </View>
         )}
         borderVisible={visibleBorderHeader}

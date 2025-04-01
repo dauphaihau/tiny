@@ -22,7 +22,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-  interpolate,
+  interpolate
 } from 'react-native-reanimated';
 import { TAB_BAR_CONFIG } from '@/components/layout/constants';
 

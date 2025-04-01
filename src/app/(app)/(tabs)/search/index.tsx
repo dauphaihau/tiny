@@ -15,13 +15,18 @@ import { SuggestNavigateSearch } from '@/components/app/app/search/SuggestNaviga
 import { useHeaderHeight } from '@/hooks/useHeaderHeight';
 import { router } from 'expo-router';
 import { HEADER_CONFIG, HEADER_PADDING_BOTTOM } from '@/components/layout/constants';
-import { Icon } from '@/components/common/Icon';
 import { Separator } from '@/components/common/Separator';
 import { BackScreenButton } from '@/components/layout/header/BackScreenButton';
+import { Button } from '@/components/ui/Button';
 
 const HeaderRight = React.memo(function HeaderRight() {
   return (
-    <Icon name="settings" size={HEADER_CONFIG.ICON_SIZE} onPress={featureNotAvailable}/>
+    <Button
+      icon="settings"
+      iconSize={HEADER_CONFIG.ICON_SIZE}
+      onPress={featureNotAvailable}
+      variant="none"
+    />
   );
 });
 
@@ -140,7 +145,7 @@ export default function SearchScreen() {
         headerMiddle={headerMiddle}
         headerRight={<HeaderRight/>}
         headerLeftClassName="max-w-[35px]"
-        headerRightClassName="max-w-[40px]"
+        headerRightClassName="max-w-[40px] -mr-0.5"
         headerMiddleClassName="ml-14 mr-10"
         isStatic={false}
       />

@@ -1,7 +1,7 @@
 {
   "name": "tiny",
   "main": "expo-router/entry",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "scripts": {
     "compile": "tsc --noEmit -p . --pretty",
     "lint": "eslint . --fix",

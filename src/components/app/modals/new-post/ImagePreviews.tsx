@@ -8,7 +8,7 @@ import { scaleDownPostImage } from '@/utils/scale-down-post-image';
 import { POST_CONTENT_INDENT } from '@/components/app/modals/new-post/constants';
 import { Icon } from '@/components/common/Icon';
 
-const FIXED_HEIGHT = Dimensions.get('window').width * 0.69;
+const FIXED_HEIGHT = Dimensions.get('window').width * 0.49;
 
 interface ImagePreviewsProps extends ScrollViewProps {
   images: ImageURISource[];
@@ -53,6 +53,7 @@ export function ImagePreviews({ images, onRemoveImage, ...props }: ImagePreviews
         scrollEnabled={totalWidth > Dimensions.get('window').width}
         showsHorizontalScrollIndicator={false}
         className={cn('flex-grow-0 mt-4', props.className)}
+        keyboardShouldPersistTaps="always"
         {...props}
       >
         <View className="flex-row gap-4">
@@ -87,14 +88,13 @@ const styles = StyleSheet.create({
 function RemoveButton({ ...props }: PressableProps) {
   return (
     <Pressable
-      className="absolute right-2.5 top-2.5"
+      className={cn('absolute right-2.5 top-2.5 z-10 bg-black/60 rounded-full p-1.5', props.className)}
       {...props}
     >
       <Icon
-        className={cn('bg-black/60 rounded-full p-1', props.className)}
         name="close"
         size={16}
-        color="white"
+        className="text-white"
       />
     </Pressable>
   );

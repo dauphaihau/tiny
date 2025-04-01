@@ -4,30 +4,29 @@ import { featureNotAvailable } from '@/utils';
 import { ButtonSheet } from '../ButtonSheet';
 import { DeleteButton } from './DeleteButton';
 import { ActionSheet } from '@/components/sheet/ActionSheet';
-import { Icon } from '@/components/common/Icon';
 import { ButtonSheetGroup } from '@/components/sheet/ButtonSheetGroup';
 import { ButtonSheetProps } from '@/components/sheet/ButtonSheet';
 
 const options: ButtonSheetProps[] = [
   {
     label: 'Save',
-    icon: (size) => <Icon name="bookmark" size={size}/>,
+    icon: { name: 'bookmark' },
   },
   {
     label: 'Pin to profile',
-    icon: (size) => <Icon name="pin" size={size}/>,
+    icon: { name: 'pin' },
   },
   {
     label: 'Archive',
-    icon: (size) => <Icon name="archive" size={size}/>,
+    icon: { name: 'archive' },
   },
   {
     label: 'Hide like and share counts',
-    icon: (size) => <Icon name="eye.off" size={size}/>,
+    icon: { name: 'eye.off' },
   },
   {
     label: 'Who can reply & quote',
-    icon: (size) => <Icon name="chevron.right" size={size}/>,
+    icon: { name: 'chevron.right' },
   },
 ];
 
@@ -38,9 +37,7 @@ export default function CurrentProfilePostActions() {
         <ButtonSheet
           label="Edit"
           onPress={featureNotAvailable}
-          icon={(size) => (
-            <Icon name="edit" size={size}/>
-          )}
+          icon={{ name: 'edit' }}
         />
         
         <ButtonSheetGroup options={options} />
@@ -48,9 +45,7 @@ export default function CurrentProfilePostActions() {
         <ButtonSheet
           label="Copy link"
           onPress={featureNotAvailable}
-          icon={(size) => (
-            <Icon name="link" size={size}/>
-          )}
+          icon={{ name: 'link' }}
         />
         <DeleteButton/>
       </View>

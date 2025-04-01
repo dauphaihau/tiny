@@ -223,7 +223,7 @@ export function Header({
               </HeaderSection>
 
               <HeaderSection
-                className={cn('h-full justify-center items-end z-20 ', headerRightClassName)}
+                className={cn('h-full justify-center items-end z-20', headerRightClassName)}
                 style={{ flex: 1 }}
               >
                 {renderRight()}

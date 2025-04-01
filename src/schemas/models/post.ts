@@ -6,6 +6,6 @@ export const postSchema: toZod<Post> = z.object({
   id: z.number(),
   profile_id: z.string(),
   parent_id: z.number().nullable(),
-  content: z.string(),
+  content: z.string().nullable(),
   created_at: z.string(),
 });

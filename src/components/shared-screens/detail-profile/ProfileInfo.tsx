@@ -4,18 +4,12 @@ import { Text } from '@/components/ui/Text';
 import { PROFILE } from '@/constants/profile';
 import { GetProfileByIdResponse } from '@/types/request/profile/get-profile-by-id';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
-import { getAvatarImage } from '@/services/image.service';
-import { Image } from 'expo-image';
-import { cssInterop } from 'nativewind';
+import { Avatar } from '@/components/common/Avatar';
 
 interface ProfileInfoProps extends ViewProps {
   profile: GetProfileByIdResponse;
   animatedScale: Animated.SharedValue<number>;
 }
-
-const StyledImage = cssInterop(Image, {
-  className: 'style',
-});
 
 export function ProfileInfo({
   profile, animatedScale,
@@ -36,17 +30,17 @@ export function ProfileInfo({
     <View {...props}>
       <View className="gap-3">
         <Animated.View
-          className="size-[65px] rounded-full justify-center items-center"
+          className="size-[80px] rounded-full justify-center items-center"
           style={animatedStyle}
         >
-          <StyledImage
-            source={getAvatarImage(profile?.avatar)}
-            className="size-[82px] rounded-full border-4 border-background"
+          <View className="absolute size-[80px] rounded-full bg-background"/>
+          <Avatar
+            path={profile?.avatar}
+            className="size-[70px] border-0"
             contentFit="cover"
             transition={200}
           />
         </Animated.View>
-
         <View>
           <Text className="font-bold text-xl">{truncate(profile?.first_name, PROFILE.MAX_USERNAME)}</Text>
           <Text className="text-lg -mt-1 mb-1">{profile?.username}</Text>

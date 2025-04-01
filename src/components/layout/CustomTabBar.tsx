@@ -6,7 +6,7 @@ import { BlurView } from 'expo-blur';
 import Animated, {
   useAnimatedStyle,
   withSpring,
-  useSharedValue,
+  useSharedValue
 } from 'react-native-reanimated';
 import { useScrollPositionStore } from '@/stores/scroll-position.store';
 import { useNavigation } from 'expo-router';
@@ -71,14 +71,14 @@ export function CustomTabBar({
       // Increase progress when scrolling down
       progressValue.value = Math.min(
         progressValue.value + ((scrollState.scrollY - lastScrollY.value) * SCROLL_PROGRESS_INCREMENT),
-        1,
+        1
       );
     }
     else {
       // Decrease progress when scrolling up
       progressValue.value = Math.max(
         progressValue.value - ((lastScrollY.value - scrollState.scrollY) * SCROLL_PROGRESS_INCREMENT),
-        0,
+        0
       );
     }
 
@@ -88,12 +88,12 @@ export function CustomTabBar({
     // Apply animations with spring physics - independent of isVisibleTabBar
     translateY.value = withSpring(
       progressValue.value * TAB_BAR_CONFIG.TAB_BAR_HEIGHT,
-      { damping: 30, stiffness: 150, mass: 1 },
+      { damping: 30, stiffness: 150, mass: 1 }
     );
 
     opacity.value = withSpring(
       1 - progressValue.value,
-      { damping: 15, stiffness: 150, mass: 1 },
+      { damping: 15, stiffness: 150, mass: 1 }
     );
   }, [scrollY, isScrollingDown, isStaticTabBar, currentRouteKey, getCurrentRouteState]);
 

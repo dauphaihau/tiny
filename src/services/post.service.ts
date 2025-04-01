@@ -57,9 +57,11 @@ export function useGetDetailPost(postId: Post['id']) {
       postId,
       current_profile_id: currentProfile!.id,
     }),
-    staleTime: 1000 * 60, // Consider data fresh for 1 minute
-    refetchOnMount: true, // Refetch in background when component mounts
+    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: false,
   });
+
   return {
     ...query,
     post: query.data as IPost | undefined,
@@ -84,12 +86,13 @@ export function useToggleLikePost() {
   return useMutation({
     mutationKey: ['toggle-like'],
     mutationFn: async (postId: Post['id']) => {
-      return supabase
+      const { error } = await supabase
         .from('likes')
         .insert({
           profile_id: currentProfile?.id,
           post_id: postId,
         });
+      if (error) throw new Error(`Error creating post images: ${error.message}`);
     },
   });
 }
